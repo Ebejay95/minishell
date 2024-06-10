@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: jonathaneberle <jonathaneberle@student.    +#+  +:+       +#+         #
+#    By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/25 22:43:08 by jonathanebe       #+#    #+#              #
-#    Updated: 2024/05/25 22:57:37 by jonathanebe      ###   ########.fr        #
+#    Updated: 2024/06/10 18:18:04 by jeberle          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -33,12 +33,12 @@ $(X)\n\
 $(X)\n\
 $(BLUE)███████████████████████████████████████████████████████████████████$(X)\n\
 
-
 #------------------------------------------------------------------------------#
 #--------------                      GENERAL                      -------------#
 #------------------------------------------------------------------------------#
 
 NAME=minishell
+NAME_BONUS=minishell_bonus
 
 #------------------------------------------------------------------------------#
 #--------------                       FLAGS                       -------------#
@@ -46,9 +46,11 @@ NAME=minishell
 
 CC=cc
 CFLAGS=-Wall -Wextra -Werror
+
 ifeq ($(DEBUG), 1)
 	CFLAGS += -fsanitize=address -g
 endif
+
 DEPFLAGS=-MMD -MP
 
 #------------------------------------------------------------------------------#
@@ -58,7 +60,7 @@ DEPFLAGS=-MMD -MP
 OBJ_DIR := ./obj
 DEP_DIR := $(OBJ_DIR)/.deps
 INC_DIRS := .
-SRC_DIRS := project shared bonus
+SRC_DIRS := .
 
 vpath %.c $(SRC_DIRS)
 vpath %.h $(INC_DIRS)
@@ -77,29 +79,28 @@ LIBFTFLAGS=-L$(LIBFT_DIR) -lft
 #--------------                        SRC                        -------------#
 #------------------------------------------------------------------------------#
 
-SRCS= 
+SRCS= \
+mandatory/minishell.c
 
-SHARED_SRCS= 
-
-BONUS_SRCS= 
+BONUS_SRCS= \
+# bonus/minishell_bonus.c \
 
 #------------------------------------------------------------------------------#
 #--------------                      OBJECTS                      -------------#
 #------------------------------------------------------------------------------#
 
-OBJECTS := $(addprefix $(OBJ_DIR)/, $(SRCS:%.c=%.o) $(SHARED_SRCS:%.c=%.o))
-BONUS_OBJECTS := $(addprefix $(OBJ_DIR)/, $(BONUS_SRCS:%.c=%.o) $(SHARED_SRCS:%.c=%.o))
+OBJECTS := $(addprefix $(OBJ_DIR)/, $(SRCS:%.c=%.o))
+BONUS_OBJECTS := $(addprefix $(OBJ_DIR)/, $(BONUS_SRCS:%.c=%.o))
 
 #------------------------------------------------------------------------------#
 #--------------                      COMPILE                      -------------#
 #------------------------------------------------------------------------------#
 
-.PHONY: all clean fclean re libft bonus
+.PHONY: all clean fclean re libft
 
 all: $(LIBFT_LIB) $(NAME)
 
-bonus: $(LIBFT_LIB) $(BONUS_OBJECTS)
-	@$(MAKE) $(NAME) "OBJECTS=$(BONUS_OBJECTS)"
+bonus: $(LIBFT_LIB) $(NAME_BONUS)
 
 -include $(OBJECTS:.o=.d)
 -include $(BONUS_OBJECTS:.o=.d)
@@ -114,16 +115,21 @@ $(LIBFT_LIB):
 
 $(NAME): $(OBJECTS)
 	@$(CC) -o $@ $^ $(LIBFTFLAGS)
-	@echo "$(GREEN)SUCCESS:$(X)\n$(SUCCESS)"
+	@echo "$(SUCCESS)"
+
+$(NAME_BONUS): $(BONUS_OBJECTS)
+	@$(CC) -o $@ $^ $(LIBFTFLAGS)
+	@echo "$(SUCCESS)"
 
 clean:
 	@rm -rf $(OBJ_DIR)
 	@$(MAKE) -C $(LIBFT_DIR) clean
-	@echo "\033[31mobjects deleted\033[0m"
+	@echo "$(RED)objects deleted$(X)"
 
 fclean: clean
+	@rm -rf $(NAME_BONUS)
 	@rm -rf $(NAME)
 	@$(MAKE) -C $(LIBFT_DIR) fclean
-	@echo "\033[31mpipex deleted\033[0m"
+	@echo "$(RED)minishell deleted$(X)"
 
 re: fclean all
