@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:01:33 by jeberle           #+#    #+#             */
-/*   Updated: 2024/06/10 18:21:17 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/06/10 18:31:00 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,6 @@
 
 int	main (void)
 {
-	ft_printf("Hi Minishell\n");
+	ft_printf("Hi Minishell!\n");
 	return (0);
 }
