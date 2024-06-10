@@ -6,7 +6,7 @@
 #    By: jonathaneberle <jonathaneberle@student.    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/25 22:43:08 by jonathanebe       #+#    #+#              #
-#    Updated: 2024/05/25 22:51:06 by jonathanebe      ###   ########.fr        #
+#    Updated: 2024/05/25 22:57:37 by jonathanebe      ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -77,16 +77,11 @@ LIBFTFLAGS=-L$(LIBFT_DIR) -lft
 #--------------                        SRC                        -------------#
 #------------------------------------------------------------------------------#
 
-SRCS= \
-minishell.c
+SRCS= 
 
-SHARED_SRCS= \
-shared_file1.c \
-shared_file2.c
+SHARED_SRCS= 
 
-BONUS_SRCS= \
-bonus_file1.c \
-bonus_file2.c
+BONUS_SRCS= 
 
 #------------------------------------------------------------------------------#
 #--------------                      OBJECTS                      -------------#
