@@ -6,7 +6,7 @@
 #    By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/25 22:43:08 by jonathanebe       #+#    #+#              #
-#    Updated: 2024/06/10 18:18:04 by jeberle          ###   ########.fr        #
+#    Updated: 2024/06/11 20:36:34 by jeberle          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -75,6 +75,8 @@ LIBFT=libft.a
 LIBFT_LIB=$(LIBFT_DIR)/$(LIBFT)
 LIBFTFLAGS=-L$(LIBFT_DIR) -lft
 
+SYSLIBFLAGS=-lreadline
+
 #------------------------------------------------------------------------------#
 #--------------                        SRC                        -------------#
 #------------------------------------------------------------------------------#
@@ -114,11 +116,11 @@ $(LIBFT_LIB):
 	@$(MAKE) -C $(LIBFT_DIR)
 
 $(NAME): $(OBJECTS)
-	@$(CC) -o $@ $^ $(LIBFTFLAGS)
+	@$(CC) -o $@ $^ $(LIBFTFLAGS) $(SYSLIBFLAGS)
 	@echo "$(SUCCESS)"
 
 $(NAME_BONUS): $(BONUS_OBJECTS)
-	@$(CC) -o $@ $^ $(LIBFTFLAGS)
+	@$(CC) -o $@ $^ $(LIBFTFLAGS) $(SYSLIBFLAGS)
 	@echo "$(SUCCESS)"
 
 clean:
