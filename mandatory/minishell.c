@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:01:33 by jeberle           #+#    #+#             */
-/*   Updated: 2024/06/11 20:39:47 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/06/11 22:13:44 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,38 +70,63 @@ void	ft_putallenv(char **env)
 	}
 }
 
-// void	put_lexer(t_arglexer *lexer)
-// {
-// 	if (!lexer)
-// 		return ;
-// 	write (1, "is_space: ", 10);
-// 	ft_putnbr(lexer->is_space);
-// 	write (1, "\nis_dash: ", 10);
-// 	ft_putnbr(lexer->is_dash);
-// 	write (1, "\nis_bslash: ", 12);
-// 	ft_putnbr(lexer->is_bslash);
-// 	write (1, "\nop_quote: ", 11);
-// 	ft_putnbr(lexer->op_quote);
-// 	write (1, "\nop_dquote: ", 12);
-// 	ft_putnbr(lexer->op_dquote);
-// 	write (1, "\ncl_quote: ", 11);
-// 	ft_putnbr(lexer->cl_quote);
-// 	write (1, "\ncl_dquote: ", 12);
-// 	ft_putnbr(lexer->cl_dquote);
-// 	write(1, "\n---\n", 5);
-// }
+void	put_lexer(t_arglexer lexer)
+{
+	write (1, "is_space: ", 10);
+	ft_putnbr(lexer.is_space);
+	write (1, "\nis_dash: ", 10);
+	ft_putnbr(lexer.is_dash);
+	write (1, "\nis_bslash: ", 12);
+	ft_putnbr(lexer.is_bslash);
+	write (1, "\nop_quote: ", 11);
+	ft_putnbr(lexer.op_quote);
+	write (1, "\nop_dquote: ", 12);
+	ft_putnbr(lexer.op_dquote);
+	write (1, "\ncl_quote: ", 11);
+	ft_putnbr(lexer.cl_quote);
+	write (1, "\ncl_dquote: ", 12);
+	ft_putnbr(lexer.cl_dquote);
+	write(1, "\n---\n", 5);
+}
+
+
+void	lex_pearl(char *pearl)
+{
+	t_arglexer arglexer;
+
+	ft_printf("\x1b[36m%s\x1b[0m\n", pearl);
+	arglexer.position = 0;
+	arglexer.is_space = 0;
+	arglexer.is_dash = 0;
+	arglexer.is_bslash = 0;
+	arglexer.op_quote = 0;
+	arglexer.op_dquote = 0;
+	arglexer.cl_quote = 0;
+	arglexer.cl_dquote = 0;
+	arglexer.is_option = 0;
+	arglexer.options = NULL;
+	put_lexer(arglexer);
+}
+
+
+
 int	main (int argc, char **argv, char **envp)
 {
 	char	*pearl;
+	char	*exline;
 	(void) argv;
 	(void) envp;
+	//ft_putallenv(envp);
 	if (argc != 1)
 		return (0);
 	pearl = readline("\x1b[34mminishell>\x1b[0m");
 	if (pearl)
 	{
 		add_history(pearl);
+		lex_pearl(pearl);
 		free(pearl);
+		exline = ft_get_envline("PATH", envp);
+		ft_printf(ft_color(exline, GREEN));
 	}
 	else
 	{
@@ -110,56 +135,3 @@ int	main (int argc, char **argv, char **envp)
 	}
 	return (0);
 }
-
-//int	main (int argc, char **argv, char **envp)
-//{
-//	if (argc != 1)
-//		return (0);
-//
-//	//char *exline;
-//	//ft_printf("Hi Minishell!\n");
-//	//ft_putallenv(envp);
-//	//exline = ft_get_envline("PATH", envp);
-//	// ft_printf(ft_color(exline, GREEN));
-//
-//	// t_arglexer **arglexers;
-//	// int	i;
-//	// (void) argv;
-//	// (void) envp;
-//
-//	// if (argc < 2)
-//	// 	return (0);
-//	// i = 0;
-//	// arglexers = malloc((argc - 1) * sizeof(t_arglexer *));
-//	// if (!arglexers)
-//	// 	return (1);
-//	// i = 0;
-//	// while (i < (argc - 1))
-//	// {
-//	// 	arglexers[i] = malloc((argc - 1) * sizeof(t_arglexer *));
-//	// 	if (!arglexers[i])
-//	// 		return (1);
-//	// 	arglexers[i]->is_space = 0;
-//	// 	arglexers[i]->is_dash = 0;
-//	// 	arglexers[i]->is_bslash = 0;
-//	// 	arglexers[i]->op_quote = 0;
-//	// 	arglexers[i]->op_dquote = 0;
-//	// 	arglexers[i]->cl_quote = 0;
-//	// 	arglexers[i]->cl_dquote = 0;
-//	// 	i++;
-//	// }
-//	// i = 0;
-//	// while (i < (argc - 1))
-//	// {
-//	// 	put_lexer(arglexers[i]);
-//	// 	i++;
-//	// }
-//	// i = 0;
-//	// while (i < (argc - 1))
-//	// {
-//	// 	free(arglexers[i]);
-//	// 	i++;
-//	// }
-//	// free(arglexers);
-//	return (0);
-//}
