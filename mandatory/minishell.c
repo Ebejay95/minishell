@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:01:33 by jeberle           #+#    #+#             */
-/*   Updated: 2024/06/11 20:33:35 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/06/11 20:39:47 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,18 @@ char	*ft_get_envline(char *needle, char **envp)
 }
 
 
+// char	*ft_get_envline(char *needle, char **envp)
+// {
+// 	char *c;
+
+// 	while (1)
+// 	{
+// 		c = get_next_line(1);
+// 		if (ft_strncmp(c, "exit", 4) == 0)
+// 			break;
+// 	}
+// 	return (0);
+// }
 
 void	ft_putallenv(char **env)
 {
