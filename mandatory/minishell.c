@@ -6,7 +6,7 @@
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:01:33 by jeberle           #+#    #+#             */
-/*   Updated: 2024/06/10 18:34:55 by chorst           ###   ########.fr       */
+/*   Updated: 2024/06/11 11:19:21 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,13 @@
 
 int	main (void)
 {
-	ft_printf("Hi Minishellhallo\n");
+	char *c;
+
+	while (1)
+	{
+		c = get_next_line(1);
+		if (ft_strncmp(c, "exit", 4) == 0)
+			break;
+	}
 	return (0);
 }
