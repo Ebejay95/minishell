@@ -6,7 +6,7 @@
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:18:56 by jeberle           #+#    #+#             */
-/*   Updated: 2024/06/12 18:30:25 by chorst           ###   ########.fr       */
+/*   Updated: 2024/06/12 19:34:12 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,18 +41,33 @@
 # define W "\033[0;97m"
 # define D "\033[0m"
 
+typedef struct	s_segment
+{
+	int			position;
+	int			end;
+	char		*quote;
+}	t_segment;
+
 typedef struct	s_arglexer
 {
-	int		position;
-	int		is_space;
-	int		is_dash;
-	int		is_bslash;
-	int		op_quote;
-	int		op_dquote;
-	int		cl_quote;
-	int		cl_dquote;
-	int		is_option;
-	char	*options;
+	int			position;
+	int			is_lssthn;
+	int			is_grtthn;
+	int			is_space;
+	int			is_dash;
+	int			is_bslash;
+	int			is_dollar;
+	int			is_questmark;
+	int			op_quote;
+	int			op_dquote;
+	t_segment	**pipe_buffer;
+	t_segment	**quote_buffer;
+	t_segment	**dquote_buffer;
+	t_segment	**lssgrt_buffer;
+	t_segment	**space_buffer;
+	t_segment	**option_buffer;
+	int			cl_quote;
+	int			cl_dquote;
 }	t_arglexer;
 
 #endif

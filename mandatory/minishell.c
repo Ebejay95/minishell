@@ -6,53 +6,11 @@
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:01:33 by jeberle           #+#    #+#             */
-/*   Updated: 2024/06/12 18:40:55 by chorst           ###   ########.fr       */
+/*   Updated: 2024/06/12 19:12:39 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../include/minishell.h"
-
-// Used instead of this function: getenv
-char	*ft_get_envline(char *needle, char **envp)
-{
-	int		i;
-	char	*pthl;
-	char	*pthl_start;
-
-	i = 0;
-	while (envp[i] != NULL)
-	{
-		pthl_start = ft_strstr(envp[i], needle);
-		if (pthl_start == envp[i])
-		{
-			pthl = ft_calloc((ft_strlen(envp[i]) + 1), sizeof(char));
-			if (pthl == NULL)
-				return (NULL);
-			ft_strcpy(pthl, envp[i]);
-		}
-		i++;
-	}
-	while (*pthl != '=' && *pthl != '\0')
-	{
-		pthl++;
-	}
-	if (*pthl == '=')
-		pthl++;
-	return (pthl);
-}
-
-// char	*ft_get_envline(char *needle, char **envp)
-// {
-// 	char *c;
-
-// 	while (1)
-// 	{
-// 		c = get_next_line(1);
-// 		if (ft_strncmp(c, "exit", 4) == 0)
-// 			break ;
-// 	}
-// 	return (0);
-// }
 
 void	ft_putallenv(char **env)
 {
@@ -82,11 +40,11 @@ void	put_lexer(t_arglexer lexer)
 	printf("---\n");
 }
 
-void	lex_pearl(char *pearl)
+void	lex_prompt(char *prompt)
 {
 	t_arglexer	arglexer;
 
-	ft_printf("\x1b[36m%s\x1b[0m\n", pearl);
+	ft_printf("\x1b[36m%s\x1b[0m\n", prompt);
 	arglexer.position = 0;
 	arglexer.is_space = 0;
 	arglexer.is_dash = 0;
@@ -102,7 +60,7 @@ void	lex_pearl(char *pearl)
 
 int	main(int argc, char **argv, char **envp)
 {
-	char	*pearl;
+	char	*prompt;
 	char	*exline;
 
 	(void)argv;
@@ -110,12 +68,12 @@ int	main(int argc, char **argv, char **envp)
 	// ft_putallenv(envp);
 	if (argc != 1)
 		return (0);
-	pearl = readline(R"m"Y"i"G"n"B"i"C"s"M"h"R"e"Y"l"G"l"B" ""%"D" ");
-	if (pearl)
+	prompt = readline(R"m"Y"i"G"n"B"i"C"s"M"h"R"e"Y"l"G"l"B" ""%"D" ");
+	if (prompt)
 	{
-		add_history(pearl);
-		lex_pearl(pearl);
-		free(pearl);
+		add_history(prompt);
+		lex_prompt(prompt);
+		free(prompt);
 		exline = getenv("PATH");
 		ft_printf(ft_color(exline, GREEN));
 		// or instead
