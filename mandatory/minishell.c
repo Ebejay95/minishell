@@ -3,33 +3,34 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
+/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:01:33 by jeberle           #+#    #+#             */
-/*   Updated: 2024/06/11 22:13:44 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/06/12 18:40:55 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../include/minishell.h"
 
+// Used instead of this function: getenv
 char	*ft_get_envline(char *needle, char **envp)
 {
-	int		envdx;
+	int		i;
 	char	*pthl;
 	char	*pthl_start;
 
-	envdx = 0;
-	while (envp[envdx] != NULL)
+	i = 0;
+	while (envp[i] != NULL)
 	{
-		pthl_start = ft_strstr(envp[envdx], needle);
-		if (pthl_start == envp[envdx])
+		pthl_start = ft_strstr(envp[i], needle);
+		if (pthl_start == envp[i])
 		{
-			pthl = ft_calloc((ft_strlen(envp[envdx]) + 1), sizeof(char));
+			pthl = ft_calloc((ft_strlen(envp[i]) + 1), sizeof(char));
 			if (pthl == NULL)
 				return (NULL);
-			ft_strcpy(pthl, envp[envdx]);
+			ft_strcpy(pthl, envp[i]);
 		}
-		envdx++;
+		i++;
 	}
 	while (*pthl != '=' && *pthl != '\0')
 	{
@@ -40,7 +41,6 @@ char	*ft_get_envline(char *needle, char **envp)
 	return (pthl);
 }
 
-
 // char	*ft_get_envline(char *needle, char **envp)
 // {
 // 	char *c;
@@ -49,50 +49,42 @@ char	*ft_get_envline(char *needle, char **envp)
 // 	{
 // 		c = get_next_line(1);
 // 		if (ft_strncmp(c, "exit", 4) == 0)
-// 			break;
+// 			break ;
 // 	}
 // 	return (0);
 // }
 
 void	ft_putallenv(char **env)
 {
-	int	envdx;
+	int		i;
 	char	*print;
 
-	envdx = 0;
-	while (env[envdx] != 0)
+	i = 0;
+	while (env[i] != 0)
 	{
-		print = ft_color(env[envdx], YELLOW);
+		print = ft_color(env[i], YELLOW);
 		ft_printf(print);
 		ft_printf("\n");
 		free(print);
-		envdx++;
+		i++;
 	}
 }
 
 void	put_lexer(t_arglexer lexer)
 {
-	write (1, "is_space: ", 10);
-	ft_putnbr(lexer.is_space);
-	write (1, "\nis_dash: ", 10);
-	ft_putnbr(lexer.is_dash);
-	write (1, "\nis_bslash: ", 12);
-	ft_putnbr(lexer.is_bslash);
-	write (1, "\nop_quote: ", 11);
-	ft_putnbr(lexer.op_quote);
-	write (1, "\nop_dquote: ", 12);
-	ft_putnbr(lexer.op_dquote);
-	write (1, "\ncl_quote: ", 11);
-	ft_putnbr(lexer.cl_quote);
-	write (1, "\ncl_dquote: ", 12);
-	ft_putnbr(lexer.cl_dquote);
-	write(1, "\n---\n", 5);
+	printf("is_space: %d\n", lexer.is_space);
+	printf("is_dash: %d\n", lexer.is_dash);
+	printf("is_bslash: %d\n", lexer.is_bslash);
+	printf("op_quote: %d\n", lexer.op_quote);
+	printf("op_dquote: %d\n", lexer.op_dquote);
+	printf("cl_quote: %d\n", lexer.cl_quote);
+	printf("cl_dquote: %d\n", lexer.cl_dquote);
+	printf("---\n");
 }
-
 
 void	lex_pearl(char *pearl)
 {
-	t_arglexer arglexer;
+	t_arglexer	arglexer;
 
 	ft_printf("\x1b[36m%s\x1b[0m\n", pearl);
 	arglexer.position = 0;
@@ -108,25 +100,26 @@ void	lex_pearl(char *pearl)
 	put_lexer(arglexer);
 }
 
-
-
-int	main (int argc, char **argv, char **envp)
+int	main(int argc, char **argv, char **envp)
 {
 	char	*pearl;
 	char	*exline;
-	(void) argv;
-	(void) envp;
-	//ft_putallenv(envp);
+
+	(void)argv;
+	(void)envp;
+	// ft_putallenv(envp);
 	if (argc != 1)
 		return (0);
-	pearl = readline("\x1b[34mminishell>\x1b[0m");
+	pearl = readline(R"m"Y"i"G"n"B"i"C"s"M"h"R"e"Y"l"G"l"B" ""%"D" ");
 	if (pearl)
 	{
 		add_history(pearl);
 		lex_pearl(pearl);
 		free(pearl);
-		exline = ft_get_envline("PATH", envp);
+		exline = getenv("PATH");
 		ft_printf(ft_color(exline, GREEN));
+		// or instead
+		// ft_printf("%s %s %s\n", G, exline, D);
 	}
 	else
 	{

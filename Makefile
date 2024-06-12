@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+         #
+#    By: chorst <chorst@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/25 22:43:08 by jonathanebe       #+#    #+#              #
-#    Updated: 2024/06/11 20:38:18 by jeberle          ###   ########.fr        #
+#    Updated: 2024/06/12 15:14:25 by chorst           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -81,8 +81,14 @@ SYSLIBFLAGS=-lreadline
 #--------------                        SRC                        -------------#
 #------------------------------------------------------------------------------#
 
-SRCS= \
-mandatory/minishell.c
+SRCS=	mandatory/minishell.c \
+		builtins/cd.c \
+		builtins/echo.c \
+		builtins/env.c \
+		builtins/exit.c \
+		builtins/export.c \
+		builtins/pwd.c \
+		builtins/unset.c \
 
 BONUS_SRCS= \
 # bonus/minishell_bonus.c \

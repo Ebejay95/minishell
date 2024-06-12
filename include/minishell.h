@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
+/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:18:56 by jeberle           #+#    #+#             */
-/*   Updated: 2024/06/11 20:41:02 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/06/12 18:30:25 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,9 @@
 # define G "\033[0;32m"
 # define B "\033[0;34m"
 # define Y "\033[0;93m"
+# define C "\033[0;36m"
+# define M "\033[0;35m"
+# define W "\033[0;97m"
 # define D "\033[0m"
 
 typedef struct	s_arglexer
