@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:01:33 by jeberle           #+#    #+#             */
-/*   Updated: 2024/06/12 19:12:39 by chorst           ###   ########.fr       */
+/*   Updated: 2024/06/13 11:59:43 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,61 +28,59 @@ void	ft_putallenv(char **env)
 	}
 }
 
-void	put_lexer(t_arglexer lexer)
+void	lex_prompt(t_minishell *minishell)
 {
-	printf("is_space: %d\n", lexer.is_space);
-	printf("is_dash: %d\n", lexer.is_dash);
-	printf("is_bslash: %d\n", lexer.is_bslash);
-	printf("op_quote: %d\n", lexer.op_quote);
-	printf("op_dquote: %d\n", lexer.op_dquote);
-	printf("cl_quote: %d\n", lexer.cl_quote);
-	printf("cl_dquote: %d\n", lexer.cl_dquote);
-	printf("---\n");
-}
-
-void	lex_prompt(char *prompt)
-{
-	t_arglexer	arglexer;
-
-	ft_printf("\x1b[36m%s\x1b[0m\n", prompt);
-	arglexer.position = 0;
-	arglexer.is_space = 0;
-	arglexer.is_dash = 0;
-	arglexer.is_bslash = 0;
-	arglexer.op_quote = 0;
-	arglexer.op_dquote = 0;
-	arglexer.cl_quote = 0;
-	arglexer.cl_dquote = 0;
-	arglexer.is_option = 0;
-	arglexer.options = NULL;
-	put_lexer(arglexer);
+	ft_printf("\x1b[36m%s\x1b[0m\n", minishell->prompt);
+	minishell->lexer.position = 0;
+	minishell->lexer.is_lessthan = 0;
+	minishell->lexer.is_greaterthan = 0;
+	minishell->lexer.is_space = 0;
+	minishell->lexer.is_dash = 0;
+	minishell->lexer.is_bslash = 0;
+	minishell->lexer.is_dollar = 0;
+	minishell->lexer.is_questmark = 0;
+	minishell->lexer.is_ampersand = 0;
+	minishell->lexer.is_semicolon = 0;
+	minishell->lexer.is_pipe = 0;
+	minishell->lexer.is_logical_and = 0;
+	minishell->lexer.is_logical_or = 0;
+	minishell->lexer.op_quote = 0;
+	minishell->lexer.op_dquote = 0;
+	minishell->lexer.cl_quote = 0;
+	minishell->lexer.cl_dquote = 0;
+	minishell->lexer.pipe_buffer = get_segments(minishell->prompt, "|");
+	minishell->lexer.quote_buffer = get_oc_segments(minishell->prompt, "'");
+	minishell->lexer.dquote_buffer = get_oc_segments(minishell->prompt, "\"");
+	minishell->lexer.inrdrct_buffer = get_segments(minishell->prompt, "<");
+	minishell->lexer.outrdrct_buffer = get_segments(minishell->prompt, ">");
+	minishell->lexer.appoutrdrct_buffer = get_segments(minishell->prompt, ">>");
+	minishell->lexer.heredoc_buffer = get_segments(minishell->prompt, "<<");
+	minishell->lexer.space_buffer = get_segments(minishell->prompt, " ");
+	minishell->lexer.option_buffer = get_segments(minishell->prompt, "-");
+	minishell->lexer.ampersand_buffer = get_segments(minishell->prompt, "&");
+	minishell->lexer.semicolon_buffer = get_segments(minishell->prompt, ";");
+	put_lexer(minishell->lexer);
 }
 
 int	main(int argc, char **argv, char **envp)
 {
-	char	*prompt;
-	char	*exline;
+	t_minishell	minishell;
 
 	(void)argv;
 	(void)envp;
-	// ft_putallenv(envp);
 	if (argc != 1)
 		return (0);
-	prompt = readline(R"m"Y"i"G"n"B"i"C"s"M"h"R"e"Y"l"G"l"B" ""%"D" ");
-	if (prompt)
+	while (1)
 	{
-		add_history(prompt);
-		lex_prompt(prompt);
-		free(prompt);
-		exline = getenv("PATH");
-		ft_printf(ft_color(exline, GREEN));
-		// or instead
-		// ft_printf("%s %s %s\n", G, exline, D);
-	}
-	else
-	{
-		ft_putstr_fd(2, "cant read input\n");
-		return (1);
+		minishell.prompt = readline("minishell>");
+		if (minishell.prompt)
+		{
+			add_history(minishell.prompt);
+			lex_prompt(&minishell);
+			free(minishell.prompt);
+		}
+		else
+			return (ft_putstr_fd(2, "cant read input\n"), 1);
 	}
 	return (0);
 }

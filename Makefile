@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: chorst <chorst@student.42.fr>              +#+  +:+       +#+         #
+#    By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/25 22:43:08 by jonathanebe       #+#    #+#              #
-#    Updated: 2024/06/12 15:14:25 by chorst           ###   ########.fr        #
+#    Updated: 2024/06/12 21:47:51 by jeberle          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -82,6 +82,9 @@ SYSLIBFLAGS=-lreadline
 #------------------------------------------------------------------------------#
 
 SRCS=	mandatory/minishell.c \
+		mandatory/segments_helper.c \
+		mandatory/segments.c \
+		mandatory/putters.c \
 		builtins/cd.c \
 		builtins/echo.c \
 		builtins/env.c \
