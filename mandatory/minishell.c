@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:01:33 by jeberle           #+#    #+#             */
-/*   Updated: 2024/06/13 13:08:55 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/06/13 22:56:04 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,18 +68,18 @@ char	*input_cleaner(char *prompt)
 	int		i;
 	int		j;
 	char	*temp_prompt;
+	char	*clean_prompt;
 
 	i = 0;
 	j = 0;
 	temp_prompt = ft_strtrim(prompt, " \t\n\v\f\r");
-	char *clean_prompt = (char *)malloc(strlen(temp_prompt) + 1);
+	clean_prompt = (char *)malloc(strlen(temp_prompt) + 1);
 	while (temp_prompt[i])
 	{
 		if (temp_prompt[i] != 32 && !(temp_prompt[i] >= 9
 				&& temp_prompt[i] <= 13))
 			clean_prompt[j++] = temp_prompt[i];
-		else if (i > 0 && !(clean_prompt[j - 1] == 32 || (clean_prompt[j
-					- 1] >= 9 && clean_prompt[j - 1] <= 13)))
+		else if (i > 0 && !(clean_prompt[j - 1] == 32 || (clean_prompt[j - 1] >= 9 && clean_prompt[j - 1] <= 13)))
 			clean_prompt[j++] = ' ';
 		i++;
 	}

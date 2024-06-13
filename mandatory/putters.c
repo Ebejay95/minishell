@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 21:46:51 by jeberle           #+#    #+#             */
-/*   Updated: 2024/06/13 12:30:35 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/06/13 22:59:22 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,9 +23,9 @@ void	put_ms_buffer(t_segment **segments)
 	while (segments[i])
 	{
 		ft_printf("  [\n");
-			ft_printf("    str: %s\n", segments[i]->str);
-			ft_printf("    start: %d\n", segments[i]->start);
-			ft_printf("    end: %d\n", segments[i]->end);
+		ft_printf("    str: %s\n", segments[i]->str);
+		ft_printf("    start: %d\n", segments[i]->start);
+		ft_printf("    end: %d\n", segments[i]->end);
 		ft_printf("  ]\n");
 		i++;
 	}

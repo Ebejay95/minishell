@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:18:56 by jeberle           #+#    #+#             */
-/*   Updated: 2024/06/13 13:08:06 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/06/13 22:55:01 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,14 +39,14 @@
 # define W "\033[0;97m"
 # define D "\033[0m"
 
-typedef struct	s_segment
+typedef struct s_segment
 {
 	char		*str;
 	int			start;
 	int			end;
 }	t_segment;
 
-typedef struct	s_arglexer
+typedef struct s_arglexer
 {
 	int			is_unclosed_quote;
 	int			position;
@@ -79,7 +79,7 @@ typedef struct	s_arglexer
 	t_segment	**semicolon_buffer;
 }	t_arglexer;
 
-typedef struct	s_minishell
+typedef struct s_minishell
 {
 	char		*prompt;
 	t_arglexer	lexer;
@@ -91,4 +91,5 @@ t_segment	**seg_clear_all(int idx, t_segment **segments);
 t_segment	**build_segments(char const *prompt, char *type, t_segment **segments);
 t_segment	**get_quote_segments(t_minishell *minishell, char type);
 t_segment	**get_segments(char *prompt, char *type);
+void		put_ms_buffer(t_segment **segments);
 #endif
