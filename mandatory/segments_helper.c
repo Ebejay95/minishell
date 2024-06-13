@@ -6,13 +6,13 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 21:28:44 by jeberle           #+#    #+#             */
-/*   Updated: 2024/06/13 11:15:54 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/06/13 13:07:55 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../include/minishell.h"
 
-static char	*build_segment(int start, int end, const char *prompt)
+char	*build_segment(int start, int end, const char *prompt)
 {
 	int		idx;
 	char	*segment;

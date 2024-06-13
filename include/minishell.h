@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:18:56 by jeberle           #+#    #+#             */
-/*   Updated: 2024/06/13 12:11:06 by chorst           ###   ########.fr       */
+/*   Updated: 2024/06/13 13:08:06 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,9 @@ typedef struct	s_minishell
 }	t_minishell;
 
 void		put_lexer(t_arglexer lexer);
+char		*build_segment(int start, int end, const char *prompt);
 t_segment	**seg_clear_all(int idx, t_segment **segments);
 t_segment	**build_segments(char const *prompt, char *type, t_segment **segments);
+t_segment	**get_quote_segments(t_minishell *minishell, char type);
 t_segment	**get_segments(char *prompt, char *type);
 #endif
