@@ -6,27 +6,11 @@
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:01:33 by jeberle           #+#    #+#             */
-/*   Updated: 2024/06/13 12:12:47 by chorst           ###   ########.fr       */
+/*   Updated: 2024/06/13 13:24:21 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../include/minishell.h"
-
-void	ft_putallenv(char **env)
-{
-	int		i;
-	char	*print;
-
-	i = 0;
-	while (env[i] != 0)
-	{
-		print = ft_color(env[i], YELLOW);
-		ft_printf(print);
-		ft_printf("\n");
-		free(print);
-		i++;
-	}
-}
 
 void	lex_prompt(t_minishell *minishell)
 {
@@ -49,8 +33,8 @@ void	lex_prompt(t_minishell *minishell)
 	minishell->lexer.cl_quote = 0;
 	minishell->lexer.cl_dquote = 0;
 	minishell->lexer.pipe_buffer = get_segments(minishell->prompt, "|");
-	minishell->lexer.quote_buffer = get_oc_segments(minishell->prompt, "'");
-	minishell->lexer.dquote_buffer = get_oc_segments(minishell->prompt, "\"");
+	// minishell->lexer.quote_buffer = get_oc_segments(minishell->prompt, "'");
+	// minishell->lexer.dquote_buffer = get_oc_segments(minishell->prompt, "\"");
 	minishell->lexer.inrdrct_buffer = get_segments(minishell->prompt, "<");
 	minishell->lexer.outrdrct_buffer = get_segments(minishell->prompt, ">");
 	minishell->lexer.appoutrdrct_buffer = get_segments(minishell->prompt, ">>");
@@ -67,11 +51,12 @@ char	*input_cleaner(char *prompt)
 	int		i;
 	int		j;
 	char	*temp_prompt;
+	char	*clean_prompt;
 
 	i = 0;
 	j = 0;
 	temp_prompt = ft_strtrim(prompt, " \t\n\v\f\r");
-	char *clean_prompt = (char *)malloc(strlen(temp_prompt) + 1);
+	clean_prompt = (char *)malloc(strlen(temp_prompt) + 1);
 	while (temp_prompt[i])
 	{
 		if (temp_prompt[i] != 32 && !(temp_prompt[i] >= 9
@@ -100,6 +85,12 @@ int	main(int argc, char **argv, char **envp)
 		minishell.prompt = readline("minishell>");
 		if (minishell.prompt)
 		{
+			if (strcmp(minishell.prompt, "pwd") == 0)
+				ft_pwd();
+			else if (strcmp(minishell.prompt, "env") == 0)
+				ft_putallenv(envp);
+			else if (strcmp(minishell.prompt, "exit") == 0)
+				exit(0);
 			add_history(minishell.prompt);
 			lex_prompt(&minishell);
 			free(minishell.prompt);
