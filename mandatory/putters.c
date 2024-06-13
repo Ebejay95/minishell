@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 21:46:51 by jeberle           #+#    #+#             */
-/*   Updated: 2024/06/13 22:59:22 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/06/14 00:46:47 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,10 @@ void	put_ms_buffer(t_segment **segments)
 	if (segments == NULL)
 		return ;
 	i = 0;
+	if (segments[i] == NULL)
+		return ;
 	ft_printf("[\n");
-	while (segments[i])
+	while (segments[i] != NULL)
 	{
 		ft_printf("  [\n");
 		ft_printf("    str: %s\n", segments[i]->str);
@@ -32,7 +34,7 @@ void	put_ms_buffer(t_segment **segments)
 	ft_printf("]\n");
 }
 
-void	put_lexer(t_arglexer lexer)
+void	put_lexer(t_lexer lexer)
 {
 	ft_printf("position: %d\n", lexer.position);
 	ft_printf("is_lssthn: %d\n", lexer.is_lessthan);
@@ -73,5 +75,7 @@ void	put_lexer(t_arglexer lexer)
 	put_ms_buffer(lexer.ampersand_buffer);
 	ft_printf("semicolon_buffer:\n");
 	put_ms_buffer(lexer.semicolon_buffer);
+	ft_printf("variable_buffer:\n");
+	put_ms_buffer(lexer.variable_buffer);
 	printf("____________________________\n");
 }

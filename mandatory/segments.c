@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 19:46:25 by jeberle           #+#    #+#             */
-/*   Updated: 2024/06/13 22:58:44 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/06/14 00:43:08 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,6 +103,8 @@ t_segment	**get_quote_segments(t_minishell *minishell, char type)
 				idx++;
 			}
 			segments[seg_count]->str[idx] = '\0';
+			if(ft_strlen(segments[seg_count]->str) == 0)
+				segments[seg_count]->start = segments[seg_count]->end;
 			seg_count++;
 			in_oc = 0;
 		}

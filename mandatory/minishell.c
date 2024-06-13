@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:01:33 by jeberle           #+#    #+#             */
-/*   Updated: 2024/06/13 22:56:04 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/06/14 00:49:41 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,20 @@ void	ft_putallenv(char **env)
 		ft_printf(print);
 		ft_printf("\n");
 		free(print);
+		i++;
+	}
+}
+
+void	parse_table(t_minishell *minishell)
+{
+	size_t		i;
+
+	i = 0;
+	while (minishell->prompt[i] != '\0')
+	{
+		minishell->parser.parse_pos = i;
+		minishell->parser.parse_char = minishell->prompt[i];
+		ft_printf("%i %c\n", i, minishell->prompt[i]);
 		i++;
 	}
 }
@@ -60,7 +74,9 @@ void	lex_prompt(t_minishell *minishell)
 	minishell->lexer.option_buffer = get_segments(minishell->prompt, "-");
 	minishell->lexer.ampersand_buffer = get_segments(minishell->prompt, "&");
 	minishell->lexer.semicolon_buffer = get_segments(minishell->prompt, ";");
+	minishell->lexer.variable_buffer = get_segments(minishell->prompt, "$");
 	put_lexer(minishell->lexer);
+	parse_table(minishell);
 }
 
 char	*input_cleaner(char *prompt)
@@ -98,7 +114,7 @@ int	main(int argc, char **argv, char **envp)
 		return (0);
 	while (1)
 	{
-		minishell.prompt = readline("minishell>");
+		minishell.prompt = readline("\033[0;31m8==D \033[0m");
 		minishell.prompt = input_cleaner(minishell.prompt);
 		if (minishell.prompt)
 		{
