@@ -6,22 +6,20 @@
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:18:56 by jeberle           #+#    #+#             */
-/*   Updated: 2024/06/12 19:34:12 by chorst           ###   ########.fr       */
+/*   Updated: 2024/06/13 09:25:34 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
+// Librarys
 # include <stdio.h>
 # include <readline/readline.h>
 # include <readline/history.h>
-// Librarys
 # include "./../libft/libft.h"
 # include <limits.h>
 # include <pthread.h>
-// # include <readline/history.h>
-// # include <readline/readline.h>
 # include <signal.h>
 # include <stdarg.h>
 # include <stdbool.h>
@@ -60,12 +58,14 @@ typedef struct	s_arglexer
 	int			is_questmark;
 	int			op_quote;
 	int			op_dquote;
+	bool		open_quote;
 	t_segment	**pipe_buffer;
 	t_segment	**quote_buffer;
 	t_segment	**dquote_buffer;
 	t_segment	**lssgrt_buffer;
 	t_segment	**space_buffer;
 	t_segment	**option_buffer;
+	t_segment	**variable_buffer;
 	int			cl_quote;
 	int			cl_dquote;
 }	t_arglexer;
