@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:18:56 by jeberle           #+#    #+#             */
-/*   Updated: 2024/06/14 13:34:03 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/06/14 13:40:37 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,7 +97,6 @@ typedef struct s_minishell
 }	t_minishell;
 
 void		ft_pwd(void);
-void		ft_putallenv(char **env);
 void		put_lexer(t_lexer lexer);
 char		*build_segment(int start, int end, const char *prompt);
 t_segment	**seg_clear_all(int idx, t_segment **segments);
@@ -105,4 +104,14 @@ t_segment	**build_segments(char const *prompt, char *type, t_segment **segments)
 t_segment	**get_quote_segments(t_minishell *minishell, char type);
 t_segment	**get_segments(char *prompt, char *type);
 void		put_ms_buffer(t_segment **segments);
+
+// Builtins
+void		builtin_echo(char **args);
+//void		builtin_cd(char **args);
+void		builtin_pwd(char **args);
+// void		builtin_export(char **args);
+void		builtin_unset(char **envp, const char *name);
+void		builtin_env(char **args);
+// void		builtin_exit(char **args);
+
 #endif

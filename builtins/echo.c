@@ -6,13 +6,13 @@
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 11:49:45 by chorst            #+#    #+#             */
-/*   Updated: 2024/06/13 12:33:16 by chorst           ###   ########.fr       */
+/*   Updated: 2024/06/14 09:27:02 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../include/minishell.h"
 
-void	ft_echo(char **args)
+void	builtin_echo(char **args)
 {
 	int	i;
 	int	newline;
