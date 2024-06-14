@@ -6,19 +6,29 @@
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 15:11:43 by chorst            #+#    #+#             */
-/*   Updated: 2024/06/14 12:00:20 by chorst           ###   ########.fr       */
+/*   Updated: 2024/06/14 13:12:50 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../include/minishell.h"
 
-void	builtin_unset(char **envp, char **args)
+// Function to remove an environment variable from envp
+void	builtin_unset(char **envp, const char *name)
 {
-	(void)envp;
-	if (args[1] == NULL)
+	int	i;
+
+	i = 0;
+	while (envp[i] != NULL)
 	{
-		ft_printf("unset: not enough arguments\n");
-		return ;
+		if (ft_strncmp(envp[i], name, ft_strlen(name)) == 0)
+		{
+			while (envp[i] != NULL)
+			{
+				envp[i] = envp[i + 1];
+				i++;
+			}
+			break ;
+		}
+		i++;
 	}
-	unset(args);
 }

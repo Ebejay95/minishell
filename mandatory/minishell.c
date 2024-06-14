@@ -6,7 +6,7 @@
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:01:33 by jeberle           #+#    #+#             */
-/*   Updated: 2024/06/14 12:22:45 by chorst           ###   ########.fr       */
+/*   Updated: 2024/06/14 12:32:05 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,8 +135,8 @@ int	main(int argc, char **argv, char **envp)
 				builtin_unset(argv);
 			// else if (strcmp(minishell.envp, "env") == 0)
 			// 	builtin_env(argv);
-			// else if (strcmp(minishell.prompt, "exit") == 0)
-			// 	builtin_exit(argv);
+			else if (strcmp(minishell.prompt, "exit") == 0)
+				builtin_exit(argv);
 			else if (strcmp(minishell.prompt, "env") == 0)
 				ft_putallenv(envp);
 			else if (strcmp(minishell.prompt, "exit") == 0)
