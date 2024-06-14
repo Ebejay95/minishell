@@ -6,27 +6,11 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:01:33 by jeberle           #+#    #+#             */
-/*   Updated: 2024/06/14 12:17:21 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/06/14 13:32:39 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../include/minishell.h"
-
-void	ft_putallenv(char **env)
-{
-	int		i;
-	char	*print;
-
-	i = 0;
-	while (env[i] != 0)
-	{
-		print = ft_color(env[i], YELLOW);
-		ft_printf(print);
-		ft_printf("\n");
-		free(print);
-		i++;
-	}
-}
 
 void	parse_table(t_minishell *minishell)
 {

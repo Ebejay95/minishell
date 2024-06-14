@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:18:56 by jeberle           #+#    #+#             */
-/*   Updated: 2024/06/14 11:17:49 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/06/14 13:34:03 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,12 +90,14 @@ typedef struct s_parser
 typedef struct s_minishell
 {
 	char		**envp;
+	char		**refenvp;
 	char		*prompt;
 	t_lexer		lexer;
 	t_parser	parser;
 }	t_minishell;
 
 void		ft_pwd(void);
+void		ft_putallenv(char **env);
 void		put_lexer(t_lexer lexer);
 char		*build_segment(int start, int end, const char *prompt);
 t_segment	**seg_clear_all(int idx, t_segment **segments);
