@@ -6,7 +6,7 @@
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 21:46:51 by jeberle           #+#    #+#             */
-/*   Updated: 2024/06/13 12:21:35 by chorst           ###   ########.fr       */
+/*   Updated: 2024/06/13 13:34:41 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,8 +35,8 @@ void	put_ms_buffer(t_segment **segments)
 void	put_lexer(t_arglexer lexer)
 {
 	ft_printf("position: %d\n", lexer.position);
-	// ft_printf("is_lssthn: %d\n", lexer.is_lssthn);
-	// ft_printf("is_grtthn: %d\n", lexer.is_grtthn);
+	ft_printf("is_lssthn: %d\n", lexer.is_lessthan);
+	ft_printf("is_grtthn: %d\n", lexer.is_greaterthan);
 	ft_printf("is_space: %d\n", lexer.is_space);
 	ft_printf("is_dash: %d\n", lexer.is_dash);
 	ft_printf("is_bslash: %d\n", lexer.is_bslash);

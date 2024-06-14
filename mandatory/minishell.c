@@ -6,7 +6,7 @@
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:01:33 by jeberle           #+#    #+#             */
-/*   Updated: 2024/06/13 13:24:21 by chorst           ###   ########.fr       */
+/*   Updated: 2024/06/13 13:33:26 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 void	lex_prompt(t_minishell *minishell)
 {
 	ft_printf("\x1b[36m%s\x1b[0m\n", minishell->prompt);
+	minishell->lexer.is_unclosed_quote = 1;
 	minishell->lexer.position = 0;
 	minishell->lexer.is_lessthan = 0;
 	minishell->lexer.is_greaterthan = 0;
@@ -35,6 +36,8 @@ void	lex_prompt(t_minishell *minishell)
 	minishell->lexer.pipe_buffer = get_segments(minishell->prompt, "|");
 	// minishell->lexer.quote_buffer = get_oc_segments(minishell->prompt, "'");
 	// minishell->lexer.dquote_buffer = get_oc_segments(minishell->prompt, "\"");
+	minishell->lexer.quote_buffer = get_quote_segments(minishell, '\'');
+	minishell->lexer.dquote_buffer = get_quote_segments(minishell, '"');
 	minishell->lexer.inrdrct_buffer = get_segments(minishell->prompt, "<");
 	minishell->lexer.outrdrct_buffer = get_segments(minishell->prompt, ">");
 	minishell->lexer.appoutrdrct_buffer = get_segments(minishell->prompt, ">>");
@@ -83,6 +86,7 @@ int	main(int argc, char **argv, char **envp)
 	while (1)
 	{
 		minishell.prompt = readline("minishell>");
+		minishell.prompt = input_cleaner(minishell.prompt);
 		if (minishell.prompt)
 		{
 			if (strcmp(minishell.prompt, "pwd") == 0)
