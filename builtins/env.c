@@ -6,13 +6,13 @@
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 15:11:56 by chorst            #+#    #+#             */
-/*   Updated: 2024/06/13 12:55:48 by chorst           ###   ########.fr       */
+/*   Updated: 2024/06/14 09:28:31 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../include/minishell.h"
 
-void	ft_putallenv(char **env)
+void	builtin_env(char **env)
 {
 	int		i;
 	char	*print;
