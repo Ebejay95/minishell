@@ -3,14 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   segments.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 19:46:25 by jeberle           #+#    #+#             */
-<<<<<<< HEAD
-/*   Updated: 2024/06/13 13:34:14 by chorst           ###   ########.fr       */
-=======
-/*   Updated: 2024/06/14 00:43:08 by jeberle          ###   ########.fr       */
->>>>>>> 117b50196cf91bbecac102636ac131f368988203
+/*   Updated: 2024/06/14 10:40:58 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +62,6 @@ t_segment	**get_quote_segments(t_minishell *minishell, char type)
 	{
 		if (in_oc == 0 && minishell->prompt[i] == type)
 			in_oc = 1;
-<<<<<<< HEAD
 		else if (i > 1)
 		{
 			if (in_oc == 1 && minishell->prompt[i] == type && minishell->prompt[i - 1] != '\\')
@@ -77,9 +72,6 @@ t_segment	**get_quote_segments(t_minishell *minishell, char type)
 
 		}
 		else if (in_oc == 1 && minishell->prompt[i] == type)
-=======
-		else if (in_oc == 1 && minishell->prompt[i] == type && (i == 0 || minishell->prompt[i - 1] != '\\'))
->>>>>>> 117b50196cf91bbecac102636ac131f368988203
 		{
 			seg_count++;
 			in_oc = 0;

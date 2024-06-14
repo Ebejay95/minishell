@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:18:56 by jeberle           #+#    #+#             */
-/*   Updated: 2024/06/14 00:47:58 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/06/14 11:17:49 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,7 @@ typedef struct s_lexer
 	t_segment	**ampersand_buffer;
 	t_segment	**semicolon_buffer;
 	t_segment	**variable_buffer;
+	t_segment	**equal_buffer;
 }	t_lexer;
 
 typedef struct s_parser
@@ -88,11 +89,13 @@ typedef struct s_parser
 
 typedef struct s_minishell
 {
+	char		**envp;
 	char		*prompt;
 	t_lexer		lexer;
 	t_parser	parser;
 }	t_minishell;
 
+void		ft_pwd(void);
 void		put_lexer(t_lexer lexer);
 char		*build_segment(int start, int end, const char *prompt);
 t_segment	**seg_clear_all(int idx, t_segment **segments);
