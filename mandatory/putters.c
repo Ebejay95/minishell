@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   putters.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 21:46:51 by jeberle           #+#    #+#             */
-/*   Updated: 2024/06/14 09:22:13 by chorst           ###   ########.fr       */
+/*   Updated: 2024/06/14 11:18:05 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,5 +77,7 @@ void	put_lexer(t_lexer lexer)
 	put_ms_buffer(lexer.semicolon_buffer);
 	ft_printf("variable_buffer:\n");
 	put_ms_buffer(lexer.variable_buffer);
+	ft_printf("equal_buffer:\n");
+	put_ms_buffer(lexer.equal_buffer);
 	printf("____________________________\n");
 }

@@ -6,7 +6,7 @@
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:01:33 by jeberle           #+#    #+#             */
-/*   Updated: 2024/06/14 12:19:10 by chorst           ###   ########.fr       */
+/*   Updated: 2024/06/14 12:22:45 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,7 @@ void	lex_prompt(t_minishell *minishell)
 	minishell->lexer.ampersand_buffer = get_segments(minishell->prompt, "&");
 	minishell->lexer.semicolon_buffer = get_segments(minishell->prompt, ";");
 	minishell->lexer.variable_buffer = get_segments(minishell->prompt, "$");
+	minishell->lexer.equal_buffer = get_segments(minishell->prompt, "=");
 	put_lexer(minishell->lexer);
 	parse_table(minishell);
 }
@@ -116,6 +117,8 @@ int	main(int argc, char **argv, char **envp)
 		return (0);
 	while (1)
 	{
+		minishell.refenvp = envp;
+		minishell.envp = envp;
 		minishell.prompt = readline("\033[0;31m8==D \033[0m");
 		minishell.prompt = input_cleaner(minishell.prompt);
 		if (minishell.prompt)

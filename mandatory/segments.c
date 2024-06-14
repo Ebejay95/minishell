@@ -3,10 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   segments.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 19:46:25 by jeberle           #+#    #+#             */
+<<<<<<< HEAD
 /*   Updated: 2024/06/14 09:35:58 by chorst           ###   ########.fr       */
+=======
+/*   Updated: 2024/06/14 10:40:58 by jeberle          ###   ########.fr       */
+>>>>>>> 7262fc7d89cd509a1aeef58c4c6bad510e0226b4
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +66,20 @@ t_segment	**get_quote_segments(t_minishell *minishell, char type)
 	{
 		if (in_oc == 0 && minishell->prompt[i] == type)
 			in_oc = 1;
+<<<<<<< HEAD
 		else if (in_oc == 1 && minishell->prompt[i] == type && (i == 0 || minishell->prompt[i - 1] != '\\'))
+=======
+		else if (i > 1)
+		{
+			if (in_oc == 1 && minishell->prompt[i] == type && minishell->prompt[i - 1] != '\\')
+			{
+				seg_count++;
+				in_oc = 0;
+			}
+
+		}
+		else if (in_oc == 1 && minishell->prompt[i] == type)
+>>>>>>> 7262fc7d89cd509a1aeef58c4c6bad510e0226b4
 		{
 			seg_count++;
 			in_oc = 0;
