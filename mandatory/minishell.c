@@ -6,11 +6,41 @@
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:01:33 by jeberle           #+#    #+#             */
-/*   Updated: 2024/06/13 13:33:26 by chorst           ###   ########.fr       */
+/*   Updated: 2024/06/14 09:22:00 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../include/minishell.h"
+
+void	ft_putallenv(char **env)
+{
+	int		i;
+	char	*print;
+
+	i = 0;
+	while (env[i] != 0)
+	{
+		print = ft_color(env[i], YELLOW);
+		ft_printf(print);
+		ft_printf("\n");
+		free(print);
+		i++;
+	}
+}
+
+void	parse_table(t_minishell *minishell)
+{
+	size_t		i;
+
+	i = 0;
+	while (minishell->prompt[i] != '\0')
+	{
+		minishell->parser.parse_pos = i;
+		minishell->parser.parse_char = minishell->prompt[i];
+		ft_printf("%i %c\n", i, minishell->prompt[i]);
+		i++;
+	}
+}
 
 void	lex_prompt(t_minishell *minishell)
 {
@@ -46,7 +76,9 @@ void	lex_prompt(t_minishell *minishell)
 	minishell->lexer.option_buffer = get_segments(minishell->prompt, "-");
 	minishell->lexer.ampersand_buffer = get_segments(minishell->prompt, "&");
 	minishell->lexer.semicolon_buffer = get_segments(minishell->prompt, ";");
+	minishell->lexer.variable_buffer = get_segments(minishell->prompt, "$");
 	put_lexer(minishell->lexer);
+	parse_table(minishell);
 }
 
 char	*input_cleaner(char *prompt)
@@ -65,8 +97,7 @@ char	*input_cleaner(char *prompt)
 		if (temp_prompt[i] != 32 && !(temp_prompt[i] >= 9
 				&& temp_prompt[i] <= 13))
 			clean_prompt[j++] = temp_prompt[i];
-		else if (i > 0 && !(clean_prompt[j - 1] == 32 || (clean_prompt[j
-					- 1] >= 9 && clean_prompt[j - 1] <= 13)))
+		else if (i > 0 && !(clean_prompt[j - 1] == 32 || (clean_prompt[j - 1] >= 9 && clean_prompt[j - 1] <= 13)))
 			clean_prompt[j++] = ' ';
 		i++;
 	}
@@ -85,7 +116,7 @@ int	main(int argc, char **argv, char **envp)
 		return (0);
 	while (1)
 	{
-		minishell.prompt = readline("minishell>");
+		minishell.prompt = readline("\033[0;31m8==D \033[0m");
 		minishell.prompt = input_cleaner(minishell.prompt);
 		if (minishell.prompt)
 		{

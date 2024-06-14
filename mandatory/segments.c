@@ -6,7 +6,11 @@
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 19:46:25 by jeberle           #+#    #+#             */
+<<<<<<< HEAD
 /*   Updated: 2024/06/13 13:34:14 by chorst           ###   ########.fr       */
+=======
+/*   Updated: 2024/06/14 00:43:08 by jeberle          ###   ########.fr       */
+>>>>>>> 117b50196cf91bbecac102636ac131f368988203
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +42,7 @@ t_segment	**get_segments(char *prompt, char *type)
 	}
 	return (build_segments(prompt, type, segments));
 }
-// TODO Fix !!!!!
+
 t_segment	**get_quote_segments(t_minishell *minishell, char type)
 {
 	t_segment	**segments;
@@ -46,7 +50,9 @@ t_segment	**get_quote_segments(t_minishell *minishell, char type)
 	int			in_oc;
 	int			start;
 	int			end;
+	int			idx;
 	size_t		seg_count;
+	int			len;
 
 	segments = NULL;
 	if (!minishell || !minishell->prompt)
@@ -60,6 +66,7 @@ t_segment	**get_quote_segments(t_minishell *minishell, char type)
 	{
 		if (in_oc == 0 && minishell->prompt[i] == type)
 			in_oc = 1;
+<<<<<<< HEAD
 		else if (i > 1)
 		{
 			if (in_oc == 1 && minishell->prompt[i] == type && minishell->prompt[i - 1] != '\\')
@@ -70,6 +77,9 @@ t_segment	**get_quote_segments(t_minishell *minishell, char type)
 
 		}
 		else if (in_oc == 1 && minishell->prompt[i] == type)
+=======
+		else if (in_oc == 1 && minishell->prompt[i] == type && (i == 0 || minishell->prompt[i - 1] != '\\'))
+>>>>>>> 117b50196cf91bbecac102636ac131f368988203
 		{
 			seg_count++;
 			in_oc = 0;
@@ -78,7 +88,7 @@ t_segment	**get_quote_segments(t_minishell *minishell, char type)
 	}
 	if ((type == '"' || type == '\'') && in_oc == 1)
 		minishell->lexer.is_unclosed_quote = 1;
-	segments = ft_calloc(seg_count, sizeof(char *));
+	segments = ft_calloc(seg_count + 1, sizeof(t_segment *));
 	if (segments == NULL)
 		return (NULL);
 	i = 0;
@@ -86,20 +96,32 @@ t_segment	**get_quote_segments(t_minishell *minishell, char type)
 	in_oc = 0;
 	while (minishell->prompt[i] != '\0')
 	{
-		if (in_oc == 0 && minishell->prompt[i] == type && minishell->prompt[i + 1])
+		if (in_oc == 0 && minishell->prompt[i] == type)
 		{
 			start = i + 1;
 			in_oc = 1;
 		}
-		else if (in_oc == 1 && minishell->prompt[i] == type && minishell->prompt[i - 1] != '\\')
+		else if (in_oc == 1 && minishell->prompt[i] == type && (i == 0 || minishell->prompt[i - 1] != '\\'))
 		{
 			end = i;
 			segments[seg_count] = malloc(sizeof(t_segment));
 			if (!segments[seg_count])
-				return seg_clear_all(seg_count, segments);
+				return (seg_clear_all(seg_count, segments));
 			segments[seg_count]->start = start;
 			segments[seg_count]->end = end - 1;
-			segments[seg_count]->str = build_segment(start, end, minishell->prompt);
+			idx = 0;
+			len = end - start;
+			segments[seg_count]->str = ft_calloc(len + 1, sizeof(char));
+			if (!segments[seg_count]->str)
+				return (seg_clear_all(seg_count, segments));
+			while (idx < len)
+			{
+				segments[seg_count]->str[idx] = minishell->prompt[start + idx];
+				idx++;
+			}
+			segments[seg_count]->str[idx] = '\0';
+			if(ft_strlen(segments[seg_count]->str) == 0)
+				segments[seg_count]->start = segments[seg_count]->end;
 			seg_count++;
 			in_oc = 0;
 		}
