@@ -6,7 +6,7 @@
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:18:56 by jeberle           #+#    #+#             */
-/*   Updated: 2024/06/14 13:34:21 by chorst           ###   ########.fr       */
+/*   Updated: 2024/06/17 10:57:13 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,6 +90,7 @@ typedef struct s_parser
 typedef struct s_minishell
 {
 	char		**envp;
+	char		**refenvp;
 	char		*prompt;
 	t_lexer		lexer;
 	t_parser	parser;
@@ -111,10 +112,10 @@ void		put_ms_buffer(t_segment **segments);
 
 // Builtins
 void		builtin_echo(char **args);
-void		builtin_cd(char **args);
+//void		builtin_cd(char **args);
 void		builtin_pwd(char **args);
 // void		builtin_export(char **args);
-void		builtin_unset(char **args);
+void		builtin_unset(char **envp, const char *name);
 void		builtin_env(char **args);
 // void		builtin_exit(char **args);
 

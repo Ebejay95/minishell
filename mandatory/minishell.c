@@ -3,30 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:01:33 by jeberle           #+#    #+#             */
-/*   Updated: 2024/06/14 12:32:05 by chorst           ###   ########.fr       */
+/*   Updated: 2024/06/14 13:39:40 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../include/minishell.h"
-
-void	ft_putallenv(char **env)
-{
-	int		i;
-	char	*print;
-
-	i = 0;
-	while (env[i] != 0)
-	{
-		print = ft_color(env[i], YELLOW);
-		ft_printf(print);
-		ft_printf("\n");
-		free(print);
-		i++;
-	}
-}
 
 void	parse_table(t_minishell *minishell)
 {
@@ -125,20 +109,20 @@ int	main(int argc, char **argv, char **envp)
 		{
 			if (strcmp(minishell.prompt, "pwd") == 0)
 				builtin_pwd(argv);
-			else if(strcmp(minishell.prompt, "cd") == 0)
-				builtin_cd(argv);
+			//else if(strcmp(minishell.prompt, "cd") == 0)
+			//	builtin_cd(argv);
 			else if (strcmp(minishell.prompt, "echo") == 0)
 				builtin_echo(argv);
 			// else if (strcmp(minishell.prompt, "export") == 0)
 			// 	builtin_export(argv);
-			else if (strcmp(minishell.prompt, "unset") == 0)
-				builtin_unset(argv);
+			//else if (strcmp(minishell.prompt, "unset") == 0)
+			//	builtin_unset(argv);
 			// else if (strcmp(minishell.envp, "env") == 0)
 			// 	builtin_env(argv);
-			else if (strcmp(minishell.prompt, "exit") == 0)
-				builtin_exit(argv);
+			//else if (strcmp(minishell.prompt, "exit") == 0)
+			//	builtin_exit(argv);
 			else if (strcmp(minishell.prompt, "env") == 0)
-				ft_putallenv(envp);
+				ft_putenv(envp);
 			else if (strcmp(minishell.prompt, "exit") == 0)
 				exit(0);
 			add_history(minishell.prompt);
