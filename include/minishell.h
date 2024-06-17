@@ -6,7 +6,7 @@
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:18:56 by jeberle           #+#    #+#             */
-/*   Updated: 2024/06/14 12:22:41 by chorst           ###   ########.fr       */
+/*   Updated: 2024/06/14 13:34:21 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,6 +95,11 @@ typedef struct s_minishell
 	t_parser	parser;
 }	t_minishell;
 
+// #############################################################################
+// #                           Function Prototypes                             #
+// #############################################################################
+
+// Mandatory
 void		ft_pwd(void);
 void		put_lexer(t_lexer lexer);
 char		*build_segment(int start, int end, const char *prompt);
