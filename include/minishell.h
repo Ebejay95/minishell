@@ -6,7 +6,7 @@
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:18:56 by jeberle           #+#    #+#             */
-/*   Updated: 2024/06/18 13:05:28 by chorst           ###   ########.fr       */
+/*   Updated: 2024/06/18 14:24:25 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,28 +130,28 @@ t_segment	**build_segments(char const *prompt, char *type, t_segment **segments)
 // #############################################################################
 
 // cd.c
-void		ft_cd(char **envp, char *args);
+void		ft_cd(char *args); // Not complete yet
 
 // echo.c
-void		ft_echo(char **args);
+void		ft_echo(char **args); // Not complete yet
 
 // env.c
-void		ft_env(char ***args);
+void		ft_env(char ***args); // works
 
 // exit.c
-void		ft_exit(char **args);
+void		ft_exit(char **args);	// Not complete yet
 
 // export.c
-void		ft_export(int argc, char **argv, char ****envp);
+void		ft_export(int argc, char **argv, char ****envp); // add_export not complete yet
 char		**copy_envp(char **envp);
 char		**sort_envp(char ***envp);
-void		add_export(char **argv, char *****envp);
+void		add_export(char **argv, char *****envp); // Not complete yet
 void		free_it(char **str);
 
 // pwd.c
-void		ft_pwd(char **args);
+void		ft_pwd(char **args); // works
 
 // unset.c
-void		ft_unset(char **envp, const char *name);
+void		ft_unset(char **envp, const char *name); // Not complete yet
 
 #endif

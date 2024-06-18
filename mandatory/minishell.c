@@ -6,7 +6,7 @@
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:01:33 by jeberle           #+#    #+#             */
-/*   Updated: 2024/06/18 13:49:37 by chorst           ###   ########.fr       */
+/*   Updated: 2024/06/18 14:14:17 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,17 +133,8 @@ void	execute_command(char *prompt, char ***envp)
 		ft_pwd(argv);
 	// if (ft_strcmp(prompt, "unset") == 0)		unset
 	// 	ft_unset(envp, argv[1]);
+	
 	// lex_prompt(prompt);
-	if (ft_strcmp(argv[0], "clear") == 0) // Handle clear as an external command
-	{
-		char *cmd = "/usr/bin/clear"; // Path to clear command
-		argv[0] = cmd;
-		if (execvp(cmd, argv) == -1)
-		{
-			perror("execvp");
-			exit(EXIT_FAILURE);
-		}
-	}
 }
 
 // Main function that runs the minishell loop

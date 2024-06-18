@@ -6,7 +6,7 @@
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 15:11:12 by chorst            #+#    #+#             */
-/*   Updated: 2024/06/18 13:08:02 by chorst           ###   ########.fr       */
+/*   Updated: 2024/06/18 14:27:16 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,49 +16,49 @@
 void	ft_export(int argc, char **argv, char ****envp)
 {
 	int		i;
-	char	**sorted_envp;
+	char	**envp_export;
 
 	i = 0;
 	argv = NULL;
-	sorted_envp = sort_envp(*envp);
+	envp_export = sort_envp(*envp);
 	if (argc == 1)
-		while (sorted_envp[i])
-			ft_printf("declare -x \"%s\"\n", sorted_envp[i++]);
+		while (envp_export[i])
+			ft_printf("declare -x \"%s\"\n", envp_export[i++]);
 	// else
 	// 	add_export(argv, &envp);
 }
 
-// sorts the envp array alphabetically
+// After copying envp to a envp_export, sorts the envp_export array
 char	**sort_envp(char ***envp)
 {
 	int		i;
 	int		j;
 	char	*temp;
-	char	**sorted_envp;
+	char	**envp_export;
 
-	sorted_envp = copy_envp(*envp);
-	if (!sorted_envp)
+	envp_export = copy_envp(*envp);
+	if (!envp_export)
 		return (NULL);
 	i = 0;
-	while (sorted_envp[i + 1])
+	while (envp_export[i + 1])
 	{
 		j = 0;
-		while (sorted_envp[j + 1])
+		while (envp_export[j + 1])
 		{
-			if (ft_strcmp(sorted_envp[j], sorted_envp[j + 1]) > 0)
+			if (ft_strcmp(envp_export[j], envp_export[j + 1]) > 0)
 			{
-				temp = sorted_envp[j];
-				sorted_envp[j] = sorted_envp[j + 1];
-				sorted_envp[j + 1] = temp;
+				temp = envp_export[j];
+				envp_export[j] = envp_export[j + 1];
+				envp_export[j + 1] = temp;
 			}
 			j++;
 		}
 		i++;
 	}
-	return (sorted_envp);
+	return (envp_export);
 }
 
-// copies the envp array to a new array
+// copies the envp array to a new array to avoid modifying the original
 char	**copy_envp(char **envp)
 {
 	int		i;
