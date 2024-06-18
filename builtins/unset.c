@@ -6,14 +6,14 @@
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 15:11:43 by chorst            #+#    #+#             */
-/*   Updated: 2024/06/14 13:12:50 by chorst           ###   ########.fr       */
+/*   Updated: 2024/06/18 10:51:48 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../include/minishell.h"
 
 // Function to remove an environment variable from envp
-void	builtin_unset(char **envp, const char *name)
+void	ft_unset(char **envp, const char *name)
 {
 	int	i;
 

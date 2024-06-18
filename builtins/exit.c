@@ -6,9 +6,15 @@
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 15:12:06 by chorst            #+#    #+#             */
-/*   Updated: 2024/06/14 09:32:41 by chorst           ###   ########.fr       */
+/*   Updated: 2024/06/18 13:33:52 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../include/minishell.h"
+
+void	ft_exit(char **args)
+{
+	if (ft_strcmp(args[0], "exit"))
+		exit(0);
+}
 

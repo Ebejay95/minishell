@@ -6,13 +6,13 @@
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 15:11:17 by chorst            #+#    #+#             */
-/*   Updated: 2024/06/14 09:34:40 by chorst           ###   ########.fr       */
+/*   Updated: 2024/06/18 10:51:45 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../include/minishell.h"
 
-void	builtin_pwd(char **args)
+void	ft_pwd(char **args)
 {
 	char	*pwd;
 

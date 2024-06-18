@@ -6,7 +6,7 @@
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:18:56 by jeberle           #+#    #+#             */
-/*   Updated: 2024/06/17 10:57:13 by chorst           ###   ########.fr       */
+/*   Updated: 2024/06/18 13:05:28 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,11 @@
 # define M "\033[0;35m"
 # define W "\033[0;97m"
 # define D "\033[0m"
+
+
+// #############################################################################
+// #                               Structures                                  #
+// #############################################################################
 
 typedef struct s_segment
 {
@@ -97,26 +102,56 @@ typedef struct s_minishell
 }	t_minishell;
 
 // #############################################################################
-// #                           Function Prototypes                             #
+// #                          Mandatory Functions                              #
 // #############################################################################
 
-// Mandatory
-void		ft_pwd(void);
+// minishell.c
+void		parse_table(t_minishell *minishell);
+void		lex_prompt(t_minishell *minishell);
+char		*input_cleaner(char *prompt);
+void		execute_command(char *prompt, char ***envp);
+
+// putters.c
+void		put_ms_buffer(t_segment **segments);
 void		put_lexer(t_lexer lexer);
+
+// segments.c
+t_segment	**get_segments(char *prompt, char *type);
+t_segment	**get_quote_segments(t_minishell *minishell, char type);
+
+// segments_helper.c
 char		*build_segment(int start, int end, const char *prompt);
 t_segment	**seg_clear_all(int idx, t_segment **segments);
 t_segment	**build_segments(char const *prompt, char *type, t_segment **segments);
-t_segment	**get_quote_segments(t_minishell *minishell, char type);
-t_segment	**get_segments(char *prompt, char *type);
-void		put_ms_buffer(t_segment **segments);
 
-// Builtins
-void		builtin_echo(char **args);
-//void		builtin_cd(char **args);
-void		builtin_pwd(char **args);
-// void		builtin_export(char **args);
-void		builtin_unset(char **envp, const char *name);
-void		builtin_env(char **args);
-// void		builtin_exit(char **args);
+
+// #############################################################################
+// #                               Builtins                                    #
+// #############################################################################
+
+// cd.c
+void		ft_cd(char **envp, char *args);
+
+// echo.c
+void		ft_echo(char **args);
+
+// env.c
+void		ft_env(char ***args);
+
+// exit.c
+void		ft_exit(char **args);
+
+// export.c
+void		ft_export(int argc, char **argv, char ****envp);
+char		**copy_envp(char **envp);
+char		**sort_envp(char ***envp);
+void		add_export(char **argv, char *****envp);
+void		free_it(char **str);
+
+// pwd.c
+void		ft_pwd(char **args);
+
+// unset.c
+void		ft_unset(char **envp, const char *name);
 
 #endif
