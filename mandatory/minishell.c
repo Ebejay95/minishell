@@ -3,14 +3,109 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:01:33 by jeberle           #+#    #+#             */
-/*   Updated: 2024/06/18 14:14:17 by chorst           ###   ########.fr       */
+/*   Updated: 2024/06/19 16:11:43 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../include/minishell.h"
+
+void	ft_btreetmpadd(t_btree **parent, t_btree *new)
+{
+	if (new == NULL)
+		return ;
+	if (parent == NULL || *parent == NULL)
+	{
+		*parent = new;
+		return ;
+	}
+	if ((*parent)->next == NULL)
+		(*parent)->next = new;
+	else if ((*parent)->child == NULL)
+		(*parent)->child = new;
+}
+
+void	ft_btreetmpadd_next(t_btree **parent, t_btree *new)
+{
+	if (new == NULL)
+		return ;
+	if (parent == NULL || *parent == NULL)
+	{
+		*parent = new;
+		return ;
+	}
+	if ((*parent)->next == NULL)
+		(*parent)->next = new;
+}
+
+void	ft_btreetmpadd_child(t_btree **parent, t_btree *new)
+{
+	if (new == NULL)
+		return ;
+	if (parent == NULL || *parent == NULL)
+	{
+		*parent = new;
+		return ;
+	}
+	if ((*parent)->child == NULL)
+		(*parent)->child = new;
+}
+
+t_btree	*ft_btreetmpnew(void *content)
+{
+	t_btree	*node;
+
+	node = malloc(sizeof(t_btree));
+	if (node == NULL)
+		return (NULL);
+	node->content = content;
+	node->child = NULL;
+	node->next = NULL;
+	return (node);
+}
+
+void putast(void *content)
+{
+	t_ast *astitem = (t_ast *)content;
+	ft_printf(Y"["D);
+	ft_printf("%c", astitem->type);
+	ft_printf(Y"]\n"D);
+}
+
+void	ft_btreeput_helper(t_btree *tree, void (*treeprint)(void *), int depth, int is_last)
+{
+	int	i;
+
+	i = 0;
+	if (tree == NULL)
+		return;
+	while (i < (depth - 1))
+	{
+		ft_printf(B"│   "D);
+		i++;
+	}
+	if (depth > 0)
+	{
+		if (is_last)
+			ft_printf(B"└─");
+		else
+			ft_printf(B"├─"D);
+	}
+	treeprint(tree->content);
+	if (tree->child)
+		ft_btreeput_helper(tree->child, treeprint, depth + 1, tree->next == NULL);
+	if (tree->next)
+		ft_btreeput_helper(tree->next, treeprint, depth, 0);
+}
+
+void	ft_btreetmpput(t_btree **tree, void (*treeprint)(void *))
+{
+	if (tree == NULL || *tree == NULL)
+		return ;
+	ft_btreeput_helper(*tree, treeprint, 0, 1);
+}
 
 // Function that parses the prompt into a table
 void	parse_table(t_minishell *minishell)
@@ -85,8 +180,7 @@ char	*input_cleaner(char *prompt)
 		if (temp_prompt[i] != 32 && !(temp_prompt[i] >= 9
 				&& temp_prompt[i] <= 13))
 			clean_prompt[j++] = temp_prompt[i];
-		else if (i > 0 && !(clean_prompt[j - 1] == 32 || (clean_prompt[j
-					- 1] >= 9 && clean_prompt[j - 1] <= 13)))
+		else if (i > 0 && !(clean_prompt[j - 1] == 32 || (clean_prompt[j - 1] >= 9 && clean_prompt[j - 1] <= 13)))
 			clean_prompt[j++] = ' ';
 		i++;
 	}
@@ -133,7 +227,6 @@ void	execute_command(char *prompt, char ***envp)
 		ft_pwd(argv);
 	// if (ft_strcmp(prompt, "unset") == 0)		unset
 	// 	ft_unset(envp, argv[1]);
-	
 	// lex_prompt(prompt);
 }
 
@@ -141,11 +234,56 @@ void	execute_command(char *prompt, char ***envp)
 int	main(int argc, char **argv, char **envp)
 {
 	t_minishell	minishell;
+	t_btree		*ast;
+	t_btree		*new;
+	t_ast		*tmp;
 
 	(void)argv;
 	(void)envp;
 	if (argc != 1)
 		return (0);
+	// create root ast node
+	tmp = (t_ast *)malloc(sizeof(t_ast));
+	if (!tmp)
+		return (1);
+	tmp->type = 'P';
+	ast = ft_btreetmpnew((void *)tmp);
+	// example of adding a same level node
+	tmp = (t_ast *)malloc(sizeof(t_ast));
+	if (!tmp)
+		return (1);
+	tmp->type = 'P';
+	new = ft_btreetmpnew((void *)tmp);
+	ft_btreetmpadd_next(&ast, new);
+	// example of adding another same level node
+	tmp = (t_ast *)malloc(sizeof(t_ast));
+	if (!tmp)
+		return (1);
+	tmp->type = 'P';
+	new = ft_btreetmpnew((void *)tmp);
+	ft_btreetmpadd_next(&ast->next, new);
+	// example of adding a child node
+	tmp = (t_ast *)malloc(sizeof(t_ast));
+	if (!tmp)
+		return (1);
+	tmp->type = 'C';
+	new = ft_btreetmpnew((void *)tmp);
+	ft_btreetmpadd_child(&ast, new);
+	// example of adding a child childs node
+	tmp = (t_ast *)malloc(sizeof(t_ast));
+	if (!tmp)
+		return (1);
+	tmp->type = 'A';
+	new = ft_btreetmpnew((void *)tmp);
+	ft_btreetmpadd_child(&ast->child, new);
+	// example of adding another child node
+	tmp = (t_ast *)malloc(sizeof(t_ast));
+	if (!tmp)
+		return (1);
+	tmp->type = 'C';
+	new = ft_btreetmpnew((void *)tmp);
+	ft_btreetmpadd_next(&ast->child, new);
+	ft_btreetmpput(&ast, putast);
 	while (1)
 	{
 		minishell.refenvp = envp;

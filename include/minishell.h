@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:18:56 by jeberle           #+#    #+#             */
-/*   Updated: 2024/06/18 14:24:25 by chorst           ###   ########.fr       */
+/*   Updated: 2024/06/19 11:38:27 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,11 @@ typedef struct s_segment
 	int			start;
 	int			end;
 }	t_segment;
+
+typedef struct s_ast
+{
+	char		type;
+}	t_ast;
 
 typedef struct s_lexer
 {
