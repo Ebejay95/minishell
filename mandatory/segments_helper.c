@@ -6,12 +6,13 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 21:28:44 by jeberle           #+#    #+#             */
-/*   Updated: 2024/06/13 13:07:55 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/06/20 11:36:33 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../include/minishell.h"
 
+// build a partial of string by several seperators to build grammar tokens
 char	*build_segment(int start, int end, const char *prompt)
 {
 	int		idx;
@@ -41,6 +42,7 @@ t_segment	**seg_clear_all(int idx, t_segment **segments)
 	return (NULL);
 }
 
+// retrieve partials of string by several seperators to build grammar tokens
 t_segment	**build_segments(char const *prompt, char *type, t_segment **segments)
 {
 	int	i;

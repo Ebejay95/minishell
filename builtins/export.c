@@ -3,15 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 15:11:12 by chorst            #+#    #+#             */
-/*   Updated: 2024/06/18 14:27:16 by chorst           ###   ########.fr       */
+/*   Updated: 2024/06/19 17:40:14 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../include/minishell.h"
-
+// TODO += handlen ......!!!!!!!!!!!!!
 // Recreates the expport behavior from bash
 void	ft_export(int argc, char **argv, char ****envp)
 {
@@ -25,7 +25,7 @@ void	ft_export(int argc, char **argv, char ****envp)
 		while (envp_export[i])
 			ft_printf("declare -x \"%s\"\n", envp_export[i++]);
 	// else
-	// 	add_export(argv, &envp);
+	// 	add_export(argv, &envp);// TODO += handlen ......!!!!!!!!!!!!!
 }
 
 // After copying envp to a envp_export, sorts the envp_export array
