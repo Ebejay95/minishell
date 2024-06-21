@@ -3,15 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   putters.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 21:46:51 by jeberle           #+#    #+#             */
-/*   Updated: 2024/06/17 11:15:05 by chorst           ###   ########.fr       */
+/*   Updated: 2024/06/20 11:44:31 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../include/minishell.h"
 
+// show lexer substruct
 void	put_ms_buffer(t_segment **segments)
 {
 	int	i;
@@ -34,6 +35,7 @@ void	put_ms_buffer(t_segment **segments)
 	ft_printf("]\n");
 }
 
+// show the lexer content for debugging
 void	put_lexer(t_lexer lexer)
 {
 	ft_printf("position: %d\n", lexer.position);

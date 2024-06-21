@@ -6,7 +6,7 @@
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:18:56 by jeberle           #+#    #+#             */
-/*   Updated: 2024/06/21 13:43:17 by chorst           ###   ########.fr       */
+/*   Updated: 2024/06/21 14:03:18 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,28 @@
 # define W "\033[0;97m"
 # define D "\033[0m"
 
+// Define Error Messages
+# define AD_C_ON_N R"Cannot create new %s on empty parent - nothing modified\n"D
+# define AD_N_ON_N R"Cannot create new %s on empty sibling - nothing modified\n"D
+# define B_NO_DEF R"Define branch (child|next) - nothing modified\n"D
+# define AD_C_N_AL R"Nothing modified on child %s for parent %s not allowed\n"D
+# define AD_N_N_AL R"Nothing modified on next %s for sibling %s not allowed\n"D
+# define RT_N_AL R"Root token %s not allowed\n"D
+# define CT_N_AL R"Child token %s for parent %s not allowed\n"D
+# define NT_N_AL R"Next token %s for sibling %s not allowed\n"D
+
+// #############################################################################
+// #                                 Enums                                     #
+// #############################################################################
+
+typedef enum e_toktype
+{
+	REDIRECTION,
+	PIPE,
+	COMMAND,
+	ARGUMENT
+}	t_toktype;
+
 // #############################################################################
 // #                               Structures                                  #
 // #############################################################################
@@ -49,6 +71,12 @@ typedef struct s_segment
 	int				start;
 	int				end;
 }					t_segment;
+
+typedef struct s_token
+{
+	enum e_toktype	token;
+	char			*type;
+}	t_token;
 
 typedef struct s_lexer
 {
@@ -85,12 +113,6 @@ typedef struct s_lexer
 	t_segment		**equal_buffer;
 }					t_lexer;
 
-typedef struct s_parser
-{
-	int				parse_pos;
-	char			parse_char;
-}					t_parser;
-
 typedef struct s_envlst
 {
 	char			*name;
@@ -100,16 +122,26 @@ typedef struct s_envlst
 
 typedef struct s_minishell
 {
-	char			**envp;
-	char			*prompt;
-	t_lexer			lexer;
-	t_parser		parser;
-}					t_minishell;
+	char		**envp;
+	char		*prompt;
+	t_lexer		lexer;
+	t_btree		*ast;
+}	t_minishell;
 
 // #############################################################################
 // #                          Mandatory Functions                              #
 // #############################################################################
 
+// ast.c
+void	ast_add(t_btree **ast, t_btree *current, char *branch, t_token *newtok);
+// hierarchy_validation.c
+int	vd_null_add(t_btree *ast, t_token *newtok);
+int	check_child_rel(t_token *current, t_token *new);
+int	check_next_rel(t_token *current, t_token *new);
+int	vd_tree_add(t_btree *current, char *branch, t_token *newtok);
+// lexer.c
+void	lex_prompt(t_minishell *minishell);
+char	*input_cleaner(char *prompt);
 // minishell.c
 void				parse_table(t_minishell *minishell);
 void				lex_prompt(t_minishell *minishell);
@@ -124,15 +156,19 @@ t_envlst			*init_env_list(char **envp);
 void				put_ms_buffer(t_segment **segments);
 void				put_lexer(t_lexer lexer);
 
-// segments.c
-t_segment			**get_segments(char *prompt, char *type);
-t_segment			**get_quote_segments(t_minishell *minishell, char type);
-
 // segments_helper.c
-char				*build_segment(int start, int end, const char *prompt);
-t_segment			**seg_clear_all(int idx, t_segment **segments);
-t_segment			**build_segments(char const *prompt, char *type,
-						t_segment **segments);
+char		*build_segment(int start, int end, const char *prompt);
+t_segment	**seg_clear_all(int idx, t_segment **segments);
+t_segment	**build_segments(char const *prompt, char *type, t_segment **segments);
+
+// segments.c
+t_segment	**get_segments(char *prompt, char *type);
+t_segment	**get_quote_segments(t_minishell *minishell, char type);
+
+// tokens.c
+t_token	*create_token(enum e_toktype token);
+char	*toktype_to_str(enum e_toktype token);
+void	put_token(void *content);
 
 // #############################################################################
 // #                               Builtins                                    #

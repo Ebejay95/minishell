@@ -6,12 +6,12 @@
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 15:11:12 by chorst            #+#    #+#             */
-/*   Updated: 2024/06/21 13:40:15 by chorst           ###   ########.fr       */
+/*   Updated: 2024/06/21 14:00:16 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../include/minishell.h"
-
+// TODO += handlen ......!!!!!!!!!!!!!
 // Recreates the expport behavior from bash
 void	ft_export(t_envlst ***envp, int argc, char **argv)
 {
