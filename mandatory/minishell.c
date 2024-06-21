@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:01:33 by jeberle           #+#    #+#             */
-/*   Updated: 2024/06/20 12:26:51 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/06/21 15:44:08 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,11 +17,8 @@ char	**parse_input(char *prompt, int *argc)
 {
 	char	**argv;
 	int		i;
-	char	*clean_prompt;
 
-	clean_prompt = input_cleaner(prompt);
-	argv = ft_split(clean_prompt, ' ');
-	free(clean_prompt);
+	argv = ft_split(prompt, ' ');
 	i = 0;
 	while (argv[i])
 		i++;
@@ -30,34 +27,48 @@ char	**parse_input(char *prompt, int *argc)
 }
 
 // Function that choses which bultin to execute based on the prompt
-void	execute_command(char *prompt, char ***envp)
+void	execute_command(char *prompt, t_envlst **envlst)
 {
 	int		argc;
 	char	**argv;
 
 	argv = parse_input(prompt, &argc);
-	// if (ft_strcmp(prompt, "cd") == 0)
+	// if (ft_strcmp(prompt, "cd") == 0)		// ft_cd
 	// 	ft_cd(*envp, argv[1]);
-	// if (ft_strcmp(prompt, "echo") == 0)
+	// if (ft_strcmp(prompt, "echo") == 0)		// ft_echo
 	// 	ft_echo(argv);
 	if (ft_strcmp(prompt, "env") == 0)
-		ft_env(envp);
+		ft_env(*envlst);
 	if (ft_strcmp(prompt, "exit") == 0)
 		exit(0);
-	if (ft_strcmp(prompt, "export") == 0)
-		ft_export(argc, argv, &envp);
+	if (argv[0])
+	{
+		if (ft_strcmp(argv[0], "export") == 0)
+			ft_export(&envlst, argc, argv);
+	}
 	if (ft_strcmp(prompt, "pwd") == 0)
 		ft_pwd(argv);
+	// if (ft_strcmp(prompt, "unset") == 0)		ft_unset
+	// 	ft_unset(envlst, argv[1]);
 	// if (ft_strcmp(prompt, "unset") == 0)		unset
 	// 	ft_unset(envp, argv[1]);
 	// lex_prompt(prompt);
+
+	// Free the allocated memory for argv
+	while (argc >= 0)
+	{
+		free(argv[argc]);
+		argc--;
+	}
 }
 
 // Main function that runs the minishell loop
 int	main(int argc, char **argv, char **envp)
 {
 	t_minishell	minishell;
+	t_envlst	*envlst;
 
+	envlst = init_env_list(envp);
 	(void)argv;
 	(void)envp;
 	if (argc != 1)
@@ -66,11 +77,12 @@ int	main(int argc, char **argv, char **envp)
 	while (1)
 	{
 		minishell.prompt = readline("\033[0;31m8==D \033[0m");
+		minishell.envp = envp;
 		minishell.prompt = input_cleaner(minishell.prompt);
 		minishell.ast = ft_btreenew(NULL);
 		if (minishell.prompt)
 		{
-			execute_command(minishell.prompt, &minishell.envp);
+			execute_command(minishell.prompt, &envlst);
 			add_history(minishell.prompt);
 			lex_prompt(&minishell);
 			parse(&minishell);

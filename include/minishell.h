@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:18:56 by jeberle           #+#    #+#             */
-/*   Updated: 2024/06/21 15:26:06 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/06/21 15:48:57 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,10 +76,10 @@ typedef enum e_toktype
 
 typedef struct s_segment
 {
-	char		*str;
-	int			start;
-	int			end;
-}	t_segment;
+	char			*str;
+	int				start;
+	int				end;
+}					t_segment;
 
 typedef struct s_token
 {
@@ -107,6 +107,13 @@ typedef struct s_lexer
 	t_segment	**equal_buffer;
 }	t_lexer;
 
+typedef struct s_envlst
+{
+	char			*name;
+	char			*value;
+	struct s_envlst	*next;
+}					t_envlst;
+
 typedef struct s_minishell
 {
 	char		**envp;
@@ -120,7 +127,7 @@ typedef struct s_minishell
 // #############################################################################
 
 // ast.c
-void	ast_add(t_btree **ast, t_btree *cur, char *branch, t_token *tok);
+void		ast_add(t_btree **ast, t_btree *cur, char *branch, t_token *tok);
 
 // hierarchy_validation.c
 int			vd_null_add(t_btree *ast, t_token *newtok);
@@ -133,7 +140,13 @@ void		lex_prompt(t_minishell *m);
 char		*input_cleaner(char *prompt);
 
 // minishell.c
-void		execute_command(char *prompt, char ***envp);
+void		parse_table(t_minishell *minishell);
+void		lex_prompt(t_minishell *minishell);
+char		*input_cleaner(char *prompt);
+void		execute_command(char *prompt, t_envlst **envlst);
+void		extract_name_value(char *env_var, char **name, char **value);
+void		add_env_node(t_envlst **env_list, char *name, char *value);
+t_envlst	*init_env_list(char **envp);
 
 // parser.c
 void		parse(t_minishell *m);
@@ -168,22 +181,24 @@ void		ft_cd(char *args);
 void		ft_echo(char **args);	
 
 // env.c
-void		ft_env(char ***args);
+void		ft_env(t_envlst *env_list); // works
 
 // exit.c
 void		ft_exit(char **args);
 
 // export.c
-void		ft_export(int argc, char **argv, char ****envp);
-char		**copy_envp(char **envp);
-char		**sort_envp(char ***envp);
-void		add_export(char **argv, char *****envp);	
+void		ft_export(t_envlst ***envp, int argc, char **argv);
+char		**copy_envp(t_envlst *envp);	
 void		free_it(char **str);
+void		sort_envp(char **envp);
+char		**copy_envp(t_envlst *envp);
+int			count_env_list(t_envlst *envp);
+void		print_env_variable(const char *env_var);
+void		export(t_envlst **envp, char **argv);
 
 // pwd.c
 void		ft_pwd(char **args);
 
 // unset.c
-void		ft_unset(char **envp, const char *name);	
-
+void		ft_unset(char **envp, const char *name);
 #endif

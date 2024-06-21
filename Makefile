@@ -6,7 +6,7 @@
 #    By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/25 22:43:08 by jonathanebe       #+#    #+#              #
-#    Updated: 2024/06/20 12:29:41 by jeberle          ###   ########.fr        #
+#    Updated: 2024/06/21 15:34:20 by jeberle          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -84,6 +84,7 @@ SYSLIBFLAGS=-lreadline
 SRCS=	mandatory/ast.c \
 		mandatory/hierarchy_validation.c \
 		mandatory/lexer.c \
+		mandatory/init_envlst.c \
 		mandatory/minishell.c \
 		mandatory/parser.c \
 		mandatory/putters.c \
