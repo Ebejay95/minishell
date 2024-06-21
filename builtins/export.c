@@ -6,95 +6,132 @@
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 15:11:12 by chorst            #+#    #+#             */
-/*   Updated: 2024/06/18 14:27:16 by chorst           ###   ########.fr       */
+/*   Updated: 2024/06/21 13:40:15 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../include/minishell.h"
 
 // Recreates the expport behavior from bash
-void	ft_export(int argc, char **argv, char ****envp)
+void	ft_export(t_envlst ***envp, int argc, char **argv)
 {
-	int		i;
 	char	**envp_export;
+	int		i;
 
 	i = 0;
-	argv = NULL;
-	envp_export = sort_envp(*envp);
 	if (argc == 1)
+	{
+		envp_export = copy_envp(**envp);
+		sort_envp(envp_export);
 		while (envp_export[i])
-			ft_printf("declare -x \"%s\"\n", envp_export[i++]);
-	// else
-	// 	add_export(argv, &envp);
+		{
+			print_env_variable(envp_export[i]);
+			free(envp_export[i]);
+			i++;
+		}
+	}
+	else
+		export(&(**envp), argv);
 }
 
-// After copying envp to a envp_export, sorts the envp_export array
-char	**sort_envp(char ***envp)
+// Adds or updates the env variables in the envp list
+void	export(t_envlst **envp, char **argv)
+{
+	int		i;
+	char	*name;
+	char	*value;
+
+	i = 1;
+	while (argv[i])
+	{
+		extract_name_value(argv[i], &name, &value);
+		if (name)
+		{
+			if (value)
+				add_env_node(envp, name, value);
+			else
+				add_env_node(envp, name, "");
+		}
+		i++;
+	}
+}
+
+// Sorts a char ** array of env variables alphabetically
+void	sort_envp(char **envp)
 {
 	int		i;
 	int		j;
 	char	*temp;
-	char	**envp_export;
 
-	envp_export = copy_envp(*envp);
-	if (!envp_export)
-		return (NULL);
 	i = 0;
-	while (envp_export[i + 1])
+	while (envp[i])
 	{
-		j = 0;
-		while (envp_export[j + 1])
+		j = i + 1;
+		while (envp[j])
 		{
-			if (ft_strcmp(envp_export[j], envp_export[j + 1]) > 0)
+			if (ft_strcmp(envp[i], envp[j]) > 0)
 			{
-				temp = envp_export[j];
-				envp_export[j] = envp_export[j + 1];
-				envp_export[j + 1] = temp;
+				temp = envp[i];
+				envp[i] = envp[j];
+				envp[j] = temp;
 			}
 			j++;
 		}
 		i++;
 	}
-	return (envp_export);
 }
 
 // copies the envp array to a new array to avoid modifying the original
-char	**copy_envp(char **envp)
+char	**copy_envp(t_envlst *envp)
 {
 	int		i;
-	char	**copied_envp;
+	int		count;
+	char	**envp_copy;
+	char	*name_equals;
 
 	i = 0;
-	while (envp[i])
-		i++;
-	copied_envp = malloc(sizeof(char *) * (i + 1));
-	if (!copied_envp)
+	count = count_env_list(envp);
+	envp_copy = malloc(sizeof(char *) * (count + 1));
+	if (!envp_copy)
 		return (NULL);
-	i = 0;
-	while (envp[i])
+	while (envp)
 	{
-		copied_envp[i] = ft_strdup(envp[i]);
-		if (!copied_envp[i])
-		{
-			free_it(copied_envp);
-			return (NULL);
-		}
+		name_equals = ft_strjoin(envp->name, "=");
+		envp_copy[i] = ft_strjoin(name_equals, envp->value);
+		free(name_equals);
+		envp = envp->next;
 		i++;
 	}
-	copied_envp[i] = NULL;
-	return (copied_envp);
+	envp_copy[i] = NULL;
+	return (envp_copy);
 }
 
-// void	add_export(char **argv, char *****envp)
-// {
-// }
-
-void	free_it(char **str)
+// Counts the number of elements in the envp list
+int	count_env_list(t_envlst *envp)
 {
-	char	**temp;
+	int	count;
 
-	temp = str;
-	while (*temp)
-		free(*temp++);
-	free(str);
+	count = 0;
+	while (envp)
+	{
+		envp = envp->next;
+		count++;
+	}
+	return (count);
+}
+
+// Prints the env variable in the format "declare -x NAME="VALUE"
+void	print_env_variable(const char *env_var)
+{
+	const char	*equal_sign;
+	size_t		name_len;
+
+	equal_sign = ft_strchr(env_var, '=');
+	if (equal_sign != NULL)
+	{
+		name_len = equal_sign - env_var;
+		printf("declare -x %.*s=\"%s\"\n", (int)name_len, env_var, equal_sign + 1);
+	}
+	else
+		printf("declare -x %s\n", env_var);
 }

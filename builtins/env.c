@@ -6,18 +6,23 @@
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 15:11:56 by chorst            #+#    #+#             */
-/*   Updated: 2024/06/18 10:51:32 by chorst           ###   ########.fr       */
+/*   Updated: 2024/06/20 10:21:06 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../include/minishell.h"
 
-void ft_env(char ***envp)
+void ft_env(t_envlst *env_list)
 {
-	int i = 0;
-	while ((*envp)[i] != 0)
+	t_envlst *temp;
+
+	temp = env_list;
+	while (temp != NULL)
 	{
-		ft_printf("%s\n", (*envp)[i]);
-		i++;
+		if (temp->value != NULL)
+			ft_printf("%s=%s\n", temp->name, temp->value);
+		else
+			ft_printf("%s\n", temp->name);
+		temp = temp->next;
 	}
 }
