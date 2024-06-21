@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:01:33 by jeberle           #+#    #+#             */
-/*   Updated: 2024/06/20 12:12:41 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/06/20 12:26:51 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,21 +62,18 @@ int	main(int argc, char **argv, char **envp)
 	(void)envp;
 	if (argc != 1)
 		return (0);
+	minishell.envp = envp;
 	while (1)
 	{
-		minishell.envp = envp;
 		minishell.prompt = readline("\033[0;31m8==D \033[0m");
 		minishell.prompt = input_cleaner(minishell.prompt);
 		minishell.ast = ft_btreenew(NULL);
-		t_token		*expipeone;
-		expipeone = create_token(PIPE);
-		ast_add(&minishell.ast, minishell.ast, "next", expipeone);
-		ft_btreeput(&minishell.ast, put_token);
 		if (minishell.prompt)
 		{
 			execute_command(minishell.prompt, &minishell.envp);
 			add_history(minishell.prompt);
-			// lex_prompt(&minishell);
+			lex_prompt(&minishell);
+			parse(&minishell);
 			free(minishell.prompt);
 		}
 	}
