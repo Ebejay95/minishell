@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:01:33 by jeberle           #+#    #+#             */
-/*   Updated: 2024/06/21 15:44:08 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/06/21 15:51:30 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,8 +76,8 @@ int	main(int argc, char **argv, char **envp)
 	minishell.envp = envp;
 	while (1)
 	{
-		minishell.prompt = readline("\033[0;31m8==D \033[0m");
 		minishell.envp = envp;
+		minishell.prompt = readline("\033[0;31m  ════ ⋆★⋆ ════ \033[0m");
 		minishell.prompt = input_cleaner(minishell.prompt);
 		minishell.ast = ft_btreenew(NULL);
 		if (minishell.prompt)
