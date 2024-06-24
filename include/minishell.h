@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jkauker <jkauker@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:18:56 by jeberle           #+#    #+#             */
-/*   Updated: 2024/06/21 14:03:18 by chorst           ###   ########.fr       */
+/*   Updated: 2024/06/24 13:36:17 by jkauker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,14 +40,14 @@
 # define D "\033[0m"
 
 // Define Error Messages
-# define AD_C_ON_N R"Cannot create new %s on empty parent - nothing modified\n"D
-# define AD_N_ON_N R"Cannot create new %s on empty sibling - nothing modified\n"D
-# define B_NO_DEF R"Define branch (child|next) - nothing modified\n"D
-# define AD_C_N_AL R"Nothing modified on child %s for parent %s not allowed\n"D
-# define AD_N_N_AL R"Nothing modified on next %s for sibling %s not allowed\n"D
-# define RT_N_AL R"Root token %s not allowed\n"D
-# define CT_N_AL R"Child token %s for parent %s not allowed\n"D
-# define NT_N_AL R"Next token %s for sibling %s not allowed\n"D
+# define AD_C_ON_N "Cannot create new %s on empty parent - nothing modified\n"
+# define AD_N_ON_N "Cannot create new %s on empty sibling - nothing modified\n"
+# define B_NO_DEF "Define branch (child|next) - nothing modified\n"
+# define AD_C_N_AL "Nothing modified on child %s for parent %s not allowed\n"
+# define AD_N_N_AL "Nothing modified on next %s for sibling %s not allowed\n"
+# define RT_N_AL "Root token %s not allowed\n"
+# define CT_N_AL "Child token %s for parent %s not allowed\n"
+# define NT_N_AL "Next token %s for sibling %s not allowed\n"
 
 // #############################################################################
 // #                                 Enums                                     #
@@ -188,6 +188,9 @@ void				ft_exit(char **args); // Not complete yet
 
 // export.c
 void				ft_export(t_envlst ***envp, int argc, char **argv);
+int					is_var_name(t_envlst *envp, char **argv);
+void				update_var_value(t_envlst **envp, char **argv);
+void				upgrade_var_value(t_envlst **envp, char **argv);
 void				sort_envp(char **envp);
 char				**copy_envp(t_envlst *envp);
 int					count_env_list(t_envlst *envp);

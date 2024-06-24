@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init_envlst.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jkauker <jkauker@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 10:00:01 by chorst            #+#    #+#             */
-/*   Updated: 2024/06/20 12:56:08 by chorst           ###   ########.fr       */
+/*   Updated: 2024/06/24 13:50:58 by jkauker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,13 +34,18 @@ void	extract_name_value(char *env_var, char **name, char **value)
 {
 	char	*equal_sign;
 
-	equal_sign = strchr(env_var, '=');
-	if (equal_sign != NULL)
+	equal_sign = ft_strchr(env_var, '=');
+	if (equal_sign != NULL && *value != NULL)
 	{
 		*name = strndup(env_var, equal_sign - env_var);
 		*value = strdup(equal_sign + 1);
 	}
-	else
+	else if (equal_sign != NULL && *value == NULL)
+	{
+		*name = strdup(env_var);
+		*value = "";
+	}
+	else if (equal_sign == NULL && *name != NULL)
 	{
 		*name = strdup(env_var);
 		*value = NULL;

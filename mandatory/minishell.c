@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jkauker <jkauker@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:01:33 by jeberle           #+#    #+#             */
-/*   Updated: 2024/06/21 13:59:52 by chorst           ###   ########.fr       */
+/*   Updated: 2024/06/24 10:02:02 by jkauker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ void	execute_command(char *prompt, t_envlst **envlst)
 		exit(0);
 	if (argv[0])
 	{
-		if (ft_strcmp(argv[0], "export") == 0)
+		if (ft_strcmp(argv[0], "export") == 0 || !(is_var_name(*envlst, argv)))
 			ft_export(&envlst, argc, argv);
 	}
 	if (ft_strcmp(prompt, "pwd") == 0)
@@ -78,11 +78,11 @@ int	main(int argc, char **argv, char **envp)
 		minishell.envp = envp;
 		minishell.prompt = readline("\033[0;31m  ════ ⋆★⋆ ════ \033[0m");
 		minishell.prompt = input_cleaner(minishell.prompt);
-		minishell.ast = ft_btreenew(NULL);
-		t_token		*expipeone;
-		expipeone = create_token(PIPE);
-		ast_add(&minishell.ast, minishell.ast, "next", expipeone);
-		ft_btreeput(&minishell.ast, put_token);
+		// minishell.ast = ft_btreenew(NULL);
+		// t_token		*expipeone;
+		// expipeone = create_token(PIPE);
+		// ast_add(&minishell.ast, minishell.ast, "next", expipeone);
+		// ft_btreeput(&minishell.ast, put_token);
 		if (minishell.prompt)
 		{
 			execute_command(minishell.prompt, &envlst);

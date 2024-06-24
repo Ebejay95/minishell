@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jkauker <jkauker@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 15:11:12 by chorst            #+#    #+#             */
-/*   Updated: 2024/06/21 14:00:16 by chorst           ###   ########.fr       */
+/*   Updated: 2024/06/24 13:56:00 by jkauker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void	ft_export(t_envlst ***envp, int argc, char **argv)
 	int		i;
 
 	i = 0;
-	if (argc == 1)
+	if (argc == 1 && is_var_name(**envp, argv))
 	{
 		envp_export = copy_envp(**envp);
 		sort_envp(envp_export);
@@ -30,8 +30,48 @@ void	ft_export(t_envlst ***envp, int argc, char **argv)
 			i++;
 		}
 	}
+	// else if (!(is_var_name(**envp, argv)))
+	// 	update_var_value(&(**envp), argv);
 	else
 		export(&(**envp), argv);
+}
+
+// void	change_var_value(t_envlst **envp, char **argv)
+// {
+// 	t_envlst *current = *envp;
+
+// 	while (ft_strncmp(current->name, argv[0], ft_strlen(current->name)))
+// 	{
+// 		current = current->next;
+// 	}
+// 	if (ft_strstr(argv[0], "+="))
+// 		upgrade_var_value(&(*envp), argv);
+// 	else if (ft_strstr(argv[0], "="))
+// 		update_var_value(&(*envp), argv);
+// }
+
+// void	update_var_value(t_envlst **envp, char **argv)
+// {
+	
+// }
+
+// void	upgrade_var_value(t_envlst **envp, char **argv)
+// {
+	
+// }
+
+// Funktion returned 0 wenn argv[0] mir einem Variablennamen überein stimmt
+int	is_var_name(t_envlst *envp, char **argv)
+{
+	t_envlst *current = envp;
+
+	while (current != NULL)
+	{
+		if (!(ft_strncmp(current->name, argv[0], ft_strlen(current->name))))
+			return (0);
+		current = current->next;
+	}
+	return (1);
 }
 
 // Adds or updates the env variables in the envp list
@@ -49,8 +89,10 @@ void	export(t_envlst **envp, char **argv)
 		{
 			if (value)
 				add_env_node(envp, name, value);
-			else
+			else if (strcmp(value, ""))
 				add_env_node(envp, name, "");
+			else if (value == NULL)
+				add_env_node(envp, name, NULL);
 		}
 		i++;
 	}

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jkauker <jkauker@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 15:11:56 by chorst            #+#    #+#             */
-/*   Updated: 2024/06/20 10:21:06 by chorst           ###   ########.fr       */
+/*   Updated: 2024/06/24 13:26:36 by jkauker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,6 @@ void ft_env(t_envlst *env_list)
 	{
 		if (temp->value != NULL)
 			ft_printf("%s=%s\n", temp->name, temp->value);
-		else
-			ft_printf("%s\n", temp->name);
 		temp = temp->next;
 	}
 }
