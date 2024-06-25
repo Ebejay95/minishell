@@ -6,7 +6,7 @@
 /*   By: jkauker <jkauker@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 10:00:01 by chorst            #+#    #+#             */
-/*   Updated: 2024/06/24 13:50:58 by jkauker          ###   ########.fr       */
+/*   Updated: 2024/06/25 07:21:55 by jkauker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,16 +38,16 @@ void	extract_name_value(char *env_var, char **name, char **value)
 	if (equal_sign != NULL && *value != NULL)
 	{
 		*name = strndup(env_var, equal_sign - env_var);
-		*value = strdup(equal_sign + 1);
+		*value = ft_strdup(equal_sign + 1);
 	}
 	else if (equal_sign != NULL && *value == NULL)
 	{
-		*name = strdup(env_var);
+		*name = ft_strdup(env_var);
 		*value = "";
 	}
 	else if (equal_sign == NULL && *name != NULL)
 	{
-		*name = strdup(env_var);
+		*name = ft_strdup(env_var);
 		*value = NULL;
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: jkauker <jkauker@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:18:56 by jeberle           #+#    #+#             */
-/*   Updated: 2024/06/24 13:36:17 by jkauker          ###   ########.fr       */
+/*   Updated: 2024/06/25 09:59:29 by jkauker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -189,8 +189,9 @@ void				ft_exit(char **args); // Not complete yet
 // export.c
 void				ft_export(t_envlst ***envp, int argc, char **argv);
 int					is_var_name(t_envlst *envp, char **argv);
-void				update_var_value(t_envlst **envp, char **argv);
-void				upgrade_var_value(t_envlst **envp, char **argv);
+void				change_var_value(t_envlst **envp, char **argv);
+void				update_var_value(t_envlst **envp, char *argv);
+void				upgrade_var_value(t_envlst **envp, char *argv);
 void				sort_envp(char **envp);
 char				**copy_envp(t_envlst *envp);
 int					count_env_list(t_envlst *envp);
