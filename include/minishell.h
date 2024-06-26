@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
+/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:18:56 by jeberle           #+#    #+#             */
-/*   Updated: 2024/06/21 15:48:57 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/06/26 10:37:31 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -175,10 +175,10 @@ void		put_token(void *content);
 // #############################################################################
 
 // cd.c
-void		ft_cd(char *args);	
+void		ft_cd(char *args);
 
 // echo.c
-void		ft_echo(char **args);	
+void		ft_echo(char **args);
 
 // env.c
 void		ft_env(t_envlst *env_list); // works
@@ -187,14 +187,16 @@ void		ft_env(t_envlst *env_list); // works
 void		ft_exit(char **args);
 
 // export.c
-void		ft_export(t_envlst ***envp, int argc, char **argv);
-char		**copy_envp(t_envlst *envp);	
-void		free_it(char **str);
-void		sort_envp(char **envp);
-char		**copy_envp(t_envlst *envp);
-int			count_env_list(t_envlst *envp);
-void		print_env_variable(const char *env_var);
-void		export(t_envlst **envp, char **argv);
+void				ft_export(t_envlst ***envp, int argc, char **argv);
+int					is_var_name(t_envlst *envp, char **argv);
+void				change_var_value(t_envlst **envp, char **argv);
+void				update_var_value(t_envlst **envp, char *argv);
+void				upgrade_var_value(t_envlst **envp, char *argv);
+void				sort_envp(char **envp);
+char				**copy_envp(t_envlst *envp);
+int					count_env_list(t_envlst *envp);
+void				print_env_variable(const char *env_var);
+void				export(t_envlst **envp, char **argv);
 
 // pwd.c
 void		ft_pwd(char **args);

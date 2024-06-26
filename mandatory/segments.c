@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   segments.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
+/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 19:46:25 by jeberle           #+#    #+#             */
-/*   Updated: 2024/06/21 15:32:04 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/06/26 10:37:47 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,13 +16,13 @@
 t_segment	**get_segs(char *prompt, char *type)
 {
 	t_segment		**segments;
-	unsigned char	ctype;
+	// unsigned char	ctype;
 	size_t			seg_count;
 	size_t			i;
 
 	if (!prompt)
 		return (NULL);
-	ctype = (unsigned char)type;
+	// ctype = (unsigned char)type;
 	seg_count = ft_count_words_b_str(prompt, type);
 	if (seg_count <= 1)
 		return (NULL);
