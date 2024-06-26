@@ -88,8 +88,8 @@ int	main(int argc, char **argv, char **envp)
 		{
 			execute_command(minishell.prompt, &envlst);
 			add_history(minishell.prompt);
-			lex_prompt(&minishell);
-			parse(&minishell);
+			// lex_prompt(&minishell);
+			// parse(&minishell);
 			free(minishell.prompt);
 		}
 	}

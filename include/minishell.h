@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jkauker <jkauker@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:18:56 by jeberle           #+#    #+#             */
-/*   Updated: 2024/06/26 10:37:31 by chorst           ###   ########.fr       */
+/*   Updated: 2024/06/26 14:16:18 by jkauker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -187,20 +187,29 @@ void		ft_env(t_envlst *env_list); // works
 void		ft_exit(char **args);
 
 // export.c
-void				ft_export(t_envlst ***envp, int argc, char **argv);
-int					is_var_name(t_envlst *envp, char **argv);
-void				change_var_value(t_envlst **envp, char **argv);
-void				update_var_value(t_envlst **envp, char *argv);
-void				upgrade_var_value(t_envlst **envp, char *argv);
-void				sort_envp(char **envp);
-char				**copy_envp(t_envlst *envp);
-int					count_env_list(t_envlst *envp);
-void				print_env_variable(const char *env_var);
-void				export(t_envlst **envp, char **argv);
+void		add_or_update_env_node(t_envlst **env_list,
+				char *name, char *value);
+void		ft_export(t_envlst ***envp, int argc, char **argv);
+void		sort_envp(char **envp);
+char		**copy_envp(t_envlst *envp);
+void		export(t_envlst **envp, char **argv);
 
 // pwd.c
 void		ft_pwd(char **args);
 
+// set_var.c
+void		change_var_value(t_envlst **envp, char **argv);
+void		update_var_value(t_envlst **envp, char *argv);
+void		upgrade_var_value(t_envlst **envp, char *argv);
+
 // unset.c
 void		ft_unset(char **envp, const char *name);
+
+// var_helper.c
+int			count_env_list(t_envlst *envp);
+void		print_env_variable(const char *env_var);
+int			is_var_name(t_envlst *envp, char **argv);
+char		*ft_strndup(const char *s, size_t n);
+
+// #############################################################################
 #endif

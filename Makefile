@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+         #
+#    By: jkauker <jkauker@student.42heilbronn.de    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/25 22:43:08 by jonathanebe       #+#    #+#              #
-#    Updated: 2024/06/21 15:34:20 by jeberle          ###   ########.fr        #
+#    Updated: 2024/06/26 13:43:07 by jkauker          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -97,7 +97,8 @@ SRCS=	mandatory/ast.c \
 		builtins/exit.c \
 		builtins/export.c \
 		builtins/pwd.c \
-		builtins/unset.c \
+		builtins/set_var.c \
+		builtins/var_helper.c \
 
 BONUS_SRCS= \
 # bonus/minishell_bonus.c \
