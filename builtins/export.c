@@ -6,12 +6,11 @@
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 15:11:12 by chorst            #+#    #+#             */
-/*   Updated: 2024/06/21 14:00:16 by chorst           ###   ########.fr       */
+/*   Updated: 2024/06/26 10:40:16 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../include/minishell.h"
-// TODO += handlen ......!!!!!!!!!!!!!
 // Recreates the expport behavior from bash
 void	ft_export(t_envlst ***envp, int argc, char **argv)
 {
@@ -19,7 +18,7 @@ void	ft_export(t_envlst ***envp, int argc, char **argv)
 	int		i;
 
 	i = 0;
-	if (argc == 1)
+	if (argc == 1 && is_var_name(**envp, argv))
 	{
 		envp_export = copy_envp(**envp);
 		sort_envp(envp_export);
@@ -30,8 +29,89 @@ void	ft_export(t_envlst ***envp, int argc, char **argv)
 			i++;
 		}
 	}
+	else if (!is_var_name(**envp, argv))
+		change_var_value(&(**envp), argv);
 	else
 		export(&(**envp), argv);
+}
+
+// Function that changes the value of a variable
+void	change_var_value(t_envlst **envp, char **argv)
+{
+	int			i;
+	t_envlst	*current;
+	char		*temp;
+
+	i = 0;
+	while (argv[i])
+	{
+		printf("\n");
+		current = *envp;
+		while (ft_strncmp(current->name, argv[i], ft_strlen(current->name))
+			&& current->next != NULL)
+			current = current->next;
+		temp = ft_strjoin(current->name, "+=");
+		if (!(ft_strncmp(argv[i], temp, ft_strlen(temp))))
+			upgrade_var_value(&(*envp), argv[i]);
+		free(temp);
+		temp = ft_strjoin(current->name, "=");
+		if (!(ft_strncmp(argv[i], temp, ft_strlen(temp))))
+			update_var_value(&(*envp), argv[i]);
+		free(temp);
+		i++;
+	}
+}
+
+// Function that upgrades the value of a variable
+void	upgrade_var_value(t_envlst **envp, char *str)
+{
+	t_envlst	*current;
+	char		*name;
+	char		*value;
+	char		*temp;
+	char		*temp2;
+
+	extract_name_value(str, &name, &value);
+	current = *envp;
+	while (ft_strncmp(current->name, name, ft_strlen(current->name))
+		&& current->next != NULL)
+		current = current->next;
+	temp = ft_strjoin(current->value, value);
+	temp2 = ft_strtrim(temp, """");
+	free(current->value);
+	free(temp);
+	current->value = temp2;
+}
+
+// Function that updates the value of a variable
+void	update_var_value(t_envlst **envp, char *str)
+{
+	t_envlst	*current;
+	char		*name;
+	char		*value;
+
+	extract_name_value(str, &name, &value);
+	current = *envp;
+	while (ft_strncmp(current->name, name, ft_strlen(current->name))
+		&& current->next != NULL)
+		current = current->next;
+	free(current->value);
+	current->value = value;
+}
+
+// Funktion returned 0 wenn argv[0] mir einem Variablennamen überein stimmt
+int	is_var_name(t_envlst *envp, char **argv)
+{
+	t_envlst	*current;
+
+	current = envp;
+	while (current != NULL)
+	{
+		if (!(ft_strncmp(current->name, argv[0], ft_strlen(current->name))))
+			return (0);
+		current = current->next;
+	}
+	return (1);
 }
 
 // Adds or updates the env variables in the envp list
@@ -49,8 +129,10 @@ void	export(t_envlst **envp, char **argv)
 		{
 			if (value)
 				add_env_node(envp, name, value);
-			else
+			else if (strcmp(value, ""))
 				add_env_node(envp, name, "");
+			else if (value == NULL)
+				add_env_node(envp, name, NULL);
 		}
 		i++;
 	}

@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:01:33 by jeberle           #+#    #+#             */
-/*   Updated: 2024/06/29 02:03:02 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/06/29 02:21:37 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ void	execute_command(char *prompt, t_envlst **envlst)
 		exit(0);
 	if (argv[0])
 	{
-		if (ft_strcmp(argv[0], "export") == 0)
+		if (ft_strcmp(argv[0], "export") == 0 || !(is_var_name(*envlst, argv)))
 			ft_export(&envlst, argc, argv);
 	}
 	if (ft_strcmp(prompt, "pwd") == 0)
