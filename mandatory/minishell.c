@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:01:33 by jeberle           #+#    #+#             */
-/*   Updated: 2024/06/21 15:51:30 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/06/29 02:03:02 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,14 +77,13 @@ int	main(int argc, char **argv, char **envp)
 	while (1)
 	{
 		minishell.envp = envp;
-		minishell.prompt = readline("\033[0;31m  ════ ⋆★⋆ ════ \033[0m");
-		minishell.prompt = input_cleaner(minishell.prompt);
+		minishell.prompt = readline("🚀");
+		minishell.tok_lst = NULL;
 		minishell.ast = ft_btreenew(NULL);
 		if (minishell.prompt)
 		{
 			execute_command(minishell.prompt, &envlst);
 			add_history(minishell.prompt);
-			lex_prompt(&minishell);
 			parse(&minishell);
 			free(minishell.prompt);
 		}

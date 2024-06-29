@@ -6,18 +6,18 @@
 	// "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
 	"dockerFile": "Dockerfile",
 	// "mounts": [
-    //     "source=${localWorkspaceFolder}/.ssh,target=/root/.ssh,type=bind,consistency=cached",
-    //     "source=${localWorkspaceFolder}/.gitconfig,target=/root/.gitconfig,type=bind,consistency=cached"
-    // ],
+	//     "source=${localWorkspaceFolder}/.ssh,target=/root/.ssh,type=bind,consistency=cached",
+	//     "source=${localWorkspaceFolder}/.gitconfig,target=/root/.gitconfig,type=bind,consistency=cached"
+	// ],
 	"customizations": {
 		"vscode": {
-			"settings": { 
+			"settings": {
 				"files.autoSave": "onFocusChange",
 				"editor.renderWhitespace": "all",
 				"editor.insertSpaces": false,
 				"debug.onTaskErrors": "debugAnyway",
-				"42header.email": "jkauker@student.42heilbronn.de",
-				"42header.username": "jkauker"
+				"42header.email": "jeberle@student.42heilbronn.de",
+				"42header.username": "jeberle"
 			},
 			"extensions": [
 				"ms-vscode.cpptools-themes",
@@ -45,16 +45,12 @@
 	},
 	// Features to add to the dev container. More info: https://containers.dev/features.
 	// "features": {},
-
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],
-
 	// Use 'postCreateCommand' to run commands after the container is created.
 	"postCreateCommand": "echo 'Container created. Happy coding!'"
-
 	// Configure tool-specific properties.
 	// "customizations": {},
-
 	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
 	// "remoteUser": "root"
 }

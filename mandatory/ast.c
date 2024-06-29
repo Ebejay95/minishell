@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 11:31:17 by jeberle           #+#    #+#             */
-/*   Updated: 2024/06/21 15:01:51 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/06/26 19:02:40 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,14 +36,14 @@ void	ast_add(t_btree **ast, t_btree *cur, char *branch, t_token *tok)
 	if (cur == NULL)
 	{
 		if (ft_strcmp(branch, "child") == 0)
-			ft_printf(AD_C_ON_N, tok->type);
+			ft_printf(R AD_C_ON_N D, tok->type);
 		else if (ft_strcmp(branch, "next") == 0)
-			ft_printf(AD_N_ON_N, tok->type);
+			ft_printf(R AD_N_ON_N D, tok->type);
 		return ;
 	}
 	if (ft_strcmp(branch, "next") != 0 && ft_strcmp(branch, "child") != 0)
 	{
-		ft_printf(B_NO_DEF);
+		ft_printf(R B_NO_DEF D);
 		return ;
 	}
 	if (vd_null_add(cur, tok))
@@ -70,9 +70,9 @@ void	ast_add(t_btree **ast, t_btree *cur, char *branch, t_token *tok)
 	{
 		asttok = cur->content;
 		if (ft_strcmp(branch, "child") == 0)
-			ft_printf(AD_C_N_AL, tok->type, asttok->type);
+			ft_printf(R AD_C_N_AL D, tok->type, asttok->type);
 		else if (ft_strcmp(branch, "next") == 0)
-			ft_printf(AD_N_N_AL, tok->type, asttok->type);
+			ft_printf(R AD_N_N_AL D, tok->type, asttok->type);
 		return ;
 	}
 }

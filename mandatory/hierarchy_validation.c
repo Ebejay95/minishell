@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 11:17:19 by jeberle           #+#    #+#             */
-/*   Updated: 2024/06/20 11:56:12 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/06/26 19:02:00 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ int	vd_null_add(t_btree *ast, t_token *newtok)
 	{
 		if (ft_strcmp(newtok->type, "Argument") == 0)
 		{
-			ft_printf(RT_N_AL, newtok->type);
+			ft_printf(R RT_N_AL D, newtok->type);
 			return (0);
 		}
 		else
@@ -69,7 +69,7 @@ int	vd_tree_add(t_btree *current, char *branch, t_token *newtok)
 		{
 			if (check_child_rel(asttok, newtok))
 			{
-				ft_printf(CT_N_AL, newtok->type, asttok->type);
+				ft_printf(R CT_N_AL D, newtok->type, asttok->type);
 				return (0);
 			}
 		}
@@ -77,7 +77,7 @@ int	vd_tree_add(t_btree *current, char *branch, t_token *newtok)
 		{
 			if (check_next_rel(asttok, newtok))
 			{
-				ft_printf(NT_N_AL, newtok->type, asttok->type);
+				ft_printf(R NT_N_AL D, newtok->type, asttok->type);
 				return (0);
 			}
 		}

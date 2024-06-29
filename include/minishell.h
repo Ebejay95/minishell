@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:18:56 by jeberle           #+#    #+#             */
-/*   Updated: 2024/06/21 15:48:57 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/06/28 20:24:31 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,12 @@
 # define RDRCSET "><0123456789"
 
 // #############################################################################
+// #                                 Union                                     #
+// #############################################################################
+
+
+
+// #############################################################################
 // #                                 Enums                                     #
 // #############################################################################
 
@@ -67,45 +73,23 @@ typedef enum e_toktype
 	REDIRECTION,
 	PIPE,
 	COMMAND,
-	ARGUMENT
+	ARGUMENT,
+	UNSET
 }	t_toktype;
 
 // #############################################################################
 // #                               Structures                                  #
 // #############################################################################
 
-typedef struct s_segment
-{
-	char			*str;
-	int				start;
-	int				end;
-}					t_segment;
-
-typedef struct s_token
+typedef struct s_token // USE UNION!!!!!
 {
 	enum e_toktype	token;
 	char			*type;
+	char			*str;
+	int				start;
+	int				end;
+	int				expand;
 }	t_token;
-
-typedef struct s_lexer
-{
-	int			is_unclosed_quote;
-	int			position;
-	t_segment	**pipe_buffer;
-	t_segment	**quote_buffer;
-	t_segment	**dquote_buffer;
-	t_segment	**inrdrct_buffer;
-	t_segment	**outrdrct_buffer;
-	t_segment	**appoutrdrct_buffer;
-	t_segment	**heredoc_buffer;
-	t_segment	**space_buffer;
-	t_segment	**option_buffer;
-	t_segment	**ampersand_buffer;
-	t_segment	**semicolon_buffer;
-	t_segment	**variable_buffer;
-	t_segment	**redirection_buffer;
-	t_segment	**equal_buffer;
-}	t_lexer;
 
 typedef struct s_envlst
 {
@@ -118,7 +102,7 @@ typedef struct s_minishell
 {
 	char		**envp;
 	char		*prompt;
-	t_lexer		lexer;
+	t_list		*tok_lst;
 	t_btree		*ast;
 }	t_minishell;
 
@@ -135,14 +119,17 @@ int			check_child_rel(t_token *current, t_token *new);
 int			check_next_rel(t_token *current, t_token *new);
 int			vd_tree_add(t_btree *current, char *branch, t_token *newtok);
 
+// expand.c
+//void		ft_expand(char **prompt, t_lexer lexer, int start_index);
+
 // lexer.c
 void		lex_prompt(t_minishell *m);
 char		*input_cleaner(char *prompt);
+// t_segment	*find_seg_by_start(t_segment **segs, int search);
+// t_segment	*find_seg_by_end(t_segment **segs, int search);
+// t_segment	*find_seg_by_str(t_segment **segs, char *search);
 
 // minishell.c
-void		parse_table(t_minishell *minishell);
-void		lex_prompt(t_minishell *minishell);
-char		*input_cleaner(char *prompt);
 void		execute_command(char *prompt, t_envlst **envlst);
 void		extract_name_value(char *env_var, char **name, char **value);
 void		add_env_node(t_envlst **env_list, char *name, char *value);
@@ -152,23 +139,23 @@ t_envlst	*init_env_list(char **envp);
 void		parse(t_minishell *m);
 
 // putters.c
-void		put_ms_buffer(t_segment **segs);
-void		put_lexer(t_lexer lexer);
 
 // segments_helper.c
-char		*build_segment(int start, int end, const char *prompt);
-t_segment	**seg_clear_all(int idx, t_segment **segs);
-t_segment	**build_segments(char const *prompt, char *type, t_segment **segs);
+// char		*build_segment(int start, int end, const char *prompt);
+// t_segment	**seg_clear_all(int idx, t_segment **segs);
+// t_segment	**build_segments(char const *prompt, char *type, t_segment **segs);
 
 // segments.c
-t_segment	**get_segs(char *prompt, char *type);
-t_segment	**get_quote_segs(t_minishell *m, char type);
-t_segment	**get_oc_segs(t_minishell *m, char mode, char *open, char *close);
-t_segment	**get_set_segs(t_minishell *m, char *set);
+// t_segment	**get_segs(char *prompt, char *type);
+// t_segment	**get_quote_segs(t_minishell *m, char type);
+// t_segment	**get_oc_segs(t_minishell *m, char mode, char *open, char *close);
+// t_segment	**get_set_segs(t_minishell *m, char *set);
+// t_segment **lex_redirections(t_minishell *m);
 // tokens.c
-t_token		*create_token(enum e_toktype token);
+t_token		*create_token(char *str, int start, int end, int expand);
 char		*toktype_to_str(enum e_toktype token);
 void		put_token(void *content);
+void		update_tok_type(t_token *tok, enum e_toktype token);
 
 // #############################################################################
 // #                               Builtins                                    #
