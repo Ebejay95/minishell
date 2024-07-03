@@ -6,7 +6,7 @@
 /*   By: jkauker <jkauker@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/26 13:42:23 by jkauker           #+#    #+#             */
-/*   Updated: 2024/06/26 13:59:25 by jkauker          ###   ########.fr       */
+/*   Updated: 2024/07/03 07:39:30 by jkauker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,24 +17,23 @@ void	change_var_value(t_envlst **envp, char **argv)
 {
 	int			i;
 	t_envlst	*current;
-	char		*temp;
+	char		*temp1;
 
 	i = 0;
+	if (ft_strcmp(argv[0], "export") == 0)
+		i++;
 	while (argv[i])
 	{
-		printf("\n");
 		current = *envp;
 		while (ft_strncmp(current->name, argv[i], ft_strlen(current->name))
 			&& current->next != NULL)
 			current = current->next;
-		temp = ft_strjoin(current->name, "+=");
-		if (!(ft_strncmp(argv[i], temp, ft_strlen(temp))))
+		temp1 = ft_strjoin(current->name, "+=");
+		if (!(ft_strncmp(argv[i], temp1, ft_strlen(temp1))))
 			upgrade_var_value(&(*envp), argv[i]);
-		free(temp);
-		temp = ft_strjoin(current->name, "=");
-		if (!(ft_strncmp(argv[i], temp, ft_strlen(temp))))
-			update_var_value(&(*envp), argv[i]);
-		free(temp);
+		else
+			export(&(*envp), &argv[i]);
+		free(temp1);
 		i++;
 	}
 }

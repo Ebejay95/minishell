@@ -6,7 +6,7 @@
 /*   By: jkauker <jkauker@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 15:11:12 by chorst            #+#    #+#             */
-/*   Updated: 2024/06/26 13:44:18 by jkauker          ###   ########.fr       */
+/*   Updated: 2024/07/03 07:26:29 by jkauker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void	ft_export(t_envlst ***envp, int argc, char **argv)
 	char	**envp_export;
 
 	i = 0;
-	if (argc == 1)
+	if (argc == 1 && ft_strcmp(argv[0], "export") == 0)
 	{
 		envp_export = copy_envp(**envp);
 		sort_envp(envp_export);
@@ -31,7 +31,7 @@ void	ft_export(t_envlst ***envp, int argc, char **argv)
 		free(envp_export);
 	}
 	else
-		export(&(**envp), argv);
+		change_var_value(&(**envp), argv);
 }
 
 // Adds or updates the env variables in the envp list

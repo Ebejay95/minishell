@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jkauker <jkauker@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 11:30:06 by jeberle           #+#    #+#             */
-/*   Updated: 2024/06/21 15:25:01 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/07/03 07:50:50 by jkauker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,8 @@ char	*input_cleaner(char *prompt)
 		if (temp_prompt[i] != 32 && !(temp_prompt[i] >= 9
 				&& temp_prompt[i] <= 13))
 			clean_prompt[j++] = temp_prompt[i];
-		else if (i > 0 && !(clean_prompt[j - 1] == 32 || (clean_prompt[j - 1] >= 9 && clean_prompt[j - 1] <= 13)))
+		else if (i > 0 && !(clean_prompt[j - 1] == 32
+				|| (clean_prompt[j - 1] >= 9 && clean_prompt[j - 1] <= 13)))
 			clean_prompt[j++] = ' ';
 		i++;
 	}

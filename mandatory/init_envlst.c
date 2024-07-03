@@ -6,7 +6,7 @@
 /*   By: jkauker <jkauker@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 10:00:01 by chorst            #+#    #+#             */
-/*   Updated: 2024/06/26 14:17:05 by jkauker          ###   ########.fr       */
+/*   Updated: 2024/07/03 07:53:18 by jkauker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,24 +33,18 @@ t_envlst	*init_env_list(char **envp)
 void	extract_name_value(char *arg, char **name, char **value)
 {
 	char	*equal_sign;
-	char	*start;
-	char	*end;
+	char	*plus_sign;
 
+	plus_sign = ft_strchr(arg, '+');
 	equal_sign = ft_strchr(arg, '=');
 	if (equal_sign)
 	{
-		*name = ft_strndup(arg, equal_sign - arg);
-		*value = equal_sign + 1;
-		start = *value;
-		end = *value + ft_strlen(*value) - 1;
-		while (*start == '"' && start <= end)
-			start++;
-		while (end > start && *end == '"')
-			end--;
-		if (start > end)
-			*value = ft_strdup("");
+		if (plus_sign && plus_sign < equal_sign)
+			*name = ft_strndup(arg, plus_sign - arg);
 		else
-			*value = ft_strndup(start, end - start + 1);
+			*name = ft_strndup(arg, equal_sign - arg);
+		*value = equal_sign + 1;
+		*value = ft_strtrim(*value, "\"");
 	}
 	else
 	{
