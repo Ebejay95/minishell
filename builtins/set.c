@@ -6,7 +6,7 @@
 /*   By: jkauker <jkauker@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/26 13:42:23 by jkauker           #+#    #+#             */
-/*   Updated: 2024/07/03 07:39:30 by jkauker          ###   ########.fr       */
+/*   Updated: 2024/07/03 08:24:54 by jkauker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ void	change_var_value(t_envlst **envp, char **argv)
 {
 	int			i;
 	t_envlst	*current;
-	char		*temp1;
+	char		*temp;
 
 	i = 0;
 	if (ft_strcmp(argv[0], "export") == 0)
@@ -28,12 +28,12 @@ void	change_var_value(t_envlst **envp, char **argv)
 		while (ft_strncmp(current->name, argv[i], ft_strlen(current->name))
 			&& current->next != NULL)
 			current = current->next;
-		temp1 = ft_strjoin(current->name, "+=");
-		if (!(ft_strncmp(argv[i], temp1, ft_strlen(temp1))))
+		temp = ft_strjoin(current->name, "+=");
+		if (!(ft_strncmp(argv[i], temp, ft_strlen(temp))))
 			upgrade_var_value(&(*envp), argv[i]);
 		else
-			export(&(*envp), &argv[i]);
-		free(temp1);
+			my_export(&(*envp), &argv[i]);
+		free(temp);
 		i++;
 	}
 }

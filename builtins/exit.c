@@ -3,17 +3,21 @@
 /*                                                        :::      ::::::::   */
 /*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jkauker <jkauker@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 15:12:06 by chorst            #+#    #+#             */
-/*   Updated: 2024/06/20 10:57:41 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/07/03 13:27:16 by jkauker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../include/minishell.h"
 
-void	ft_exit(char **args)
+void	ft_exit(char **argv)
 {
-	if (ft_strcmp(args[0], "exit"))
-		exit(0);
+	int	exit_status;
+
+	exit_status = 0;
+	if (argv[1])
+		exit_status = atoi(argv[1]);
+	exit(exit_status);
 }

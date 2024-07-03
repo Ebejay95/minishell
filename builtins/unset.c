@@ -3,32 +3,49 @@
 /*                                                        :::      ::::::::   */
 /*   unset.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jkauker <jkauker@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 15:11:43 by chorst            #+#    #+#             */
-/*   Updated: 2024/06/18 10:51:48 by chorst           ###   ########.fr       */
+/*   Updated: 2024/07/03 10:08:20 by jkauker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../include/minishell.h"
 
 // Function to remove an environment variable from envp
-void	ft_unset(char **envp, const char *name)
+void	ft_unset(t_envlst **envp, char **argv)
 {
-	int	i;
+	t_envlst	*tmp;
+	t_envlst	*prev;
+	int			i;
 
-	i = 0;
-	while (envp[i] != NULL)
+	i = 1;
+	while (argv[i])
 	{
-		if (ft_strncmp(envp[i], name, ft_strlen(name)) == 0)
+		tmp = *envp;
+		prev = NULL;
+		while (tmp)
 		{
-			while (envp[i] != NULL)
+			if (ft_strcmp(tmp->name, argv[i]) == 0)
 			{
-				envp[i] = envp[i + 1];
-				i++;
+				if (prev)
+					prev->next = tmp->next;
+				else
+					*envp = tmp->next;
+				free_envlst_node(tmp);
+				break ;
 			}
-			break ;
+			prev = tmp;
+			tmp = tmp->next;
 		}
 		i++;
 	}
+}
+
+// Function to free the memory of an envlst node
+void	free_envlst_node(t_envlst *node)
+{
+	free(node->name);
+	free(node->value);
+	free(node);
 }

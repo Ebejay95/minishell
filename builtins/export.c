@@ -6,7 +6,7 @@
 /*   By: jkauker <jkauker@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 15:11:12 by chorst            #+#    #+#             */
-/*   Updated: 2024/07/03 07:26:29 by jkauker          ###   ########.fr       */
+/*   Updated: 2024/07/03 08:08:08 by jkauker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ void	ft_export(t_envlst ***envp, int argc, char **argv)
 }
 
 // Adds or updates the env variables in the envp list
-void	export(t_envlst **envp, char **argv)
+void	my_export(t_envlst **envp, char **argv)
 {
 	int		i;
 	char	*name;
@@ -46,12 +46,13 @@ void	export(t_envlst **envp, char **argv)
 	{
 		extract_name_value(argv[i], &name, &value);
 		if (name)
-			add_or_update_env_node(envp, name, value);
+			change_env_node(envp, name, value);
 		i++;
 	}
 }
 
-void	add_or_update_env_node(t_envlst **env_list, char *name, char *value)
+// Adds or updates a node in the env list
+void	change_env_node(t_envlst **env_list, char *name, char *value)
 {
 	t_envlst	*current;
 

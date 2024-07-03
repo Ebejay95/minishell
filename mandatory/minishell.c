@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jkauker <jkauker@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:01:33 by jeberle           #+#    #+#             */
-/*   Updated: 2024/06/26 10:36:14 by chorst           ###   ########.fr       */
+/*   Updated: 2024/07/03 13:30:11 by jkauker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../include/minishell.h"
 
-// Function that parses the input into a table using ft_split ### TEMPORARY EXAMPLE ###
+// Function that parses the input into a table using ft_split
 char	**parse_input(char *prompt, int *argc)
 {
 	char	**argv;
@@ -33,28 +33,24 @@ void	execute_command(char *prompt, t_envlst **envlst)
 	char	**argv;
 
 	argv = parse_input(prompt, &argc);
-	// if (ft_strcmp(prompt, "cd") == 0)		// ft_cd
-	// 	ft_cd(*envp, argv[1]);
-	// if (ft_strcmp(prompt, "echo") == 0)		// ft_echo
-	// 	ft_echo(argv);
-	if (ft_strcmp(prompt, "env") == 0)
-		ft_env(*envlst);
-	if (ft_strcmp(prompt, "exit") == 0)
-		exit(0);
 	if (argv[0])
 	{
-		if (ft_strcmp(argv[0], "export") == 0 || !(is_var_name(*envlst, argv)))
+		// if (ft_strcmp(prompt, "cd") == 0)		// ft_cd
+		// 	ft_cd(*envp, argv[1]);
+		// if (ft_strcmp(prompt, "echo") == 0)		// ft_echo
+		// 	ft_echo(argv);
+		if (ft_strcmp(prompt, "env") == 0)
+			ft_env(*envlst);
+		if (ft_strcmp(prompt, "exit") == 0)
+			exit(0);
+		if (!(ft_strcmp(argv[0], "export")) || !(is_var_name(*envlst, argv)))
 			ft_export(&envlst, argc, argv);
+		if (ft_strcmp(prompt, "pwd") == 0)
+			ft_pwd(argv);
+		if (ft_strcmp(argv[0], "unset") == 0)
+			ft_unset(envlst, argv);
 	}
-	if (ft_strcmp(prompt, "pwd") == 0)
-		ft_pwd(argv);
-	// if (ft_strcmp(prompt, "unset") == 0)		ft_unset
-	// 	ft_unset(envlst, argv[1]);
-	// if (ft_strcmp(prompt, "unset") == 0)		unset
-	// 	ft_unset(envp, argv[1]);
 	// lex_prompt(prompt);
-
-	// Free the allocated memory for argv
 	while (argc >= 0)
 	{
 		free(argv[argc]);
