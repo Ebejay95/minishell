@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 11:30:06 by jeberle           #+#    #+#             */
-/*   Updated: 2024/06/29 02:17:48 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/07/04 18:47:47 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ char	*remove_backslashes(char *str)
 	return (new_str);
 }
 
-void	prompt_to_token(t_minishell *m)
+void prompt_to_token(t_minishell *m)
 {
 	t_token	*token;
 	int		is_single;
@@ -86,15 +86,63 @@ void	prompt_to_token(t_minishell *m)
 			current_pos++;
 		else if (work[current_pos] == '\'' && !is_double)
 		{
-			is_single = !is_single;
-			if (is_single && quote_type == 0)
+			if (!is_single)
+			{
+				if (current_pos - start_pos > 0)
+				{
+					token_str = ft_strndup(work + start_pos, current_pos - start_pos);
+					if (token_str)
+					{
+						token = create_token(remove_backslashes(token_str), start_pos, current_pos - start_pos, 1);
+						add_token_to_list(&m->tok_lst, token);
+					}
+				}
+				start_pos = current_pos;
+				is_single = 1;
 				quote_type = '\'';
+			}
+			else
+			{
+				is_single = 0;
+				quote_type = 0;
+				token_str = ft_strndup(work + start_pos, current_pos - start_pos + 1);
+				if (token_str)
+				{
+					token = create_token(remove_backslashes(token_str), start_pos, current_pos - start_pos + 1, 0);
+					add_token_to_list(&m->tok_lst, token);
+				}
+				start_pos = current_pos + 1;
+			}
 		}
 		else if (work[current_pos] == '"' && !is_single)
 		{
-			is_double = !is_double;
-			if (is_double && quote_type == 0)
+			if (!is_double)
+			{
+				if (current_pos - start_pos > 0)
+				{
+					token_str = ft_strndup(work + start_pos, current_pos - start_pos);
+					if (token_str)
+					{
+						token = create_token(remove_backslashes(token_str), start_pos, current_pos - start_pos, 1);
+						add_token_to_list(&m->tok_lst, token);
+					}
+				}
+				start_pos = current_pos;
+				is_double = 1;
 				quote_type = '"';
+			}
+			else
+			{
+				is_double = 0;
+				quote_type = 0;
+				token_str = ft_strndup(work + start_pos, current_pos - start_pos + 1);
+				if (token_str)
+				{
+					token = create_token(remove_backslashes(token_str), start_pos, current_pos - start_pos + 1, 0);
+					add_token_to_list(&m->tok_lst, token);
+				}
+				start_pos = current_pos + 1;
+			}
 		}
 		else if (ft_isspace(work[current_pos]) && !is_single && !is_double)
 		{
@@ -103,7 +151,7 @@ void	prompt_to_token(t_minishell *m)
 				token_str = ft_strndup(work + start_pos, current_pos - start_pos);
 				if (token_str)
 				{
-					token = create_token(remove_backslashes(token_str), start_pos, current_pos - start_pos, quote_type != '\'');
+					token = create_token(remove_backslashes(token_str), start_pos, current_pos - start_pos, 1);
 					add_token_to_list(&m->tok_lst, token);
 				}
 				quote_type = 0;
@@ -117,17 +165,110 @@ void	prompt_to_token(t_minishell *m)
 		token_str = ft_strndup(work + start_pos, current_pos - start_pos);
 		if (token_str)
 		{
-			token = create_token(remove_backslashes(token_str), start_pos, current_pos - start_pos, quote_type != '\'');
+			token = create_token(remove_backslashes(token_str), start_pos, current_pos - start_pos, 1);
 			add_token_to_list(&m->tok_lst, token);
 		}
 	}
 	if (is_single || is_double)
-		ft_printf("Error: Mismatched quotes in input.\n");
+		ft_printf(R "Error: Mismatched quotes in input.\n"D);
 }
 
-void	analyze_token(t_token *token)
+int	contains_quotes(char *str)
 {
-	update_tok_type(token, ARGUMENT);
+	if (ft_strcontains(str, '"') || ft_strcontains(str, '\''))
+		return (1);
+	return (0);
+}
+
+/// ermittle nicht die dinger einzeln sondern pruefe zeichen fuer zeiechen,... find alle faelle...
+// >
+// $WHITESPACE, EXPANDBELE, ?,  
+
+// Token-Typ                Beschreibung                       Regex                   Beispiel 1                      Beispiel 2
+// --------------------------------------------------------------------------------------------------------
+// REDIRECTION              Einzelne Umleitung                 ^>$                     > output.txt                   2> error.log
+// APPEND_REDIRECTION       Anfügende Umleitung                ^>>$                    >> output.txt                  2>> error.log
+// HEREDOC                  Here-Document                      ^<<$                    << EOF                         << MYTAG
+// FD_REDIRECTION           Datei-Deskriptor Umleitung         ^[0-9]+>$               1> output.txt                  2> error.log
+// PIPE                     Pipeline Operator                  ^|$                     ls | grep txt                  ps aux | less
+// COMMAND                  Befehl                             ^[a-zA-Z0-9_\-\/]+$     ls                            cat
+// ARGUMENT                 Argument                           ^.+$                    -l                            --help
+// VARIABLE_ASSIGNMENT      Variablenzuweisung                 ^[a-zA-Z_][a-zA-Z0-9_]*=.*$  VAR=value                     PATH=/usr/bin
+// SUBSHELL                 Subshell                           ^\(.*\)$                (cd /tmp; ls)                  (echo "Hello")
+// VARIABLE                 Variable                           ^\$[a-zA-Z_][a-zA-Z0-9_]*$  $PATH                        $HOME
+// SPECIAL_VARIABLE         Spezielle Variable                 ^$(?                    $?                             $#
+// EXPANSION                Parameter Expansion                ^\$\{.*\}$              ${VAR}                         ${PATH}
+// UNSET                    Nicht festgelegter Typ             N/A                     N/A                            N/A
+void	analyze_redirect_tokens(t_list *node, t_token *token)
+{
+	t_list		*new_element;
+	t_token		*newtok;
+	t_list		*current;
+	t_segment	**news;
+	int			index;
+
+	current = node;
+	if (!contains_quotes(token->str))
+	{
+		news = lex_redirections(token->str);
+		index = 0;
+		while (news[index])
+		{
+			if (index != 0)
+			{
+				newtok = create_token(news[index]->str, 0, ft_strlen(news[index]->str), 1);
+				update_tok_type(newtok, news[index]->type);
+				new_element = ft_lstnew((void *)newtok);
+				if (!new_element)
+					return ;
+				new_element->next = current->next;
+				current->next = new_element;
+				current = current->next;
+			}
+			else
+			{
+				token->str = news[index]->str;
+				update_tok_type(token, news[index]->type);
+			}
+			index++;
+		}
+	}
+}
+
+void	analyze_pipe_tokens(t_list *node, t_token *token)
+{
+	t_list		*new_element;
+	t_token		*newtok;
+	t_list		*current;
+	t_segment	**news;
+	int			index;
+
+	current = node;
+	if (!contains_quotes(token->str))
+	{
+		news = lex_pipes(token->str);
+		index = 0;
+		while (news[index])
+		{
+			if (index != 0)
+			{
+				newtok = create_token(news[index]->str, 0, ft_strlen(news[index]->str), 1);
+				update_tok_type(newtok, news[index]->type);
+				new_element = ft_lstnew((void *)newtok);
+				if (!new_element)
+					return ;
+				new_element->next = current->next;
+				current->next = new_element;
+				current = current->next;
+			}
+			else
+			{
+				token->str = news[index]->str;
+				update_tok_type(token, news[index]->type);
+			}
+			index++;
+		}
+	}
 }
 
 void	analyze_tokens(t_minishell *m)
@@ -137,7 +278,11 @@ void	analyze_tokens(t_minishell *m)
 	current = m->tok_lst;
 	while (current != NULL)
 	{
-		analyze_token((t_token *)current->content);
+		analyze_redirect_tokens(current, (t_token *)current->content);
+		analyze_pipe_tokens(current, (t_token *)current->content);
+		analyze_pipe_tokens(current, (t_token *)current->content);
+		// trenne ' =sdf' als einzelnes = auf und interpretiere sdf als argument
+		// bei 'sdfdsf=' lesgt eine variabkendeklaration vor bei 'sdfsdf= ' auch aber der wert dahinter wird nicht mitgenommen
 		current = current->next;
 	}
 }
@@ -145,6 +290,8 @@ void	analyze_tokens(t_minishell *m)
 void	lex_prompt(t_minishell *m)
 {
 	prompt_to_token(m);
+	ft_printf(Y"TOKENLIST BEFORE ANALYSING:\n"D);
+	ft_lstput(&(m->tok_lst), put_token, '\n');
 	analyze_tokens(m);
 	ft_printf(Y"TOKENLIST:\n"D);
 	ft_lstput(&(m->tok_lst), put_token, '\n');

@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 21:28:44 by jeberle           #+#    #+#             */
-/*   Updated: 2024/06/28 13:32:23 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/07/03 17:31:10 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,16 +31,16 @@
 // 	return (segment);
 // }
 
-// t_segment	**seg_clear_all(int idx, t_segment **segments)
-// {
-// 	while (idx > 0)
-// 	{
-// 		idx--;
-// 		free(segments[idx]);
-// 	}
-// 	free(segments);
-// 	return (NULL);
-// }
+t_segment	**seg_clear_all(int idx, t_segment **segments)
+{
+	while (idx > 0)
+	{
+		idx--;
+		free(segments[idx]);
+	}
+	free(segments);
+	return (NULL);
+}
 
 // // retrieve partials of string by several seperators to build grammar tokens
 // t_segment	**build_segments(char const *prompt, char *type, t_segment **segments)

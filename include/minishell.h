@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:18:56 by jeberle           #+#    #+#             */
-/*   Updated: 2024/06/29 02:21:02 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/07/04 17:45:33 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,6 +81,12 @@ typedef enum e_toktype
 // #                               Structures                                  #
 // #############################################################################
 
+typedef struct s_segment
+{
+	char			*str;
+	enum e_toktype	type;
+}					t_segment;
+
 typedef struct s_token // USE UNION!!!!!
 {
 	enum e_toktype	token;
@@ -142,7 +148,7 @@ void		parse(t_minishell *m);
 
 // segments_helper.c
 // char		*build_segment(int start, int end, const char *prompt);
-// t_segment	**seg_clear_all(int idx, t_segment **segs);
+t_segment	**seg_clear_all(int idx, t_segment **segs);
 // t_segment	**build_segments(char const *prompt, char *type, t_segment **segs);
 
 // segments.c
@@ -150,7 +156,8 @@ void		parse(t_minishell *m);
 // t_segment	**get_quote_segs(t_minishell *m, char type);
 // t_segment	**get_oc_segs(t_minishell *m, char mode, char *open, char *close);
 // t_segment	**get_set_segs(t_minishell *m, char *set);
-// t_segment **lex_redirections(t_minishell *m);
+t_segment	**lex_redirections(char *str);
+t_segment	**lex_pipes(char *str);
 // tokens.c
 t_token		*create_token(char *str, int start, int end, int expand);
 char		*toktype_to_str(enum e_toktype token);
