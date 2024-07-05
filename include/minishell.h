@@ -6,7 +6,7 @@
 /*   By: jkauker <jkauker@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:18:56 by jeberle           #+#    #+#             */
-/*   Updated: 2024/07/03 13:28:06 by jkauker          ###   ########.fr       */
+/*   Updated: 2024/07/05 14:14:06 by jkauker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -165,10 +165,15 @@ t_segment	**get_segs(char *prompt, char *type);
 t_segment	**get_quote_segs(t_minishell *m, char type);
 t_segment	**get_oc_segs(t_minishell *m, char mode, char *open, char *close);
 t_segment	**get_set_segs(t_minishell *m, char *set);
+
 // tokens.c
 t_token		*create_token(enum e_toktype token);
 char		*toktype_to_str(enum e_toktype token);
 void		put_token(void *content);
+
+// signal.c
+void		handle_signal(int sig);
+void		setup_signals(void);
 
 // #############################################################################
 // #                               Builtins                                    #

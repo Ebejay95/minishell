@@ -6,7 +6,7 @@
 #    By: jkauker <jkauker@student.42heilbronn.de    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/25 22:43:08 by jonathanebe       #+#    #+#              #
-#    Updated: 2024/07/03 08:32:12 by jkauker          ###   ########.fr        #
+#    Updated: 2024/07/05 13:18:10 by jkauker          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -90,6 +90,7 @@ SRCS=	mandatory/ast.c \
 		mandatory/putters.c \
 		mandatory/segments_helper.c \
 		mandatory/segments.c \
+		mandatory/signals.c \
 		mandatory/tokens.c \
 		builtins/cd.c \
 		builtins/echo.c \

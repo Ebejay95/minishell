@@ -6,7 +6,7 @@
 /*   By: jkauker <jkauker@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:01:33 by jeberle           #+#    #+#             */
-/*   Updated: 2024/07/03 13:30:11 by jkauker          ###   ########.fr       */
+/*   Updated: 2024/07/05 14:14:33 by jkauker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,7 @@ int	main(int argc, char **argv, char **envp)
 	(void)envp;
 	if (argc != 1)
 		return (0);
+	setup_signals();
 	minishell.envp = envp;
 	while (1)
 	{
@@ -89,5 +90,6 @@ int	main(int argc, char **argv, char **envp)
 			free(minishell.prompt);
 		}
 	}
+	rl_clear_history();
 	return (0);
 }
