@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
+/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:01:33 by jeberle           #+#    #+#             */
-/*   Updated: 2024/06/29 02:21:37 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/07/08 09:10:07 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,3 +90,12 @@ int	main(int argc, char **argv, char **envp)
 	}
 	return (0);
 }
+
+// {
+// 	"files.associations": {
+// 		"pthread.h": "c",
+// 		"minishell.h": "c",
+// 		"history.h": "c",
+// 		"limits.h": "c"
+// 	}
+// }
