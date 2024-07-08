@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
+/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:18:56 by jeberle           #+#    #+#             */
-/*   Updated: 2024/07/04 17:45:33 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/07/08 13:10:30 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -152,17 +152,20 @@ t_segment	**seg_clear_all(int idx, t_segment **segs);
 // t_segment	**build_segments(char const *prompt, char *type, t_segment **segs);
 
 // segments.c
-// t_segment	**get_segs(char *prompt, char *type);
-// t_segment	**get_quote_segs(t_minishell *m, char type);
-// t_segment	**get_oc_segs(t_minishell *m, char mode, char *open, char *close);
-// t_segment	**get_set_segs(t_minishell *m, char *set);
-t_segment	**lex_redirections(char *str);
-t_segment	**lex_pipes(char *str);
+t_segment	**get_segs(char *prompt, char *type);
+t_segment	**get_quote_segs(t_minishell *m, char type);
+t_segment	**get_oc_segs(t_minishell *m, char mode, char *open, char *close);
+t_segment	**get_set_segs(t_minishell *m, char *set);
+
 // tokens.c
 t_token		*create_token(char *str, int start, int end, int expand);
 char		*toktype_to_str(enum e_toktype token);
 void		put_token(void *content);
 void		update_tok_type(t_token *tok, enum e_toktype token);
+
+// signal.c
+void		handle_signal(int sig);
+void		setup_signals(void);
 
 // #############################################################################
 // #                               Builtins                                    #
@@ -178,23 +181,32 @@ void		ft_echo(char **args);
 void		ft_env(t_envlst *env_list); // works
 
 // exit.c
-void		ft_exit(char **args);
+void		ft_exit(char **argv);
 
 // export.c
-void				ft_export(t_envlst ***envp, int argc, char **argv);
-int					is_var_name(t_envlst *envp, char **argv);
-void				change_var_value(t_envlst **envp, char **argv);
-void				update_var_value(t_envlst **envp, char *argv);
-void				upgrade_var_value(t_envlst **envp, char *argv);
-void				sort_envp(char **envp);
-char				**copy_envp(t_envlst *envp);
-int					count_env_list(t_envlst *envp);
-void				print_env_variable(const char *env_var);
-void				export(t_envlst **envp, char **argv);
+void		ft_export(t_envlst ***envp, int argc, char **argv);
+void		my_export(t_envlst **envp, char **argv);
+void		change_env_node(t_envlst **env_list, char *name, char *value);
+void		sort_envp(char **envp);
+char		**copy_envp(t_envlst *envp);
 
 // pwd.c
 void		ft_pwd(char **args);
 
+// set.c
+void		change_var_value(t_envlst **envp, char **argv);
+void		upgrade_var_value(t_envlst **envp, char *argv);
+void		update_var_value(t_envlst **envp, char *argv);
+
 // unset.c
-void		ft_unset(char **envp, const char *name);
+void		ft_unset(t_envlst **envp, char **argv);
+void		free_envlst_node(t_envlst *node);
+
+// var_helper.c
+int			count_env_list(t_envlst *envp);
+void		print_env_variable(const char *env_var);
+int			is_var_name(t_envlst *envp, char **argv);
+char		*ft_strndup(const char *s, size_t n);
+
+// #############################################################################
 #endif

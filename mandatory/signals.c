@@ -1,29 +1,37 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   exit.c                                             :+:      :+:    :+:   */
+/*   signals.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/06/12 15:12:06 by chorst            #+#    #+#             */
-/*   Updated: 2024/07/08 13:02:00 by chorst           ###   ########.fr       */
+/*   Created: 2024/07/05 13:17:22 by jkauker           #+#    #+#             */
+/*   Updated: 2024/07/08 10:27:14 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../include/minishell.h"
 
-void	ft_exit(char **argv)
+// Function that handles the signals
+void	handle_signal(int sig)
 {
-	int exit_status = 0;
-
-	if (argv[1])
+	if (sig == SIGINT)
 	{
-		exit_status = atoi(argv[1]);
-		if (exit_status == 0 && argv[1][0] != '0')
-		{
-			printf("exit\n🚀: exit: %s: numeric argument required\n", argv[1]);
-			exit(2);
-		}
+		write(STDOUT_FILENO, "\n", 1);
+		rl_on_new_line();
+		rl_replace_line("", 0);
+		rl_redisplay();
 	}
-	exit(exit_status);
+}
+
+// Function that sets up the signals
+void	setup_signals(void)
+{
+	struct sigaction	sa;
+
+	sigemptyset(&sa.sa_mask);
+	sa.sa_flags = 0;
+	sa.sa_handler = handle_signal;
+	sigaction(SIGINT, &sa, NULL);
+	sigaction(SIGQUIT, &sa, NULL);
 }

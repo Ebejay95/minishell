@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
+/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 11:30:06 by jeberle           #+#    #+#             */
-/*   Updated: 2024/07/04 18:47:47 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/07/08 13:09:54 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -182,7 +182,7 @@ int	contains_quotes(char *str)
 
 /// ermittle nicht die dinger einzeln sondern pruefe zeichen fuer zeiechen,... find alle faelle...
 // >
-// $WHITESPACE, EXPANDBELE, ?,  
+// $WHITESPACE, EXPANDBELE, ?,
 
 // Token-Typ                Beschreibung                       Regex                   Beispiel 1                      Beispiel 2
 // --------------------------------------------------------------------------------------------------------

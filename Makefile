@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+         #
+#    By: chorst <chorst@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/25 22:43:08 by jonathanebe       #+#    #+#              #
-#    Updated: 2024/06/28 21:32:13 by jeberle          ###   ########.fr        #
+#    Updated: 2024/07/08 13:10:47 by chorst           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -83,15 +83,17 @@ SYSLIBFLAGS=-lreadline
 #------------------------------------------------------------------------------#
 
 SRCS=	mandatory/ast.c \
-		mandatory/hierarchy_validation.c \
 		mandatory/expand.c \
+		mandatory/hierarchy_validation.c \
 		mandatory/lexer.c \
 		mandatory/init_envlst.c \
+		mandatory/lexer.c \
 		mandatory/minishell.c \
 		mandatory/parser.c \
 		mandatory/putters.c \
 		mandatory/segments_helper.c \
 		mandatory/segments.c \
+		mandatory/signals.c \
 		mandatory/tokens.c \
 		builtins/cd.c \
 		builtins/echo.c \
@@ -99,7 +101,9 @@ SRCS=	mandatory/ast.c \
 		builtins/exit.c \
 		builtins/export.c \
 		builtins/pwd.c \
+		builtins/set.c \
 		builtins/unset.c \
+		builtins/var_helper.c \
 
 BONUS_SRCS= \
 # bonus/minishell_bonus.c \

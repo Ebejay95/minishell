@@ -6,7 +6,7 @@
 /*   By: jkauker <jkauker@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 10:00:01 by chorst            #+#    #+#             */
-/*   Updated: 2024/06/25 07:21:55 by jkauker          ###   ########.fr       */
+/*   Updated: 2024/07/03 07:53:18 by jkauker          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,24 +30,25 @@ t_envlst	*init_env_list(char **envp)
 }
 
 // Function that extracts the name and value of an environment variable
-void	extract_name_value(char *env_var, char **name, char **value)
+void	extract_name_value(char *arg, char **name, char **value)
 {
 	char	*equal_sign;
+	char	*plus_sign;
 
-	equal_sign = ft_strchr(env_var, '=');
-	if (equal_sign != NULL && *value != NULL)
+	plus_sign = ft_strchr(arg, '+');
+	equal_sign = ft_strchr(arg, '=');
+	if (equal_sign)
 	{
-		*name = strndup(env_var, equal_sign - env_var);
-		*value = ft_strdup(equal_sign + 1);
+		if (plus_sign && plus_sign < equal_sign)
+			*name = ft_strndup(arg, plus_sign - arg);
+		else
+			*name = ft_strndup(arg, equal_sign - arg);
+		*value = equal_sign + 1;
+		*value = ft_strtrim(*value, "\"");
 	}
-	else if (equal_sign != NULL && *value == NULL)
+	else
 	{
-		*name = ft_strdup(env_var);
-		*value = "";
-	}
-	else if (equal_sign == NULL && *name != NULL)
-	{
-		*name = ft_strdup(env_var);
+		*name = ft_strdup(arg);
 		*value = NULL;
 	}
 }
@@ -59,6 +60,8 @@ void	add_env_node(t_envlst **env_list, char *name, char *value)
 	t_envlst	*temp;
 
 	new_node = malloc(sizeof(t_envlst));
+	if (new_node == NULL)
+		return ;
 	new_node->name = name;
 	new_node->value = value;
 	new_node->next = NULL;
@@ -81,7 +84,7 @@ t_envlst	*find_env_var(t_envlst *head, const char *name)
 	current = head;
 	while (current != NULL)
 	{
-		if (strcmp(current->name, name) == 0)
+		if (ft_strcmp(current->name, name) == 0)
 			return (current);
 		current = current->next;
 	}
