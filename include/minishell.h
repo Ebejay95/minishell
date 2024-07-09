@@ -6,7 +6,7 @@
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:18:56 by jeberle           #+#    #+#             */
-/*   Updated: 2024/07/08 13:10:30 by chorst           ###   ########.fr       */
+/*   Updated: 2024/07/09 10:54:51 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,7 +130,6 @@ int			vd_tree_add(t_btree *current, char *branch, t_token *newtok);
 
 // lexer.c
 void		lex_prompt(t_minishell *m);
-char		*input_cleaner(char *prompt);
 // t_segment	*find_seg_by_start(t_segment **segs, int search);
 // t_segment	*find_seg_by_end(t_segment **segs, int search);
 // t_segment	*find_seg_by_str(t_segment **segs, char *search);
@@ -146,12 +145,19 @@ void		parse(t_minishell *m);
 
 // putters.c
 
+// remove_chars.c
+char		*remove_chars(char *str, const char *chars_to_remove);
+int			count_relevant_chars(const char *str, const char *chars_to_count);
+void		remove_helper(char *str, const char *chars_to_remove, char *new_str);
+
 // segments_helper.c
 // char		*build_segment(int start, int end, const char *prompt);
 t_segment	**seg_clear_all(int idx, t_segment **segs);
 // t_segment	**build_segments(char const *prompt, char *type, t_segment **segs);
 
 // segments.c
+t_segment	**lex_redirections(char *str);
+t_segment	**lex_pipes(char *str);
 t_segment	**get_segs(char *prompt, char *type);
 t_segment	**get_quote_segs(t_minishell *m, char type);
 t_segment	**get_oc_segs(t_minishell *m, char mode, char *open, char *close);

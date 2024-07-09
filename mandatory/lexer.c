@@ -6,7 +6,7 @@
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 11:30:06 by jeberle           #+#    #+#             */
-/*   Updated: 2024/07/08 13:09:54 by chorst           ###   ########.fr       */
+/*   Updated: 2024/07/09 10:39:55 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,11 @@ void	add_token_to_list(t_list **lst, t_token *token)
 	}
 }
 
+// Ich habe eine Funktion geschrieben die remove_chars heisst.
+// Du kannst annstatt remove_backslashes, diese Funktion verwenden,
+// um die Backslashes aus deinem String zu entfernen.
+// Sie ist flexibler und kann auch andere Zeichen entfernen, falls gewünscht.
+// Sie befindet sich in der Datei mandatory/remove_chars.c
 char	*remove_backslashes(char *str)
 {
 	int		count;

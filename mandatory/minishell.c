@@ -6,7 +6,7 @@
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:01:33 by jeberle           #+#    #+#             */
-/*   Updated: 2024/07/08 12:59:42 by chorst           ###   ########.fr       */
+/*   Updated: 2024/07/09 12:24:22 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ void	execute_command(char *prompt, t_envlst **envlst)
 		// 	ft_echo(argv);
 		if (ft_strcmp(prompt, "env") == 0)
 			ft_env(*envlst);
-		if (ft_strncmp(prompt, "exit", 4) == 0)
+		if (ft_strcmp(prompt, "exit") == 0)
 			ft_exit(argv);
 		if (!(ft_strcmp(argv[0], "export")) || !(is_var_name(*envlst, argv)))
 			ft_export(&envlst, argc, argv);
@@ -94,6 +94,8 @@ int	main(int argc, char **argv, char **envp)
 	rl_clear_history();
 	return (0);
 }
+
+// settings.json
 
 // {
 // 	"files.associations": {

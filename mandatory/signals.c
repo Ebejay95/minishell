@@ -6,7 +6,7 @@
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/05 13:17:22 by jkauker           #+#    #+#             */
-/*   Updated: 2024/07/08 10:27:14 by chorst           ###   ########.fr       */
+/*   Updated: 2024/07/09 11:39:26 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,8 @@ void	handle_signal(int sig)
 		rl_replace_line("", 0);
 		rl_redisplay();
 	}
+	if (sig == SIGQUIT)
+		return ;
 }
 
 // Function that sets up the signals
