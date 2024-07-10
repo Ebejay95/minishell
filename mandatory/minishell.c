@@ -6,7 +6,7 @@
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:01:33 by jeberle           #+#    #+#             */
-/*   Updated: 2024/07/09 12:24:22 by chorst           ###   ########.fr       */
+/*   Updated: 2024/07/10 15:02:09 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,27 +35,23 @@ void	execute_command(char *prompt, t_envlst **envlst)
 	argv = parse_input(prompt, &argc);
 	if (argv[0])
 	{
-		// if (ft_strcmp(prompt, "cd") == 0)		// ft_cd
-		// 	ft_cd(*envp, argv[1]);
-		// if (ft_strcmp(prompt, "echo") == 0)		// ft_echo
-		// 	ft_echo(argv);
+		if (ft_strcmp(argv[0], "cd") == 0)
+			ft_cd(argc, argv, &envlst);
+		if (ft_strcmp(argv[0], "echo") == 0)
+			ft_echo(argv);
 		if (ft_strcmp(prompt, "env") == 0)
 			ft_env(*envlst);
 		if (ft_strcmp(prompt, "exit") == 0)
 			ft_exit(argv);
 		if (!(ft_strcmp(argv[0], "export")) || !(is_var_name(*envlst, argv)))
-			ft_export(&envlst, argc, argv);
+			ft_export(argc, argv, &envlst);
 		if (ft_strcmp(prompt, "pwd") == 0)
 			ft_pwd(argv);
 		if (ft_strcmp(argv[0], "unset") == 0)
 			ft_unset(envlst, argv);
 	}
-	// lex_prompt(prompt);
 	while (argc >= 0)
-	{
-		free(argv[argc]);
-		argc--;
-	}
+		free(argv[argc--]);
 }
 
 // Main function that runs the minishell loop

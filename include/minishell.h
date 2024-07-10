@@ -6,7 +6,7 @@
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:18:56 by jeberle           #+#    #+#             */
-/*   Updated: 2024/07/09 10:54:51 by chorst           ###   ########.fr       */
+/*   Updated: 2024/07/10 15:55:09 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -178,7 +178,7 @@ void		setup_signals(void);
 // #############################################################################
 
 // cd.c
-void		ft_cd(char *args);
+void		ft_cd(int argc, char **argv, t_envlst ***envp);
 
 // echo.c
 void		ft_echo(char **args);
@@ -190,9 +190,9 @@ void		ft_env(t_envlst *env_list); // works
 void		ft_exit(char **argv);
 
 // export.c
-void		ft_export(t_envlst ***envp, int argc, char **argv);
+void		ft_export(int argc, char **argv, t_envlst ***envp);
 void		my_export(t_envlst **envp, char **argv);
-void		change_env_node(t_envlst **env_list, char *name, char *value);
+void		change_env_node(t_envlst **env_list, char *name, char *value, int free_it);
 void		sort_envp(char **envp);
 char		**copy_envp(t_envlst *envp);
 
