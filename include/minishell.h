@@ -6,7 +6,7 @@
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:18:56 by jeberle           #+#    #+#             */
-/*   Updated: 2024/07/10 15:55:09 by chorst           ###   ########.fr       */
+/*   Updated: 2024/07/11 12:16:04 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -179,6 +179,7 @@ void		setup_signals(void);
 
 // cd.c
 void		ft_cd(int argc, char **argv, t_envlst ***envp);
+void		cd_home(t_envlst ***envp);
 
 // echo.c
 void		ft_echo(char **args);
