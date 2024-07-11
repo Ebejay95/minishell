@@ -6,21 +6,24 @@
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 15:10:58 by chorst            #+#    #+#             */
-/*   Updated: 2024/07/11 12:18:27 by chorst           ###   ########.fr       */
+/*   Updated: 2024/07/11 12:58:51 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../include/minishell.h"
 
 // Main function that changes the current working directory
-void ft_cd(int argc, char **argv, t_envlst ***envp)
+void	ft_cd(int argc, char **argv, t_envlst ***envp)
 {
+	char *path;
+	char *oldpwd;
+
 	if (argc == 1 || ft_strcmp(argv[1], "~") == 0)
 		cd_home(envp);
 	else
 	{
-		char *path = argv[1];
-		char *oldpwd = getcwd(NULL, 0);
+		path = argv[1];
+		oldpwd = getcwd(NULL, 0);
 		if (!oldpwd)
 			return (perror("getcwd"));
 		if (chdir(path) == -1)
@@ -39,7 +42,7 @@ void ft_cd(int argc, char **argv, t_envlst ***envp)
 }
 
 // helper function to change the current working directory to the home directory
-void cd_home(t_envlst ***envp)
+void	cd_home(t_envlst ***envp)
 {
 	char *home = getenv("HOME");
 	if (!home)
