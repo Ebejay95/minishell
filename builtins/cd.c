@@ -6,7 +6,7 @@
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 15:10:58 by chorst            #+#    #+#             */
-/*   Updated: 2024/07/11 12:58:51 by chorst           ###   ########.fr       */
+/*   Updated: 2024/07/15 12:29:39 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,9 @@
 // Main function that changes the current working directory
 void	ft_cd(int argc, char **argv, t_envlst ***envp)
 {
-	char *path;
-	char *oldpwd;
+	char	*path;
+	char	*oldpwd;
+	char	*pwd;
 
 	if (argc == 1 || ft_strcmp(argv[1], "~") == 0)
 		cd_home(envp);
@@ -30,9 +31,9 @@ void	ft_cd(int argc, char **argv, t_envlst ***envp)
 		{
 			printf("🚀: cd: %s: No such file or directory\n", path);
 			free(oldpwd);
-			return;
+			return ;
 		}
-		char *pwd = getcwd(NULL, 0);
+		pwd = getcwd(NULL, 0);
 		if (!pwd)
 			return (perror("getcwd"), free(oldpwd));
 		change_env_node(&(**envp), "OLDPWD", oldpwd, 0);
@@ -44,19 +45,23 @@ void	ft_cd(int argc, char **argv, t_envlst ***envp)
 // helper function to change the current working directory to the home directory
 void	cd_home(t_envlst ***envp)
 {
-	char *home = getenv("HOME");
+	char	*home;
+	char	*oldpwd;
+	char	*pwd;
+
+	home = getenv("HOME");
 	if (!home)
 		return ((void)printf("cd: HOME not set\n"));
-	char *oldpwd = getcwd(NULL, 0);
+	oldpwd = getcwd(NULL, 0);
 	if (!oldpwd)
 		return (perror("getcwd"));
 	if (chdir(home) == -1)
 	{
 		printf("🚀: cd: %s: No such file or directory\n", home);
 		free(oldpwd);
-		return;
+		return ;
 	}
-	char *pwd = getcwd(NULL, 0);
+	pwd = getcwd(NULL, 0);
 	if (!pwd)
 		return (perror("getcwd"), free(oldpwd));
 	change_env_node(&(**envp), "OLDPWD", oldpwd, 0);

@@ -6,7 +6,7 @@
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:01:33 by jeberle           #+#    #+#             */
-/*   Updated: 2024/07/10 15:02:09 by chorst           ###   ########.fr       */
+/*   Updated: 2024/07/15 12:31:34 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,8 +57,7 @@ void	execute_command(char *prompt, t_envlst **envlst)
 // Main function that runs the minishell loop
 int	main(int argc, char **argv, char **envp)
 {
-	t_minishell	minishell;
-	t_envlst	*envlst;
+	t_minishell	minishell;	t_envlst	*envlst;
 
 	envlst = init_env_list(envp);
 	(void)argv;
