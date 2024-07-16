@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 11:12:44 by jeberle           #+#    #+#             */
-/*   Updated: 2024/06/28 20:28:07 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/07/16 21:28:30 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,14 +26,16 @@
 // }
 t_token	*create_token(char *str, int start, int end, int expand)
 {
-	t_token		*newtok;
+	t_token	*newtok;
 
+	if (!str || !*str)
+		return (NULL);
 	newtok = (t_token *)malloc(sizeof(t_token));
 	if (!newtok)
 		return (NULL);
 	newtok->token = UNSET;
 	newtok->type = toktype_to_str(UNSET);
-	newtok->str = str;
+	newtok->str = strdup(str);
 	newtok->start = start;
 	newtok->end = end;
 	newtok->expand = expand;
@@ -57,6 +59,10 @@ char	*toktype_to_str(enum e_toktype token)
 		return (ft_strdup("Command"));
 	if (token == ARGUMENT)
 		return (ft_strdup("Argument"));
+	if (token == GETEXSTATE)
+		return (ft_strdup("Get Exit State"));
+	if (token == VARIABLE)
+		return (ft_strdup("Variable"));
 	if (token == UNSET)
 		return (ft_strdup("UNSET"));
 	return (ft_strdup(""));
@@ -88,26 +94,4 @@ void	put_token(void *content)
 t_token	tok_lst_get(void *n)
 {
 	return (*(t_token *)n);
-}
-
-void	free_token(void *n)
-{
-	t_token	*token;
-
-	if (n)
-	{
-		token = (t_token *)n;
-		if (token->str)
-		{
-			free(token->str);
-			token->str = NULL;
-		}
-		if (token->type)
-		{
-			free(token->type);
-			token->type = NULL;
-		}
-		free(token);
-		token = NULL;
-	}
 }
