@@ -6,7 +6,7 @@
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/05 13:17:22 by chorst            #+#    #+#             */
-/*   Updated: 2024/07/15 12:35:50 by chorst           ###   ########.fr       */
+/*   Updated: 2024/07/15 12:52:51 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,3 +41,6 @@ void	setup_signals(void)
 	sigaction(SIGQUIT, &sa, NULL);
 	signal(SIGQUIT, SIG_IGN);
 }
+
+
+// << echo (nicht-interaktiv)

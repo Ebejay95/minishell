@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:18:56 by jeberle           #+#    #+#             */
-/*   Updated: 2024/07/16 11:09:34 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/07/16 15:56:49 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -183,6 +183,8 @@ void		cd_home(t_envlst ***envp);
 
 // echo.c
 void		ft_echo(char **args);
+int			handle_options(char **args, bool *newline, int start_index);
+void		print_output(char **args, int start_index, bool newline);
 
 // env.c
 void		ft_env(t_envlst *env_list); // works
