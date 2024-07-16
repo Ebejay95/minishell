@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
+/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:01:33 by jeberle           #+#    #+#             */
-/*   Updated: 2024/07/16 10:32:51 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/07/16 15:22:26 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,8 +81,8 @@ int	main(int argc, char **argv, char **envp)
 		{
 			execute_command(minishell.prompt, &envlst);
 			add_history(minishell.prompt);
-			lex_prompt(&minishell);
-			parse(&minishell);
+			// lex_prompt(&minishell);
+			// parse(&minishell);
 			free(minishell.prompt);
 		}
 	}
