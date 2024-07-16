@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 11:30:06 by jeberle           #+#    #+#             */
-/*   Updated: 2024/07/09 10:39:55 by chorst           ###   ########.fr       */
+/*   Updated: 2024/07/16 15:54:07 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,151 +31,65 @@ void	add_token_to_list(t_list **lst, t_token *token)
 	}
 }
 
-// Ich habe eine Funktion geschrieben die remove_chars heisst.
-// Du kannst annstatt remove_backslashes, diese Funktion verwenden,
-// um die Backslashes aus deinem String zu entfernen.
-// Sie ist flexibler und kann auch andere Zeichen entfernen, falls gewünscht.
-// Sie befindet sich in der Datei mandatory/remove_chars.c
-char	*remove_backslashes(char *str)
-{
-	int		count;
-	char	*temp;
-	char	*new_str;
-	char	*new_str_ptr;
 
-	count = 0;
-	temp = str;
-	while (*temp)
-	{
-		if (*temp != '\\')
-			count++;
-		temp++;
-	}
-	new_str = (char *) malloc((count + 1) * sizeof(char));
-	if (new_str == NULL)
-		exit(EXIT_FAILURE);
-	new_str_ptr = new_str;
-	while (*str)
-	{
-		if (*str != '\\')
-		{
-			*new_str_ptr = *str;
-			new_str_ptr++;
-		}
-		str++;
-	}
-	*new_str_ptr = '\0';
-	return (new_str);
+int after_quote(const char *str)
+{
+    int i = 1; // Start after the initial quote
+    while (str[i] && str[i] != str[0])
+    {
+        if (str[i] == '\\' && str[i + 1])
+            i += 2; // Skip escaped character
+        else
+            i++;
+    }
+    return (str[i] == str[0]) ? i + 1 : i;
 }
 
-void prompt_to_token(t_minishell *m)
+int token_type(char c)
 {
-	t_token	*token;
-	int		is_single;
-	int		is_double;
-	int		start_pos;
-	int		current_pos;
-	char	*token_str;
-	char	*work;
-	char	quote_type;
+    if (c == '|') return 1;
+    if (c == '&') return 2;
+    if (c == ';') return 3;
+    if (c == '(') return 4;
+    if (c == ')') return 5;
+    if (c == '<') return 6;
+    if (c == '>') return 7;
+    return 0;
+}
 
-	work = m->prompt;
-	is_single = 0;
-	is_double = 0;
-	start_pos = 0;
-	current_pos = 0;
-	quote_type = 0;
-	while (work[current_pos])
-	{
-		if (work[current_pos] == '\\' && (work[current_pos + 1] == '\'' || work[current_pos + 1] == '"' || work[current_pos + 1] == '\\'))
-			current_pos++;
-		else if (work[current_pos] == '\'' && !is_double)
-		{
-			if (!is_single)
-			{
-				if (current_pos - start_pos > 0)
-				{
-					token_str = ft_strndup(work + start_pos, current_pos - start_pos);
-					if (token_str)
-					{
-						token = create_token(remove_backslashes(token_str), start_pos, current_pos - start_pos, 1);
-						add_token_to_list(&m->tok_lst, token);
-					}
-				}
-				start_pos = current_pos;
-				is_single = 1;
-				quote_type = '\'';
-			}
-			else
-			{
-				is_single = 0;
-				quote_type = 0;
-				token_str = ft_strndup(work + start_pos, current_pos - start_pos + 1);
-				if (token_str)
-				{
-					token = create_token(remove_backslashes(token_str), start_pos, current_pos - start_pos + 1, 0);
-					add_token_to_list(&m->tok_lst, token);
-				}
-				start_pos = current_pos + 1;
-			}
-		}
-		else if (work[current_pos] == '"' && !is_single)
-		{
-			if (!is_double)
-			{
-				if (current_pos - start_pos > 0)
-				{
-					token_str = ft_strndup(work + start_pos, current_pos - start_pos);
-					if (token_str)
-					{
-						token = create_token(remove_backslashes(token_str), start_pos, current_pos - start_pos, 1);
-						add_token_to_list(&m->tok_lst, token);
-					}
-				}
-				start_pos = current_pos;
-				is_double = 1;
-				quote_type = '"';
-			}
-			else
-			{
-				is_double = 0;
-				quote_type = 0;
-				token_str = ft_strndup(work + start_pos, current_pos - start_pos + 1);
-				if (token_str)
-				{
-					token = create_token(remove_backslashes(token_str), start_pos, current_pos - start_pos + 1, 0);
-					add_token_to_list(&m->tok_lst, token);
-				}
-				start_pos = current_pos + 1;
-			}
-		}
-		else if (ft_isspace(work[current_pos]) && !is_single && !is_double)
-		{
-			if (current_pos - start_pos > 0)
-			{
-				token_str = ft_strndup(work + start_pos, current_pos - start_pos);
-				if (token_str)
-				{
-					token = create_token(remove_backslashes(token_str), start_pos, current_pos - start_pos, 1);
-					add_token_to_list(&m->tok_lst, token);
-				}
-				quote_type = 0;
-			}
-			start_pos = current_pos + 1;
-		}
-		current_pos++;
-	}
-	if (current_pos - start_pos > 0)
-	{
-		token_str = ft_strndup(work + start_pos, current_pos - start_pos);
-		if (token_str)
-		{
-			token = create_token(remove_backslashes(token_str), start_pos, current_pos - start_pos, 1);
-			add_token_to_list(&m->tok_lst, token);
-		}
-	}
-	if (is_single || is_double)
-		ft_printf(R "Error: Mismatched quotes in input.\n"D);
+void prompt_to_token(t_minishell *m) {
+    char *start = NULL;
+    char *end = NULL;
+    char *work = m->prompt;
+
+    while (*work) {
+        if (*work == '\'') {
+            start = ++work;
+            end = start;
+            while (*end && *end != '\'') {
+                end++;
+            }
+
+            if (*end == '\'') {
+                char *token_str = strndup(start, end - start); 
+                char *cleaned_str = remove_chars(token_str, "\\");  
+                int start_pos = start - m->prompt;
+                int size = end - start;
+
+                t_token *token = create_token(cleaned_str, start_pos, size, 0);
+                add_token_to_list(&m->tok_lst, token);
+
+                free(token_str);
+                free(cleaned_str);
+
+                work = end + 1;
+            } else {
+                break;
+            }
+        } else {
+            work++;
+        }
+    }
 }
 
 int	contains_quotes(char *str)
@@ -285,7 +199,7 @@ void	analyze_tokens(t_minishell *m)
 	{
 		analyze_redirect_tokens(current, (t_token *)current->content);
 		analyze_pipe_tokens(current, (t_token *)current->content);
-		analyze_pipe_tokens(current, (t_token *)current->content);
+		//analyze_var_tokens(current, (t_token *)current->content);
 		// trenne ' =sdf' als einzelnes = auf und interpretiere sdf als argument
 		// bei 'sdfdsf=' lesgt eine variabkendeklaration vor bei 'sdfsdf= ' auch aber der wert dahinter wird nicht mitgenommen
 		current = current->next;
@@ -295,11 +209,11 @@ void	analyze_tokens(t_minishell *m)
 void	lex_prompt(t_minishell *m)
 {
 	prompt_to_token(m);
-	ft_printf(Y"TOKENLIST BEFORE ANALYSING:\n"D);
+	//ft_printf(Y"TOKENLIST BEFORE ANALYSING:\n"D);
 	ft_lstput(&(m->tok_lst), put_token, '\n');
-	analyze_tokens(m);
-	ft_printf(Y"TOKENLIST:\n"D);
-	ft_lstput(&(m->tok_lst), put_token, '\n');
+	//analyze_tokens(m);
+	//ft_printf(Y"TOKENLIST GANZ AM ENDE:\n"D);
+	//ft_lstput(&(m->tok_lst), put_token, '\n');
 }
 
 // t_segment	*find_seg_by_start(t_segment **segs, int search)
