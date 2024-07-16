@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/07/05 13:17:22 by jkauker           #+#    #+#             */
-/*   Updated: 2024/07/09 11:39:26 by chorst           ###   ########.fr       */
+/*   Created: 2024/07/05 13:17:22 by chorst            #+#    #+#             */
+/*   Updated: 2024/07/15 12:35:50 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,10 @@ void	handle_signal(int sig)
 		rl_redisplay();
 	}
 	if (sig == SIGQUIT)
-		return ;
+	{
+		rl_on_new_line();
+		rl_redisplay();
+	}
 }
 
 // Function that sets up the signals
@@ -36,4 +39,5 @@ void	setup_signals(void)
 	sa.sa_handler = handle_signal;
 	sigaction(SIGINT, &sa, NULL);
 	sigaction(SIGQUIT, &sa, NULL);
+	signal(SIGQUIT, SIG_IGN);
 }

@@ -6,14 +6,14 @@
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 15:11:12 by chorst            #+#    #+#             */
-/*   Updated: 2024/07/08 09:23:53 by chorst           ###   ########.fr       */
+/*   Updated: 2024/07/10 15:57:20 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../include/minishell.h"
 
 // Recreates the expport behavior from bash
-void	ft_export(t_envlst ***envp, int argc, char **argv)
+void	ft_export(int argc, char **argv, t_envlst ***envp)
 {
 	int		i;
 	char	**envp_export;
@@ -46,13 +46,14 @@ void	my_export(t_envlst **envp, char **argv)
 	{
 		extract_name_value(argv[i], &name, &value);
 		if (name)
-			change_env_node(envp, name, value);
+			change_env_node(envp, name, value, 1);
 		i++;
 	}
 }
 
-// Adds or updates a node in the env list
-void	change_env_node(t_envlst **env_list, char *name, char *value)
+// Adds or updates a node in the env list with the given name and value
+// or deletes it if value is NULL and free_it is 1
+void	change_env_node(t_envlst **env_list, char *name, char *value, int free_it)
 {
 	t_envlst	*current;
 
@@ -66,8 +67,11 @@ void	change_env_node(t_envlst **env_list, char *name, char *value)
 				current->value = ft_strdup(value);
 			else
 				current->value = NULL;
-			free(name);
-			free(value);
+			if (free_it)
+			{
+				free(name);
+				free(value);
+			}
 			return ;
 		}
 		current = current->next;

@@ -6,15 +6,15 @@
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/09 09:58:55 by chorst            #+#    #+#             */
-/*   Updated: 2024/07/09 10:52:20 by chorst           ###   ########.fr       */
+/*   Updated: 2024/07/09 12:26:20 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../include/minishell.h"
 
 // Function that removes characters from a string
-// str = string to remove characters from
-// chars_to_remove = characters to remove from str
+// str = string to remove chars from
+// chars_to_remove = chars to remove from str
 char *remove_chars(char *str, const char *chars_to_remove)
 {
 	int		count;
