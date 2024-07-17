@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 11:12:44 by jeberle           #+#    #+#             */
-/*   Updated: 2024/07/16 21:28:30 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/07/17 11:00:51 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ char	*toktype_to_str(enum e_toktype token)
 	if (token == ARGUMENT)
 		return (ft_strdup("Argument"));
 	if (token == GETEXSTATE)
-		return (ft_strdup("Get Exit State"));
+		return (ft_strdup("Ges"));
 	if (token == VARIABLE)
 		return (ft_strdup("Variable"));
 	if (token == UNSET)

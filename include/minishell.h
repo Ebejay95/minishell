@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:18:56 by jeberle           #+#    #+#             */
-/*   Updated: 2024/07/16 22:21:44 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/07/17 10:59:52 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -153,7 +153,7 @@ int			count_relevant_chars(const char *str, const char *chrs_to_rmv);
 void		remove_helper(const char *str, const char *chrs_to_rmv, char *new_str);
 
 // segments.c
-t_segment	**lex(char *str, t_toktype lookfor);
+t_segment	**lex(t_token *token, t_toktype lookfor);
 t_segment	**lex_redirections(char *str);
 t_segment	**lex_pipes(char *str);
 t_segment	**lex_ges(char *str);

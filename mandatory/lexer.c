@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 11:30:06 by jeberle           #+#    #+#             */
-/*   Updated: 2024/07/16 22:21:01 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/07/17 12:02:29 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,7 +108,7 @@ void	prompt_to_token(t_minishell *m)
 // SPECIAL_VARIABLE         Spezielle Variable                 ^$(?                    $?                             $#
 // EXPANSION                Parameter Expansion                ^\$\{.*\}$              ${VAR}                         ${PATH}
 // UNSET                    Nicht festgelegter Typ             N/A                     N/A                            N/A
-void	splice_token_by(t_list *node, t_token *token, t_toktype lookfor)
+void	splice_token_by(t_list *node, t_token *token, t_toktype lookfor, char *skippers)
 {
 	t_list		*new_element;
 	t_token		*newtok;
@@ -116,28 +116,38 @@ void	splice_token_by(t_list *node, t_token *token, t_toktype lookfor)
 	t_segment	**news;
 	int			index;
 
-	current = node;
-	news = lex(token->str, lookfor);
-	index = 0;
-	while (news[index])
+	if (!ft_strstr(skippers, toktype_to_str(token->token)))
 	{
-		if (index != 0)
+		current = node;
+		news = lex(token, lookfor);
+
+		index = 0;
+		while (news[index])
 		{
-			newtok = create_token(news[index]->str, 0, ft_strlen(news[index]->str), 1);
-			update_tok_type(newtok, news[index]->type);
-			new_element = ft_lstnew((void *)newtok);
-			if (!new_element)
-				return ;
-			new_element->next = current->next;
-			current->next = new_element;
-			current = current->next;
+			if (lookfor == VARIABLE && strlen(news[index]->str) == 0)
+			{
+				index++;
+				continue;
+			}
+
+			if (index != 0)
+			{
+				newtok = create_token(news[index]->str, 0, ft_strlen(news[index]->str), 1);
+				update_tok_type(newtok, news[index]->type);
+				new_element = ft_lstnew((void *)newtok);
+				if (!new_element)
+					return ;
+				new_element->next = current->next;
+				current->next = new_element;
+				current = current->next;
+			}
+			else
+			{
+				token->str = news[index]->str;
+				update_tok_type(token, news[index]->type);
+			}
+			index++;
 		}
-		else
-		{
-			token->str = news[index]->str;
-			update_tok_type(token, news[index]->type);
-		}
-		index++;
 	}
 }
 
@@ -152,10 +162,10 @@ void	analyze_tokens(t_minishell *m)
 		cur_content = (t_token *)current->content;
 		if (cur_content->expand)
 		{
-			splice_token_by(current, cur_content, REDIRECTION);
-			splice_token_by(current, cur_content, PIPE);
-			splice_token_by(current, cur_content, GETEXSTATE);
-			splice_token_by(current, cur_content, VARIABLE);
+			splice_token_by(current, cur_content, REDIRECTION, "");
+			splice_token_by(current, cur_content, PIPE, "");
+			splice_token_by(current, cur_content, GETEXSTATE, "Variable");
+			splice_token_by(current, cur_content, VARIABLE, "Ges");
 			// trenne ' =sdf' als einzelnes = auf und interpretiere sdf als argument
 			// bei 'sdfdsf=' lesgt eine variabkendeklaration vor bei 'sdfsdf= ' auch aber der wert dahinter wird nicht mitgenommen
 		}
