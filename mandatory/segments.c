@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 19:46:25 by jeberle           #+#    #+#             */
-/*   Updated: 2024/07/17 13:52:25 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/07/19 01:15:44 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,85 +18,80 @@ int	is_redirection_pattern(const char *str, int i)
 	{
 		while (str[i] == '>' || str[i] == '<')
 			i++;
-        if (str[i + 1])
-        {
-        	if (str[i + 1] == '\n')
-        	{
-        	    fprintf(stderr, "bash: syntax error near unexpected token `\\\n'\n");
-        	    return 0;
-        	}
-        	if (str[i + 1] == '|')
-        	{
-        	    fprintf(stderr, "bash: syntax error near unexpected token `|'\n");
-        	    return 0;
-        	}
-        }
+		if (str[i] == '\0')
+		{
+			ft_fprintf(2, "bash: syntax error near unexpected token `newline'\n");
+			return (0);
+		}
+		if (str[i] == '|')
+		{
+			ft_fprintf(2, "bash: syntax error near unexpected token `|'\n");
+			return (0);
+		}
 		return (i);
 	}
-	
 	return (0);
 }
 
-int is_pipe_pattern(const char *str, int i)
+int	is_pipe_pattern(const char *str, int i)
 {
-    if (str[i] == '|')
-    {
-        i++;
-
-        if (str[i] == '|')
-        {
-            fprintf(stderr, "bash: syntax error near unexpected token `|'\n");
-            return 0;
-        }
-
-        if (str[i] == '\0')
-        {
-            return i;
-        }
-        return i;
-    }
-    return 0;
+	if (str[i] == '|')
+	{
+		i++;
+		if (str[i] == '\0')
+		{
+			ft_fprintf(2, "bash: syntax error near unexpected token `newline'\n");
+			return (0);
+		}
+		if (str[i] == '|')
+		{
+			ft_fprintf(2, "bash: syntax error near unexpected token `|'\n");
+			return (0);
+		}
+		return (i);
+	}
+	return (0);
 }
 
-int is_ges_pattern(const char *str, int i)
+int	is_ges_pattern(const char *str, int i)
 {
-    if (str[i] == '$')
-    {
-        if (str[i + 1] == '\0' || (!ft_strchr(VS, str[i + 1]) && str[i + 1] != '?'))
-        {
-            fprintf(stderr, "bash: syntax error near unexpected token `$'\n");
-            return (0);
-        }
-        if (str[i + 1] == '?')
-        {
-            return (i + 2);
-        }
-    }
-    return (0);
+	if (str[i] == '$')
+	{
+		if (str[i + 1] == '\0' || (!ft_strchr(VS, str[i + 1]) && str[i + 1] != '?'))
+		{
+			ft_fprintf(2, "bash: syntax error near unexpected token `$'\n");
+			return (0);
+		}
+		if (str[i + 1] == '?')
+		{
+			return (i + 2);
+		}
+	}
+	return (0);
 }
 
-int is_var_pattern(const char *str, int i)
+int	is_var_pattern(const char *str, int i)
 {
-    if (str[i] == '$')
-    {
-        if (str[i + 1] == '\0' || (!ft_strchr(VS, str[i + 1]) && str[i + 1] != '?'))
-        {
-            fprintf(stderr, "bash: syntax error near unexpected token `$'\n");
-            return (0);
-        }
-        i++;
-        while (str[i] && (ft_strchr(VS, str[i]) || str[i] == '?'))
-        {
-            if (str[i] == '$')
-            {
-                fprintf(stderr, "bash: syntax error near unexpected token `$'\n");
-                return (0);
-            }
-            i++;
-        }
-        return (i);
-    }
-    return (0);
+	if (str[i] == '$')
+	{
+		if (str[i + 1] == '\0' || (!ft_strchr(VS, str[i + 1]) && str[i + 1] != '?'))
+		{
+			ft_fprintf(2, "bash: syntax error near unexpected token `$'\n");
+			return (0);
+		}
+		i++;
+		while (str[i] && (ft_strchr(VS, str[i]) || str[i] == '?'))
+		{
+			if (str[i] == '$')
+			{
+				ft_fprintf(2, "bash: syntax error near unexpected token `$'\n");
+				return (0);
+			}
+			i++;
+		}
+		return (i);
+	}
+	return (0);
 }
 
 t_segment	*create_segment(const char *str, int start, int end, t_toktype type)
@@ -136,13 +131,12 @@ t_segment	**lex(t_token *token, t_toktype lookfor)
 			new_pos = is_var_pattern(token->str, i);
 		else
 			new_pos = 0;
-
 		if (new_pos)
 		{
 			if (i > last_pos)
 			{
 				segments = realloc(segments, sizeof(t_segment *) * (count + 1));
-				segments[count++] = create_segment(token->str, last_pos, i, token->token);
+				segments[count++] = create_segment(token->str, last_pos, i, WORD);
 			}
 			if (new_pos > i)
 			{
@@ -160,7 +154,7 @@ t_segment	**lex(t_token *token, t_toktype lookfor)
 	if (last_pos < i)
 	{
 		segments = realloc(segments, sizeof(t_segment *) * (count + 1));
-		segments[count++] = create_segment(token->str, last_pos, i, token->token);
+		segments[count++] = create_segment(token->str, last_pos, i, WORD);
 	}
 	segments = realloc(segments, sizeof(t_segment *) * (count + 1));
 	segments[count] = NULL;

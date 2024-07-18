@@ -6,94 +6,11 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/21 13:23:03 by jeberle           #+#    #+#             */
-/*   Updated: 2024/06/28 11:05:06 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/07/18 18:27:41 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../include/minishell.h"
-
-// bash-5.2$ $HOME
-// bash: /Users/jeberle: Is a directory
-// bash-5.2$ echo $HOME
-// /Users/jeberle
-// bash-5.2$ echo "$HOME"  
-// /Users/jeberle
-// bash-5.2$ echo '$HOME'
-// $HOME
-// bash-5.2$ echo "'$HOME'"
-// '/Users/jeberle'
-// bash-5.2$ echo '"$HOME"'
-// "$HOME"
-// bash-5.2$ echo "cat './include/minishell.h' | grep #"
-// cat './include/minishell.h' | grep #
-// bash-5.2$ echo "cat $HOME"
-// cat /Users/jeberle
-// bash-5.2$ echo "$HOME"
-// /Users/jeberle
-// bash-5.2$ echo 'cat $HOME'
-// cat $HOME
-// bash-5.2$
-// bash-5.2$ echo $HOME
-// /Users/jeberle
-// bash-5.2$ echo "$HOME"  
-// /Users/jeberle
-// bash-5.2$ echo '$HOME'
-// $HOME
-// bash-5.2$ echo "'$HOME'"
-// '/Users/jeberle'
-// bash-5.2$ echo '"$HOME"'
-// "$HOME"
-// bash-5.2$ echo "'"$HOME"'"
-// '/Users/jeberle'
-// bash-5.2$ echo '"'$HOME'"'
-// "/Users/jeberle"
-// bash-5.2$ echo '"'"$HOME"'"'
-// "/Users/jeberle"
-// bash-5.2$ echo "'"'$HOME'"'"
-// '$HOME'
-// bash-5.2$ echo "'"'"$HOME"'"'"
-// '"$HOME"'
-// bash-5.2$ echo '"'"'$HOME'"'"'
-// "'/Users/jeberle'"
-// bash-5.2$ echo '"'"'"$HOME"'"'"'
-// "'/Users/jeberle'"
-// bash-5.2$ echo "'"'"'$HOME'"'"'"
-// '"/Users/jeberle"'
-// bash-5.2$ echo "'"'"'"$HOME"'"'"'"
-// '"/Users/jeberle"'
-// bash-5.2$ echo '"'"'"'$HOME'"'"'"'
-// "'$HOME'"
-// bash-5.2$ echo '"'"'"'"$HOME"'"'"'"'
-// "'"$HOME"'"
-// bash-5.2$ echo "'"'"'"'$HOME'"'"'"'"
-// '"'/Users/jeberle'"'
-// bash-5.2$ echo "'"'"'"'"$HOME"'"'"'"'"
-// '"'/Users/jeberle'"'
-// bash-5.2$ echo '"'"'"'"'$HOME'"'"'"'"'
-// "'"/Users/jeberle"'"
-// bash-5.2$ 
-
-//int	can_expand(t_lexer lexer, int index, t_expsegment *exp_seg)
-//{
-//	t_segment	*watch;
-//	char		*varname;
-//
-//	varname = NULL;
-//	watch = find_seg_by_start(lexer.variable_buffer, index);
-//	if (watch)
-//		varname = watch->str;
-//	if (varname && varname[0] == '$')
-//	{
-//		exp_seg->str = ft_strdup(varname);
-//		exp_seg->start = watch->start;
-//		exp_seg->end = watch->end;
-//		varname++;
-//		exp_seg->value = ft_getenv(varname);
-//		return (1);
-//	}
-//	return (0);
-//}
-
 
 // char *expand_variables(char *prompt, int watchstart, int watchend) {
 //     int length = ft_strlen(prompt);

@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:18:56 by jeberle           #+#    #+#             */
-/*   Updated: 2024/07/17 10:59:52 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/07/18 19:54:58 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,14 +55,8 @@
 # define NUMS "0123456789"
 # define WHTSPC " \t\n\v\f\r"
 # define SPCCHR "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~"
-# define VS "$_=ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
+# define VS "$_ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
 # define RDRCSET "><0123456789"
-
-// #############################################################################
-// #                                 Union                                     #
-// #############################################################################
-
-
 
 // #############################################################################
 // #                                 Enums                                     #
@@ -72,8 +66,7 @@ typedef enum e_toktype
 {
 	REDIRECTION,
 	PIPE,
-	COMMAND,
-	ARGUMENT,
+	WORD,
 	VARIABLE,
 	GETEXSTATE,
 	UNSET
@@ -89,7 +82,7 @@ typedef struct s_segment
 	enum e_toktype	type;
 }					t_segment;
 
-typedef struct s_token // USE UNION!!!!!
+typedef struct s_token
 {
 	enum e_toktype	token;
 	char			*type;
@@ -97,7 +90,47 @@ typedef struct s_token // USE UNION!!!!!
 	int				start;
 	int				end;
 	int				expand;
+	int				gluestart;
+	int				glueend;
+	union u_detail
+	{
+		struct s_rdct_tokdetail
+		{
+			int		fdin;
+			int		fdout;
+			char	*rdrctype;
+		}	redirection;
+		struct s_pipe_tokdetail
+		{
+			int		fdin;
+			int		fdout;
+		}	pipe;
+		int			arglen;
+	}	detail;
 }	t_token;
+
+
+
+// void set_rdrct_token_details(t_token *token, int fdin, int fdout, const char *rdrctype) {
+//     if (token == NULL) return;
+//     token->token = REDIRECTION;
+//     token->detail.redirection.fdin = fdin;
+//     token->detail.redirection.fdout = fdout;
+//     token->detail.redirection.rdrctype = rdrctype;
+// }
+
+// void set_command_arg_token_details(t_token *token, int arglen, int is_command) {
+//     if (token == NULL) return;
+//     token->token = is_command ? COMMAND : ARGUMENT;
+//     token->detail.arglen = arglen;
+// }
+
+// void set_pipe_token_details(t_token *token, int fdin, int fdout) {
+//     if (token == NULL) return;
+//     token->token = PIPE;
+//     token->detail.pipe.fdin = fdin;
+//     token->detail.pipe.fdout = fdout;
+// }
 
 typedef struct s_envlst
 {

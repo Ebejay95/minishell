@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 11:12:44 by jeberle           #+#    #+#             */
-/*   Updated: 2024/07/17 11:00:51 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/07/18 19:54:41 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,8 @@ t_token	*create_token(char *str, int start, int end, int expand)
 	newtok->start = start;
 	newtok->end = end;
 	newtok->expand = expand;
+	newtok->gluestart = 0;
+	newtok->glueend = 0;
 	return (newtok);
 }
 
@@ -55,10 +57,8 @@ char	*toktype_to_str(enum e_toktype token)
 		return (ft_strdup("Redirection"));
 	if (token == PIPE)
 		return (ft_strdup("Pipe"));
-	if (token == COMMAND)
-		return (ft_strdup("Command"));
-	if (token == ARGUMENT)
-		return (ft_strdup("Argument"));
+	if (token == WORD)
+		return (ft_strdup("Word"));
 	if (token == GETEXSTATE)
 		return (ft_strdup("Ges"));
 	if (token == VARIABLE)

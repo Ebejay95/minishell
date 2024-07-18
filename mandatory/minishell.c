@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:01:33 by jeberle           #+#    #+#             */
-/*   Updated: 2024/07/17 13:16:32 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/07/18 18:55:38 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,10 +69,10 @@ int	main(int argc, char **argv, char **envp)
 	while (1)
 	{
 		minishell.envp = envp;
-		minishell.prompt = readline("🚀 ");
+		minishell.prompt = readline("🍕🚀🌈🦄🍺 ");
 		if (!minishell.prompt)
 		{
-			printf("\033[1A🚀 exit\n");
+			printf("\033[1A🍕🚀🌈🦄🍺 exit\n");
 			exit(0);
 		}
 		minishell.tok_lst = NULL;
