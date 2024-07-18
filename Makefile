@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: chorst <chorst@student.42.fr>              +#+  +:+       +#+         #
+#    By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/25 22:43:08 by jonathanebe       #+#    #+#              #
-#    Updated: 2024/07/09 10:54:01 by chorst           ###   ########.fr        #
+#    Updated: 2024/07/16 21:51:54 by jeberle          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -92,10 +92,10 @@ SRCS=	mandatory/ast.c \
 		mandatory/parser.c \
 		mandatory/putters.c \
 		mandatory/remove_chars.c \
-		mandatory/segments_helper.c \
 		mandatory/segments.c \
 		mandatory/signals.c \
 		mandatory/tokens.c \
+		mandatory/tokens2.c \
 		builtins/cd.c \
 		builtins/echo.c \
 		builtins/env.c \
