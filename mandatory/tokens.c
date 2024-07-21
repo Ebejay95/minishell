@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 11:12:44 by jeberle           #+#    #+#             */
-/*   Updated: 2024/07/18 19:54:41 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/07/21 18:18:55 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,8 @@ t_token	*create_token(char *str, int start, int end, int expand)
 	newtok = (t_token *)malloc(sizeof(t_token));
 	if (!newtok)
 		return (NULL);
-	newtok->token = UNSET;
-	newtok->type = toktype_to_str(UNSET);
+	newtok->token = WORD;
+	newtok->type = toktype_to_str(WORD);
 	newtok->str = strdup(str);
 	newtok->start = start;
 	newtok->end = end;
@@ -57,12 +57,10 @@ char	*toktype_to_str(enum e_toktype token)
 		return (ft_strdup("Redirection"));
 	if (token == PIPE)
 		return (ft_strdup("Pipe"));
+	if (token == COMMAND)
+		return (ft_strdup("Command"));
 	if (token == WORD)
 		return (ft_strdup("Word"));
-	if (token == GETEXSTATE)
-		return (ft_strdup("Ges"));
-	if (token == VARIABLE)
-		return (ft_strdup("Variable"));
 	if (token == UNSET)
 		return (ft_strdup("UNSET"));
 	return (ft_strdup(""));

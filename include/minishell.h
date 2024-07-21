@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:18:56 by jeberle           #+#    #+#             */
-/*   Updated: 2024/07/18 19:54:58 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/07/21 18:55:09 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,9 +66,8 @@ typedef enum e_toktype
 {
 	REDIRECTION,
 	PIPE,
+	COMMAND,
 	WORD,
-	VARIABLE,
-	GETEXSTATE,
 	UNSET
 }	t_toktype;
 
@@ -76,11 +75,11 @@ typedef enum e_toktype
 // #                               Structures                                  #
 // #############################################################################
 
-typedef struct s_segment
+typedef struct s_exp_range
 {
-	char			*str;
-	enum e_toktype	type;
-}					t_segment;
+	int				start;
+	int				end;
+}					t_exp_range;
 
 typedef struct s_token
 {
@@ -89,7 +88,7 @@ typedef struct s_token
 	char			*str;
 	int				start;
 	int				end;
-	int				expand;
+	t_exp_range		*expand;
 	int				gluestart;
 	int				glueend;
 	union u_detail
@@ -165,9 +164,6 @@ int			vd_tree_add(t_btree *current, char *branch, t_token *newtok);
 
 // lexer.c
 void		lex_prompt(t_minishell *m);
-// t_segment	*find_seg_by_start(t_segment **segs, int search);
-// t_segment	*find_seg_by_end(t_segment **segs, int search);
-// t_segment	*find_seg_by_str(t_segment **segs, char *search);
 
 // minishell.c
 void		execute_command(char *prompt, t_envlst **envlst);
@@ -184,17 +180,6 @@ void		parse(t_minishell *m);
 char		*remove_chars(const char *str, const char *chrs_to_rmv);
 int			count_relevant_chars(const char *str, const char *chrs_to_rmv);
 void		remove_helper(const char *str, const char *chrs_to_rmv, char *new_str);
-
-// segments.c
-t_segment	**lex(t_token *token, t_toktype lookfor);
-t_segment	**lex_redirections(char *str);
-t_segment	**lex_pipes(char *str);
-t_segment	**lex_ges(char *str);
-t_segment	**lex_vars(char *str);
-t_segment	**get_segs(char *prompt, char *type);
-t_segment	**get_quote_segs(t_minishell *m, char type);
-t_segment	**get_oc_segs(t_minishell *m, char mode, char *open, char *close);
-t_segment	**get_set_segs(t_minishell *m, char *set);
 
 // tokens.c
 t_token		*create_token(char *str, int start, int end, int expand);
