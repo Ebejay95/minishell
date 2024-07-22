@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokens.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
+/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 11:12:44 by jeberle           #+#    #+#             */
-/*   Updated: 2024/07/21 18:18:55 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/07/22 10:51:04 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,9 @@ t_token	*create_token(char *str, int start, int end, int expand)
 	newtok->str = strdup(str);
 	newtok->start = start;
 	newtok->end = end;
-	newtok->expand = expand;
+	// ############################################## ich konnte nicht maken weil: network->expand = expand; nicht richtig war
+	newtok->expand->start = expand; // (chorst) hier habe ich start angegeben weil es vorher einfach nur network->expand war
+	// ############################################## koennte auch network->expand.end = expand; sein (habs mir nicht genauer angeschaut aber ich glaube du meintest start)
 	newtok->gluestart = 0;
 	newtok->glueend = 0;
 	return (newtok);
@@ -66,7 +68,7 @@ char	*toktype_to_str(enum e_toktype token)
 	return (ft_strdup(""));
 }
 
-// print the content of a grammar token 
+// print the content of a grammar token
 void	put_token(void *content)
 {
 	t_token	*token;

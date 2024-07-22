@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
+/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 11:30:06 by jeberle           #+#    #+#             */
-/*   Updated: 2024/07/21 19:03:23 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/07/22 10:52:30 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ void	expand_token(t_token *token)
 	char	*ptr;
 	size_t	pre_var_len;
 	char	temp;
-	// EXITCODE $? ggf hier auch expanden... 
+	// EXITCODE $? ggf hier auch expanden...
 // jeberle@2-E-4 minishell % echo$?
 // zsh: command not found: echo0
 	new_str = NULL;
@@ -185,6 +185,7 @@ void	prompt_to_token(t_minishell *m)
 	int		end_pos;
 	t_token	*token;
 
+	work = NULL; // (chorst) hier wird work initialisiert (das hat gefehlt und deshalb sich der compiler beschwert gehabt)
 	//hIer expands array erstellen... fuer exoander
 	while (*work) {
 		if (*work == '\'') {

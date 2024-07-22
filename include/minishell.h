@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
+/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:18:56 by jeberle           #+#    #+#             */
-/*   Updated: 2024/07/21 18:55:09 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/07/22 12:31:49 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -170,6 +170,7 @@ void		execute_command(char *prompt, t_envlst **envlst);
 void		extract_name_value(char *env_var, char **name, char **value);
 void		add_env_node(t_envlst **env_list, char *name, char *value);
 t_envlst	*init_env_list(char **envp);
+void		cleanup_minishell(t_minishell *minishell);
 
 // parser.c
 void		parse(t_minishell *m);
@@ -198,6 +199,7 @@ void		setup_signals(void);
 // cd.c
 void		ft_cd(int argc, char **argv, t_envlst ***envp);
 void		cd_home(t_envlst ***envp);
+void		cd_oldpwd(t_envlst ***envp);
 
 // echo.c
 void		ft_echo(char **args);

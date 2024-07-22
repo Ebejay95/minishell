@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init_envlst.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jkauker <jkauker@student.42heilbronn.de    +#+  +:+       +#+        */
+/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 10:00:01 by chorst            #+#    #+#             */
-/*   Updated: 2024/07/03 07:53:18 by jkauker          ###   ########.fr       */
+/*   Updated: 2024/07/22 15:25:46 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,14 +18,24 @@ t_envlst	*init_env_list(char **envp)
 	t_envlst	*env_list;
 	char		*name;
 	char		*value;
+	// int			exist;
 
 	env_list = NULL;
 	while (*envp != NULL)
 	{
 		extract_name_value(*envp, &name, &value);
-		add_env_node(&env_list, name, value);
+		if (ft_strcmp(name, "SHLVL") == 0)
+			value = ft_itoa(atoi(value) + 1);
+		if (ft_strcmp(name, "OLDPWD") != 0)
+			add_env_node(&env_list, name, value);
+		else
+		{
+			free(name);
+			free(value);
+		}
 		envp++;
 	}
+	add_env_node(&env_list, "OLDPWD", NULL);
 	return (env_list);
 }
 

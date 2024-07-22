@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   var_helper.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jkauker <jkauker@student.42heilbronn.de    +#+  +:+       +#+        */
+/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/26 13:42:12 by jkauker           #+#    #+#             */
-/*   Updated: 2024/06/26 14:16:11 by jkauker          ###   ########.fr       */
+/*   Updated: 2024/07/22 13:56:16 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,8 +36,7 @@ void	print_env_variable(const char *env_var)
 	if (equal_sign != NULL)
 	{
 		name_len = equal_sign - env_var;
-		printf("declare -x %.*s=\"%s\"\n", (int)name_len, env_var,
-			equal_sign + 1);
+		printf("declare -x %.*s=\"%s\"\n", (int)name_len, env_var, equal_sign + 1);
 	}
 	else
 		printf("declare -x %s\n", env_var);

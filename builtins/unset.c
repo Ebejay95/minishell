@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   unset.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jkauker <jkauker@student.42heilbronn.de    +#+  +:+       +#+        */
+/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 15:11:43 by chorst            #+#    #+#             */
-/*   Updated: 2024/07/03 10:08:20 by jkauker          ###   ########.fr       */
+/*   Updated: 2024/07/22 15:26:52 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,8 @@ void	ft_unset(t_envlst **envp, char **argv)
 // Function to free the memory of an envlst node
 void	free_envlst_node(t_envlst *node)
 {
+	if (ft_strcmp(node->name, "OLDPWD") == 0)
+		return ;
 	free(node->name);
 	free(node->value);
 	free(node);

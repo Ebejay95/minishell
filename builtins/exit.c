@@ -6,7 +6,7 @@
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 15:12:06 by chorst            #+#    #+#             */
-/*   Updated: 2024/07/08 13:02:00 by chorst           ###   ########.fr       */
+/*   Updated: 2024/07/22 12:31:51 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,9 @@
 
 void	ft_exit(char **argv)
 {
-	int exit_status = 0;
+	int exit_status;
 
+	exit_status = 0;
 	if (argv[1])
 	{
 		exit_status = atoi(argv[1]);
@@ -27,3 +28,5 @@ void	ft_exit(char **argv)
 	}
 	exit(exit_status);
 }
+
+// exit status der letzten funktion oder command returnen.

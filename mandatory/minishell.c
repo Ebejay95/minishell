@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
+/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:01:33 by jeberle           #+#    #+#             */
-/*   Updated: 2024/07/19 01:27:49 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/07/22 12:23:25 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ void	execute_command(char *prompt, t_envlst **envlst)
 			ft_echo(argv);
 		if (ft_strcmp(prompt, "env") == 0)
 			ft_env(*envlst);
-		if (ft_strcmp(prompt, "exit") == 0)
+		if (!(ft_strcmp(argv[0], "exit")))
 			ft_exit(argv);
 		if (!(ft_strcmp(argv[0], "export")) || !(is_var_name(*envlst, argv)))
 			ft_export(argc, argv, &envlst);
@@ -54,10 +54,17 @@ void	execute_command(char *prompt, t_envlst **envlst)
 		free(argv[argc--]);
 }
 
+void cleanup_minishell(t_minishell *minishell)
+{
+	free(minishell->prompt);
+	// minishell->prompt = NULL;
+}
+
 // Main function that runs the minishell loop
 int	main(int argc, char **argv, char **envp)
 {
-	t_minishell	minishell;	t_envlst	*envlst;
+	t_minishell	minishell;
+	t_envlst	*envlst;
 
 	envlst = init_env_list(envp);
 	(void)argv;
@@ -65,7 +72,6 @@ int	main(int argc, char **argv, char **envp)
 	if (argc != 1)
 		return (0);
 	setup_signals();
-	minishell.envp = envp;
 	while (1)
 	{
 		minishell.envp = envp;
@@ -82,21 +88,10 @@ int	main(int argc, char **argv, char **envp)
 			execute_command(minishell.prompt, &envlst);
 			add_history(minishell.prompt);
 			// lex_prompt(&minishell);
-			parse(&minishell);
-			free(minishell.prompt);
+			// parse(&minishell);
+			cleanup_minishell(&minishell);
 		}
 	}
 	rl_clear_history();
 	return (0);
 }
-
-// settings.json
-
-// {
-// 	"files.associations": {
-// 		"pthread.h": "c",
-// 		"minishell.h": "c",
-// 		"history.h": "c",
-// 		"limits.h": "c"
-// 	}
-// }
