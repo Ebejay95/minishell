@@ -6,7 +6,7 @@
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 15:10:58 by chorst            #+#    #+#             */
-/*   Updated: 2024/07/22 15:49:45 by chorst           ###   ########.fr       */
+/*   Updated: 2024/07/22 15:57:57 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,28 +73,6 @@ void	cd_home(t_envlst ***envp)
 	change_env_node(&(**envp), "OLDPWD", oldpwd, 0);
 	change_env_node(&(**envp), "PWD", pwd, 0);
 	free(oldpwd);
-}
-
-void	cd_oldpwd(t_envlst ***envp)
-{
-	char	*oldpwd;
-	char	*pwd;
-
-	oldpwd = getenv("OLDPWD");
-	if (!oldpwd)
-		return ((void)printf("cd: OLDPWD not set\n"));
-	pwd = getcwd(NULL, 0);
-	if (!pwd)
-		return (perror("getcwd"));
-	if (chdir(oldpwd) == -1)
-	{
-		printf("🚀: cd: %s: No such file or directory\n", oldpwd);
-		free(pwd);
-		return ;
-	}
-	change_env_node(&(**envp), "OLDPWD", pwd, 0);
-	change_env_node(&(**envp), "PWD", oldpwd, 0);
-	free(pwd);
 }
 
 // cd "-" sollte vom parser als OLDPWD ersetzt werden
