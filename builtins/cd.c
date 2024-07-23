@@ -6,7 +6,7 @@
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 15:10:58 by chorst            #+#    #+#             */
-/*   Updated: 2024/07/23 12:53:30 by chorst           ###   ########.fr       */
+/*   Updated: 2024/07/23 15:41:53 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,8 @@
 // #############################################################################
 // # cd "-" sollte vom parser durch OLDPWD(alter Pfad) ersetzt werden
 // # oder es wird einfach ignoriert und eine Fehlermeldung ausgegeben
+// # cd "~" wird durch den Home-Pfad ersetzt funktioniert aber eigentlich nicht
+// wie cd ohne argument
 // #############################################################################
 
 // Main function that changes the current working directory
@@ -26,7 +28,7 @@ void	ft_cd(int argc, char **argv, t_envlst ***envp)
 
 	if (argc == 1 || !ft_strcmp(argv[1], "~") || !ft_strcmp(argv[1], "--"))
 		cd_home(envp);
-	else
+	else if (argc == 2)
 	{
 		path = argv[1];
 		oldpwd = getcwd(NULL, 0);

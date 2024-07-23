@@ -6,13 +6,14 @@
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:01:33 by jeberle           #+#    #+#             */
-/*   Updated: 2024/07/23 14:49:31 by chorst           ###   ########.fr       */
+/*   Updated: 2024/07/23 15:41:29 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../include/minishell.h"
 
 // Function that parses the input into a table using ft_split
+// Diese Funktion ist nur ein temporaer und kann natuerlich komplett umgeschrieben werden, oder durch deine eigene Funktion ersetzt werden
 char	**parse_input(char *prompt, int *argc)
 {
 	char	**argv;
@@ -27,6 +28,7 @@ char	**parse_input(char *prompt, int *argc)
 }
 
 // Function that choses which bultin to execute based on the prompt
+// Dieser Funktion kannst du natuerlich noch weitere Befehle hinzufuegen, oder komplett umschreiben
 void	execute_command(char *prompt, t_envlst **envlst)
 {
 	int		argc;
@@ -55,6 +57,10 @@ void	execute_command(char *prompt, t_envlst **envlst)
 }
 
 // Function that handles the input from the user or the script
+// minishell->interactive wird in der setup_signals Funktion initialisiert
+// minishell->interactive 1 = interactive mode
+// minishell->interactive 0 = non-interactive mode
+// Je nach dem also ob unsere minishell im interaktiven oder nicht-interaktiven Modus laeuft, wird die entsprechende Funktion aufgerufen
 int handle_input(t_minishell *minishell, t_envlst **envlst)
 {
 	if (minishell->is_interactive)
@@ -68,18 +74,19 @@ int handle_input(t_minishell *minishell, t_envlst **envlst)
 	if (minishell->prompt[0] != '\0')
 	{
 		execute_command(minishell->prompt, envlst);
-		if (minishell->is_interactive)
-		{
-			add_history(minishell->prompt);
-		}
 		// lex_prompt(minishell);
 		// parse(minishell);
+		if (minishell->is_interactive)
+			add_history(minishell->prompt);
 	}
 	cleanup_minishell(minishell);
 	return (1);
 }
 
-// (was vorher in der main war, steht jetzt in handle_input (einfach ausgelagert))
+// Du kannst alle deutschen Kommentare loeschen. Die sind nur fuer dich, damit du weiss, was ich gemacht habe.
+// Was vorher in der main war, steht jetzt in handle_input (einfach ausgelagert). Ich habe zusatzlich den interactive mode und non-interactive mode in handle_input eingefügt)
+// #############################################################################
+
 // Main function that runs the minishell loop
 int	main(int argc, char **argv, char **envp)
 {
@@ -93,17 +100,8 @@ int	main(int argc, char **argv, char **envp)
 	setup_signals(&minishell);
 	initialize_minishell(&minishell, envp);
 	while (1)
-	{
 		if (!handle_input(&minishell, &envlst))
 			break ;
-	}
 	rl_clear_history();
 	return (0);
 }
-
-
-// Notes for push:
-// added new handle_input function to outsource the main function, therfore the makefile had to be changed to include the new file
-// made changes in the signal.c file to make it work with the new structure and to handle also non-interactive mode
-// added a new file called main_helper.c to include helper functions for the main function
-// added interactive_mode and non_interactive_mode functions to handle the different modes

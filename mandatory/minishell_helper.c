@@ -6,7 +6,7 @@
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/23 13:04:21 by chorst            #+#    #+#             */
-/*   Updated: 2024/07/23 14:46:14 by chorst           ###   ########.fr       */
+/*   Updated: 2024/07/23 15:38:43 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 void cleanup_minishell(t_minishell *minishell)
 {
 	free(minishell->prompt);
-	// minishell->prompt = NULL;
+	minishell->prompt = NULL;
 }
 
 // Initialize the minishell struct
@@ -35,6 +35,7 @@ void	interactive_mode(t_minishell *minishell)
 }
 
 // Function that defines the non-interactive mode
+// Hier wird read anstatt readline verwendet
 void	non_interactive_mode(t_minishell *minishell)
 {
 	char buffer[1024];
