@@ -6,7 +6,7 @@
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:18:56 by jeberle           #+#    #+#             */
-/*   Updated: 2024/07/22 12:31:49 by chorst           ###   ########.fr       */
+/*   Updated: 2024/07/23 14:46:57 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,6 +142,7 @@ typedef struct s_minishell
 {
 	char		**envp;
 	char		*prompt;
+	int			is_interactive;
 	t_list		*tok_lst;
 	t_btree		*ast;
 }	t_minishell;
@@ -165,12 +166,17 @@ int			vd_tree_add(t_btree *current, char *branch, t_token *newtok);
 // lexer.c
 void		lex_prompt(t_minishell *m);
 
+// minishell_helper.c
+void		cleanup_minishell(t_minishell *minishell);
+void		initialize_minishell(t_minishell *minishell, char **envp);
+void		interactive_mode(t_minishell *minishell);
+void		non_interactive_mode(t_minishell *minishell);
+
 // minishell.c
 void		execute_command(char *prompt, t_envlst **envlst);
 void		extract_name_value(char *env_var, char **name, char **value);
 void		add_env_node(t_envlst **env_list, char *name, char *value);
 t_envlst	*init_env_list(char **envp);
-void		cleanup_minishell(t_minishell *minishell);
 
 // parser.c
 void		parse(t_minishell *m);
@@ -190,7 +196,7 @@ void		update_tok_type(t_token *tok, enum e_toktype token);
 
 // signal.c
 void		handle_signal(int sig);
-void		setup_signals(void);
+void		setup_signals(t_minishell *minishell);
 
 // #############################################################################
 // #                               Builtins                                    #
@@ -237,5 +243,4 @@ void		print_env_variable(const char *env_var);
 int			is_var_name(t_envlst *envp, char **argv);
 char		*ft_strndup(const char *s, size_t n);
 
-// #############################################################################
 #endif

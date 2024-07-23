@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   signals.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
+/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/05 13:17:22 by chorst            #+#    #+#             */
-/*   Updated: 2024/07/16 20:46:33 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/07/23 14:36:50 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ void	handle_signal(int sig)
 		rl_replace_line("", 0);
 		rl_redisplay();
 	}
-	if (sig == SIGQUIT)
+	else if (sig == SIGQUIT)
 	{
 		rl_on_new_line();
 		rl_redisplay();
@@ -30,16 +30,22 @@ void	handle_signal(int sig)
 }
 
 // Function that sets up the signals
-void	setup_signals(void)
+void setup_signals(t_minishell *minishell)
 {
-	struct sigaction	sa;
+	struct sigaction sa;
 
+	minishell->is_interactive = isatty(STDIN_FILENO);
 	sigemptyset(&sa.sa_mask);
 	sa.sa_flags = 0;
 	sa.sa_handler = handle_signal;
 	sigaction(SIGINT, &sa, NULL);
 	sigaction(SIGQUIT, &sa, NULL);
 	signal(SIGQUIT, SIG_IGN);
+	if (!minishell->is_interactive)
+	{
+		signal(SIGINT, SIG_DFL);
+		signal(SIGQUIT, SIG_DFL);
+	}
 }
 
 // << echo (nicht-interaktiv)

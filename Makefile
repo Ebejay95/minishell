@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+         #
+#    By: chorst <chorst@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/25 22:43:08 by jonathanebe       #+#    #+#              #
-#    Updated: 2024/07/21 18:52:29 by jeberle          ###   ########.fr        #
+#    Updated: 2024/07/23 13:06:47 by chorst           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -88,6 +88,7 @@ SRCS=	mandatory/ast.c \
 		mandatory/lexer.c \
 		mandatory/init_envlst.c \
 		mandatory/lexer.c \
+		mandatory/minishell_helper.c \
 		mandatory/minishell.c \
 		mandatory/parser.c \
 		mandatory/putters.c \
