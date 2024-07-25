@@ -6,11 +6,18 @@
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 15:10:58 by chorst            #+#    #+#             */
-/*   Updated: 2024/07/15 12:29:39 by chorst           ###   ########.fr       */
+/*   Updated: 2024/07/23 15:41:53 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../include/minishell.h"
+
+// #############################################################################
+// # cd "-" sollte vom parser durch OLDPWD(alter Pfad) ersetzt werden
+// # oder es wird einfach ignoriert und eine Fehlermeldung ausgegeben
+// # cd "~" wird durch den Home-Pfad ersetzt funktioniert aber eigentlich nicht
+// wie cd ohne argument
+// #############################################################################
 
 // Main function that changes the current working directory
 void	ft_cd(int argc, char **argv, t_envlst ***envp)
@@ -19,9 +26,9 @@ void	ft_cd(int argc, char **argv, t_envlst ***envp)
 	char	*oldpwd;
 	char	*pwd;
 
-	if (argc == 1 || ft_strcmp(argv[1], "~") == 0)
+	if (argc == 1 || !ft_strcmp(argv[1], "~") || !ft_strcmp(argv[1], "--"))
 		cd_home(envp);
-	else
+	else if (argc == 2)
 	{
 		path = argv[1];
 		oldpwd = getcwd(NULL, 0);
@@ -29,7 +36,7 @@ void	ft_cd(int argc, char **argv, t_envlst ***envp)
 			return (perror("getcwd"));
 		if (chdir(path) == -1)
 		{
-			printf("🚀: cd: %s: No such file or directory\n", path);
+			printf("🍕🚀🌈🦄🍺: cd: %s: No such file or directory\n", path);
 			free(oldpwd);
 			return ;
 		}
@@ -68,3 +75,4 @@ void	cd_home(t_envlst ***envp)
 	change_env_node(&(**envp), "PWD", pwd, 0);
 	free(oldpwd);
 }
+

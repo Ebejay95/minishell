@@ -6,7 +6,7 @@
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 11:49:45 by chorst            #+#    #+#             */
-/*   Updated: 2024/07/16 15:24:35 by chorst           ###   ########.fr       */
+/*   Updated: 2024/07/22 15:50:53 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,3 +65,6 @@ void print_output(char **args, int start_index, bool newline)
 	if (newline)
 		printf("\n");
 }
+
+// echo.c bekommt die Argumente richtig übergeben vom parsing teil.
+// also z.b. ''"Hallo Welt"'' wird als "Hallo Welt" übergeben

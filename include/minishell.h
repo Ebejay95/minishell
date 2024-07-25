@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:18:56 by jeberle           #+#    #+#             */
-/*   Updated: 2024/07/25 03:44:34 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/07/25 05:05:03 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -135,6 +135,7 @@ typedef struct s_minishell
 {
 	char		**envp;
 	char		*prompt;
+	int			is_interactive;
 	t_list		*tok_lst;
 	t_btree		*ast;
 }	t_minishell;
@@ -157,6 +158,12 @@ void		expand_token(t_token *token);
 
 // lexer.c
 void		lex_prompt(t_minishell *m);
+
+// minishell_helper.c
+void		cleanup_minishell(t_minishell *minishell);
+void		initialize_minishell(t_minishell *minishell, char **envp);
+void		interactive_mode(t_minishell *minishell);
+void		non_interactive_mode(t_minishell *minishell);
 
 // minishell.c
 void		execute_command(char *prompt, t_envlst **envlst);
@@ -182,7 +189,7 @@ void		update_tok_type(t_token *tok, enum e_toktype token);
 
 // signal.c
 void		handle_signal(int sig);
-void		setup_signals(void);
+void		setup_signals(t_minishell *minishell);
 
 // #############################################################################
 // #                               Builtins                                    #
@@ -191,6 +198,7 @@ void		setup_signals(void);
 // cd.c
 void		ft_cd(int argc, char **argv, t_envlst ***envp);
 void		cd_home(t_envlst ***envp);
+void		cd_oldpwd(t_envlst ***envp);
 
 // echo.c
 void		ft_echo(char **args);
@@ -228,5 +236,4 @@ void		print_env_variable(const char *env_var);
 int			is_var_name(t_envlst *envp, char **argv);
 char		*ft_strndup(const char *s, size_t n);
 
-// #############################################################################
 #endif
