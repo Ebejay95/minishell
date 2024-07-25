@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:01:33 by jeberle           #+#    #+#             */
-/*   Updated: 2024/07/19 01:27:49 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/07/24 08:48:41 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,8 +50,8 @@ void	execute_command(char *prompt, t_envlst **envlst)
 		if (ft_strcmp(argv[0], "unset") == 0)
 			ft_unset(envlst, argv);
 	}
-	while (argc >= 0)
-		free(argv[argc--]);
+	//while (argc >= 0)
+	//	free(argv[argc--]);
 }
 
 // Main function that runs the minishell loop
@@ -83,7 +83,7 @@ int	main(int argc, char **argv, char **envp)
 			add_history(minishell.prompt);
 			// lex_prompt(&minishell);
 			parse(&minishell);
-			free(minishell.prompt);
+			//free(minishell.prompt);
 		}
 	}
 	rl_clear_history();

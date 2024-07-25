@@ -6,41 +6,37 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 11:12:44 by jeberle           #+#    #+#             */
-/*   Updated: 2024/07/21 18:18:55 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/07/25 05:01:06 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../include/minishell.h"
 
-// create a token from lexer data
-// t_token	*create_token(enum e_toktype token)
-// {
-// 	t_token		*newtok;
-
-// 	newtok = (t_token *)malloc(sizeof(t_token));
-// 	if (!newtok)
-// 		return (NULL);
-// 	newtok->token = token;
-// 	newtok->type = toktype_to_str(token);
-// 	return (newtok);
-// }
-t_token	*create_token(char *str, int start, int end, int expand)
+t_token	*create_token(char *str, char *expmap)
 {
 	t_token	*newtok;
 
-	if (!str || !*str)
+	if (!str || !*str || !expmap || !*expmap)
 		return (NULL);
 	newtok = (t_token *)malloc(sizeof(t_token));
 	if (!newtok)
 		return (NULL);
 	newtok->token = WORD;
 	newtok->type = toktype_to_str(WORD);
-	newtok->str = strdup(str);
-	newtok->start = start;
-	newtok->end = end;
-	newtok->expand = expand;
-	newtok->gluestart = 0;
-	newtok->glueend = 0;
+	newtok->str = ft_strdup(str);
+	if (!newtok->str)
+	{
+		free(newtok->type);
+		free(newtok);
+		return (NULL);
+	}
+	newtok->expmap = ft_strdup(expmap);
+	if (!newtok->expmap)
+	{
+		free(newtok->type);
+		free(newtok);
+		return (NULL);
+	}
 	return (newtok);
 }
 
@@ -66,19 +62,18 @@ char	*toktype_to_str(enum e_toktype token)
 	return (ft_strdup(""));
 }
 
-// print the content of a grammar token 
 void	put_token(void *content)
 {
-	t_token	*token;
+	t_token		*token;
+	int			i;
 
+	i = 0;
 	token = (t_token *)content;
 	if (token != NULL)
 	{
 		ft_printf(Y"["D);
 		ft_printf(C"%s "D, token->type);
 		ft_printf("%s", token->str);
-		if (token->expand)
-			ft_printf(B " EXPAND"D, token->str);
 		ft_printf(Y"]"D);
 	}
 	else

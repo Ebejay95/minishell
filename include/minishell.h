@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:18:56 by jeberle           #+#    #+#             */
-/*   Updated: 2024/07/21 18:55:09 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/07/25 03:44:34 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,8 +55,11 @@
 # define NUMS "0123456789"
 # define WHTSPC " \t\n\v\f\r"
 # define SPCCHR "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~"
-# define VS "$_ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
+# define VS "_ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
 # define RDRCSET "><0123456789"
+
+// maxima
+# define MAX_SQMARKERS 100
 
 // #############################################################################
 // #                                 Enums                                     #
@@ -75,22 +78,12 @@ typedef enum e_toktype
 // #                               Structures                                  #
 // #############################################################################
 
-typedef struct s_exp_range
-{
-	int				start;
-	int				end;
-}					t_exp_range;
-
 typedef struct s_token
 {
 	enum e_toktype	token;
 	char			*type;
 	char			*str;
-	int				start;
-	int				end;
-	t_exp_range		*expand;
-	int				gluestart;
-	int				glueend;
+	char			*expmap;
 	union u_detail
 	{
 		struct s_rdct_tokdetail
@@ -160,7 +153,7 @@ int			check_next_rel(t_token *current, t_token *new);
 int			vd_tree_add(t_btree *current, char *branch, t_token *newtok);
 
 // expand.c
-//void		ft_expand(char **prompt, t_lexer lexer, int start_index);
+void		expand_token(t_token *token);
 
 // lexer.c
 void		lex_prompt(t_minishell *m);
@@ -182,7 +175,7 @@ int			count_relevant_chars(const char *str, const char *chrs_to_rmv);
 void		remove_helper(const char *str, const char *chrs_to_rmv, char *new_str);
 
 // tokens.c
-t_token		*create_token(char *str, int start, int end, int expand);
+t_token 	*create_token(char *str, char *expmap);
 char		*toktype_to_str(enum e_toktype token);
 void		put_token(void *content);
 void		update_tok_type(t_token *tok, enum e_toktype token);
