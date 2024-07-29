@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: chorst <chorst@student.42.fr>              +#+  +:+       +#+         #
+#    By: jonathaneberle <jonathaneberle@student.    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/25 22:43:08 by jonathanebe       #+#    #+#              #
-#    Updated: 2024/07/23 13:06:47 by chorst           ###   ########.fr        #
+#    Updated: 2024/07/29 12:27:39 by jonathanebe      ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -46,7 +46,8 @@ NAME_BONUS=minishell_bonus
 #------------------------------------------------------------------------------#
 
 CC=cc
-CFLAGS=-Wall -Wextra -Werror
+CFLAGS=-Wall -Wextra -Werror -I/usr/local/opt/readline/include
+LDFLAGS=-L/usr/local/opt/readline/lib
 
 ifeq ($(DEBUG), 1)
 	CFLAGS += -fsanitize=address -g
@@ -138,11 +139,11 @@ $(LIBFT_LIB):
 	@$(MAKE) -C $(LIBFT_DIR)
 
 $(NAME): $(OBJECTS)
-	@$(CC) -o $@ $^ $(LIBFTFLAGS) $(SYSLIBFLAGS)
+	@$(CC) -o $@ $^ $(LIBFTFLAGS) $(SYSLIBFLAGS) $(LDFLAGS)
 	@echo "$(SUCCESS)"
 
 $(NAME_BONUS): $(BONUS_OBJECTS)
-	@$(CC) -o $@ $^ $(LIBFTFLAGS) $(SYSLIBFLAGS)
+	@$(CC) -o $@ $^ $(LIBFTFLAGS) $(SYSLIBFLAGS) $(LDFLAGS)
 	@echo "$(SUCCESS)"
 
 clean:

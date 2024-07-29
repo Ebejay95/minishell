@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokens.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jonathaneberle <jonathaneberle@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 11:12:44 by jeberle           #+#    #+#             */
-/*   Updated: 2024/07/25 05:04:47 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/07/29 12:28:07 by jonathanebe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,9 +65,7 @@ char	*toktype_to_str(enum e_toktype token)
 void	put_token(void *content)
 {
 	t_token		*token;
-	int			i;
 
-	i = 0;
 	token = (t_token *)content;
 	if (token != NULL)
 	{
