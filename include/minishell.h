@@ -6,14 +6,14 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:18:56 by jeberle           #+#    #+#             */
-/*   Updated: 2024/07/26 17:55:54 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/07/29 12:54:27 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
-// Librarys
+/* Librarys*/
 # include <stdio.h>
 # include <readline/readline.h>
 # include <readline/history.h>
