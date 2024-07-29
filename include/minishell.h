@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:18:56 by jeberle           #+#    #+#             */
-/*   Updated: 2024/07/25 05:05:03 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/07/26 17:55:54 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,6 +136,7 @@ typedef struct s_minishell
 	char		**envp;
 	char		*prompt;
 	int			is_interactive;
+	int			errcode;
 	t_list		*tok_lst;
 	t_btree		*ast;
 }	t_minishell;

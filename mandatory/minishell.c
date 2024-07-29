@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:01:33 by jeberle           #+#    #+#             */
-/*   Updated: 2024/07/25 05:05:36 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/07/26 17:56:37 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,7 @@ int handle_input(t_minishell *minishell, t_envlst **envlst)
 		non_interactive_mode(&(*minishell));
 	if (!minishell->prompt)
 		return (0);
+	minishell->errcode = 0;
 	minishell->tok_lst = NULL;
 	minishell->ast = ft_btreenew(NULL);
 	if (minishell->prompt[0] != '\0')
@@ -105,7 +106,7 @@ int	main(int argc, char **argv, char **envp)
 		minishell.prompt = readline("🍕🚀🌈🦄🍺 ");
 		if (!minishell.prompt)
 		{
-			printf("\033[1A🍕🚀🌈🦄🍺 exit\n");
+			printf("🍕🚀🌈🦄🍺 exit\n");
 			exit(0);
 		}
 		minishell.tok_lst = NULL;

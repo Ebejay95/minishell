@@ -6,11 +6,32 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 11:30:06 by jeberle           #+#    #+#             */
-/*   Updated: 2024/07/25 05:04:08 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/07/26 18:19:51 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../include/minishell.h"
+
+int	detect_lexing_errors(t_minishell *m)
+{
+	int 	quotecount;
+	char	*work;
+
+	quotecount = 0;
+	work = m->prompt;
+	while (*work != '\0')
+	{
+		if (*work == '\"' || *work == '\'')
+			quotecount++;
+		work++;
+	}
+	if (quotecount % 2 != 0)
+	{
+		ft_fprintf(2, "watch ur quotes bro\n");
+		return (-1);
+	}
+	return (0);
+}
 
 void	add_token_to_list(t_list **lst, t_token *token)
 {
@@ -341,8 +362,14 @@ void	lex_prompt(t_minishell *m)
 
 	tmpp = remove_chars(m->prompt, "\n");
 	m->prompt = tmpp;
-	prompt_to_token(m);
-	expand_toklst(m);
-	ft_printf(Y"TOKENLIST:\n"D);
-	ft_lstput(&(m->tok_lst), put_token, '\n');
+	m->errcode = detect_lexing_errors(m);
+	if (m->errcode == 0)
+	{
+		prompt_to_token(m);
+		expand_toklst(m);
+		// Auspackn aller Word... 
+		//Folgen und INhalt check fuer Pipe und Redirections
+		ft_printf(Y"TOKENLIST:\n"D);
+		ft_lstput(&(m->tok_lst), put_token, '\n');
+	}
 }
