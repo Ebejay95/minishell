@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jonathaneberle <jonathaneberle@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:01:33 by jeberle           #+#    #+#             */
-/*   Updated: 2024/07/29 12:54:21 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/07/29 21:28:03 by jonathanebe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ int handle_input(t_minishell *minishell, t_envlst **envlst)
 		non_interactive_mode(&(*minishell));
 	if (!minishell->prompt)
 		return (0);
-	minishell->errcode = 0;
+	minishell->exitcode = 0;
 	minishell->tok_lst = NULL;
 	minishell->ast = ft_btreenew(NULL);
 	if (minishell->prompt[0] != '\0')
