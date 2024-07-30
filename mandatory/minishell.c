@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jonathaneberle <jonathaneberle@student.    +#+  +:+       +#+        */
+/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:01:33 by jeberle           #+#    #+#             */
-/*   Updated: 2024/07/29 21:28:03 by jonathanebe      ###   ########.fr       */
+/*   Updated: 2024/07/30 23:26:38 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ void	execute_command(char *prompt, t_envlst **envlst)
 // minishell->interactive 1 = interactive mode
 // minishell->interactive 0 = non-interactive mode
 // Je nach dem also ob unsere minishell im interaktiven oder nicht-interaktiven Modus laeuft, wird die entsprechende Funktion aufgerufen
-int handle_input(t_minishell *minishell, t_envlst **envlst)
+int	handle_input(t_minishell *minishell, t_envlst **envlst)
 {
 	if (minishell->is_interactive)
 		interactive_mode(&(*minishell));

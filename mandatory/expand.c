@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jonathaneberle <jonathaneberle@student.    +#+  +:+       +#+        */
+/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/21 13:23:03 by jeberle           #+#    #+#             */
-/*   Updated: 2024/07/29 21:40:47 by jonathanebe      ###   ########.fr       */
+/*   Updated: 2024/07/30 23:33:02 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,74 +33,7 @@ char	*get_var_name(const char *str, const char *expmap, size_t *pos)
 	return (var_name);
 }
 
-
-// 🍕🚀🌈🦄🍺 Tes"$HOME-Tes"$HOME-sdfsd"'etset'
-// Tes"$HOME-sdfsd"'etset'
-// Tes$HOME-sdfsdetset set 0
-// TOKENLIST:
-// [Word Tes$HOME-sdfsdetset]
-// AST:
-// [(null)]
-// 🍕🚀🌈🦄🍺 Tes"$HOME"'etset'
-// Tes"$HOME"'etset'
-// HOME
-// Tes/Users/jonathaneberleetset 0002222211111 1
-// TOKENLIST:
-// [Word Tes/Users/jonathaneberleetset]
-// AST:
-// [(null)]
-// 🍕🚀🌈🦄🍺 exit
-// bash-3.2$ Tes"$HOME-sdfsd"'etset'
-// bash: Tes/Users/jonathaneberle-sdfsdetset: No such file or directory
-// bash-3.2$ 
-
-// bash-3.2$ ./minishell 
-// 🍕🚀🌈🦄🍺 Tes"HOME"
-// Tes"HOME"
-// TesHOME 0002222 1
-// TOKENLIST:
-// [Word TesHOME]
-// AST:
-// [(null)]
-// 🍕🚀🌈🦄🍺 Tes"$HOME"
-// Tes"$HOME"
-// HOME
-// Tes/Users/jonathaneberle 00033333 0
-// TOKENLIST:
-// [Word Tes/Users/jonathaneberle]
-// AST:
-// [(null)]
-// 🍕🚀🌈🦄🍺 Tes"HOME"'etset'
-// Tes"HOME"'etset'
-// TesHOMEetset 000222211111 1
-// TOKENLIST:
-// [Word TesHOMEetset]
-// AST:
-// [(null)]
-// 🍕🚀🌈🦄🍺 Tes"ghj$HOME"'etset'
-// Tes"ghj$HOME"'etset'
-// Segmentation fault: 11
-// bash-3.2$ ./minishell 
-// 🍕🚀🌈🦄🍺 Tes"$HOME"'etset'
-// Tes"$HOME"'etset'
-// HOME
-// Tes/Users/jonathaneberleetset 0003333311111 0
-// TOKENLIST:
-// [Word Tes/Users/jonathaneberleetset]
-// AST:
-// [(null)]
-// 🍕🚀🌈🦄🍺 Tes"$HOME-sdfsd"'etset'
-// Tes"$HOME-sdfsd"'etset'
-// Tes$HOME-sdfsdetset set 0
-// TOKENLIST:
-// [Word Tes$HOME-sdfsdetset]
-// AST:
-// [(null)]
-// 🍕🚀🌈🦄🍺 exit
-// bash-3.2$ make
-// ld: warning: search path '/opt/homebrew/libX' not found
-
-char	*expand_part(int exitcode, const char *str, const char *expmap, size_t start, size_t end)
+char	*expand_part(int exitcode, const char *str, char *expmap, size_t start, size_t end)
 {
 	char	*result;
 	size_t	i;
@@ -109,6 +42,7 @@ char	*expand_part(int exitcode, const char *str, const char *expmap, size_t star
 	char	*var_value;
 	char	*temp;
 	char	*exit_status_str;
+	size_t	j;
 
 	result = malloc(sizeof(char));
 	if (!result)
@@ -117,31 +51,30 @@ char	*expand_part(int exitcode, const char *str, const char *expmap, size_t star
 	i = start;
 	while (i < end)
 	{
-        if (str[i] == '$' && str[i + 1] == '?' && (expmap[i] == '0' || expmap[i] == '2'))
-        {
-            exit_status_str = ft_itoa(exitcode);
-            if (!exit_status_str)
-            {
-                free(result);
-                return (NULL);
-            }
-            temp = ft_realloc(result, ft_strlen(result) + ft_strlen(exit_status_str) + 1);
-            if (!temp)
-            {
-                free(result);
-                free(exit_status_str);
-                return (NULL);
-            }
-            result = temp;
-            ft_strcat(result, exit_status_str);
-            free(exit_status_str);
-            i += 2;
+		if (str[i] == '$' && str[i + 1] == '?' && (expmap[i] == '0' || expmap[i] == '2'))
+		{
+			exit_status_str = ft_itoa(exitcode);
+			if (!exit_status_str)
+			{
+				free(result);
+				return (NULL);
+			}
+			temp = ft_realloc(result, ft_strlen(result) + ft_strlen(exit_status_str) + 1);
+			if (!temp)
+			{
+				free(result);
+				free(exit_status_str);
+				return (NULL);
+			}
+			result = temp;
+			ft_strcat(result, exit_status_str);
+			free(exit_status_str);
+			i += 2;
 		}
 		else if (str[i] == '$' && (expmap[i] == '0' || expmap[i] == '2'))
 		{
 			var_start = i;
 			var_name = get_var_name(str, expmap, &i);
-			ft_printf(R"%s\n"D, var_name);
 			if (var_name)
 			{
 				var_value = getenv(var_name);
@@ -156,6 +89,12 @@ char	*expand_part(int exitcode, const char *str, const char *expmap, size_t star
 					}
 					result = temp;
 					ft_strcat(result, var_value);
+					j = var_start;
+					while (j < i)
+					{
+						expmap[j] = '3';
+						j++;
+					}
 				}
 				free(var_name);
 			}

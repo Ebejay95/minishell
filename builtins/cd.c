@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 15:10:58 by chorst            #+#    #+#             */
-/*   Updated: 2024/07/29 15:54:23 by chorst           ###   ########.fr       */
+/*   Updated: 2024/07/30 23:21:52 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,8 @@ void	cd_oldpwd(t_envlst ***envp)
 	current_pwd = getcwd(NULL, 0);
 	if (!current_pwd)
 		return (perror("getcwd"));
-	change_env_node(&(**envp), "OLDPWD", oldpwd, 0);
-	change_env_node(&(**envp), "PWD", oldpwd, 0);
+	chng_env_nd(&(**envp), "OLDPWD", oldpwd, 0);
+	chng_env_nd(&(**envp), "PWD", oldpwd, 0);
 	free(current_pwd);
 }
 
@@ -55,8 +55,8 @@ void	cd_path(char *path, t_envlst ***envp)
 		free(oldpwd);
 		return ;
 	}
-	change_env_node(&(**envp), "OLDPWD", oldpwd, 0);
-	change_env_node(&(**envp), "PWD", pwd, 0);
+	chng_env_nd(&(**envp), "OLDPWD", oldpwd, 0);
+	chng_env_nd(&(**envp), "PWD", pwd, 0);
 	free(oldpwd);
 	free(pwd);
 }
@@ -83,8 +83,8 @@ void	cd_home(t_envlst ***envp)
 	pwd = getcwd(NULL, 0);
 	if (!pwd)
 		return (perror("getcwd"), free(oldpwd));
-	change_env_node(&(**envp), "OLDPWD", oldpwd, 0);
-	change_env_node(&(**envp), "PWD", pwd, 0);
+	chng_env_nd(&(**envp), "OLDPWD", oldpwd, 0);
+	chng_env_nd(&(**envp), "PWD", pwd, 0);
 	free(oldpwd);
 }
 

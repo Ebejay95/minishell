@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jonathaneberle <jonathaneberle@student.    +#+  +:+       +#+        */
+/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:18:56 by jeberle           #+#    #+#             */
-/*   Updated: 2024/07/29 20:58:36 by jonathanebe      ###   ########.fr       */
+/*   Updated: 2024/07/30 23:28:30 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,8 +100,6 @@ typedef struct s_token
 		int			arglen;
 	}	detail;
 }	t_token;
-
-
 
 // void set_rdrct_token_details(t_token *token, int fdin, int fdout, const char *rdrctype) {
 //     if (token == NULL) return;
@@ -216,7 +214,7 @@ void		ft_exit(char **argv);
 // export.c
 void		ft_export(int argc, char **argv, t_envlst ***envp);
 void		my_export(t_envlst **envp, char **argv);
-void		change_env_node(t_envlst **env_list, char *name, char *value, int free_it);
+void		chng_env_nd(t_envlst **env_list, char *name, char *value, int free_it);
 void		sort_envp(char **envp);
 char		**copy_envp(t_envlst *envp);
 

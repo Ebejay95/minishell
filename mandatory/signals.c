@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   signals.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/05 13:17:22 by chorst            #+#    #+#             */
-/*   Updated: 2024/07/23 14:36:50 by chorst           ###   ########.fr       */
+/*   Updated: 2024/07/30 23:24:08 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,9 +30,9 @@ void	handle_signal(int sig)
 }
 
 // Function that sets up the signals
-void setup_signals(t_minishell *minishell)
+void	setup_signals(t_minishell *minishell)
 {
-	struct sigaction sa;
+	struct sigaction	sa;
 
 	minishell->is_interactive = isatty(STDIN_FILENO);
 	sigemptyset(&sa.sa_mask);

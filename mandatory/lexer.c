@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jonathaneberle <jonathaneberle@student.    +#+  +:+       +#+        */
+/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 11:30:06 by jeberle           #+#    #+#             */
-/*   Updated: 2024/07/29 21:19:59 by jonathanebe      ###   ########.fr       */
+/*   Updated: 2024/07/30 23:28:06 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,9 +23,8 @@ void	afterbreakup(t_minishell *m)
 		cur_content = (t_token *)current->content;
 		ft_printf("%s ", cur_content->str);
 		ft_printf("%s ", cur_content->expmap);
-		ft_printf("%i", ft_strcontains(cur_content->expmap, '2'));
+		ft_printf("%i", ft_strcontains(cur_content->expmap, '3'));
 		ft_printf("\n");
-		
 		//free(cur_content->expmap);
 		//cur_content->expmap = NULL;
 		current = current->next;
@@ -34,7 +33,7 @@ void	afterbreakup(t_minishell *m)
 
 int	detect_lexing_errors(t_minishell *m)
 {
-	int 	quotecount;
+	int		quotecount;
 	char	*work;
 
 	quotecount = 0;
@@ -202,7 +201,8 @@ void	prompt_to_token(t_minishell *m)
 				expmap[current_pos] = in_single_quotes + '0';
 				current_pos++;
 			}
-			ptr++;
+			if (*(ptr + 1) != '\0')
+				ptr++;
 			continue ;
 		}
 		if (in_double_quotes)
@@ -223,7 +223,8 @@ void	prompt_to_token(t_minishell *m)
 		if (*ptr == '\'')
 		{
 			in_single_quotes = 1;
-			ptr++;
+			if (*(ptr + 1) == '\0')
+				ptr++;
 			continue ;
 		}
 		if (*ptr == '"')

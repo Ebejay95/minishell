@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   var_helper.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/26 13:42:12 by jkauker           #+#    #+#             */
-/*   Updated: 2024/07/22 13:56:16 by chorst           ###   ########.fr       */
+/*   Updated: 2024/07/30 23:22:48 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,19 +27,19 @@ int	count_env_list(t_envlst *envp)
 }
 
 // Prints the env variable in the format "declare -x NAME="VALUE"
-void	print_env_variable(const char *env_var)
+void	print_env_variable(const char *envar)
 {
 	const char	*equal_sign;
-	size_t		name_len;
+	size_t		namelen;
 
-	equal_sign = ft_strchr(env_var, '=');
+	equal_sign = ft_strchr(envar, '=');
 	if (equal_sign != NULL)
 	{
-		name_len = equal_sign - env_var;
-		printf("declare -x %.*s=\"%s\"\n", (int)name_len, env_var, equal_sign + 1);
+		namelen = equal_sign - envar;
+		printf("declare -x %.*s=\"%s\"\n", (int)namelen, envar, equal_sign + 1);
 	}
 	else
-		printf("declare -x %s\n", env_var);
+		printf("declare -x %s\n", envar);
 }
 
 // Funktion returned 0 wenn argv[0] mir einem Variablennamen überein stimmt
