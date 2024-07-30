@@ -3,14 +3,34 @@
 /*                                                        :::      ::::::::   */
 /*   lexer.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jonathaneberle <jonathaneberle@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 11:30:06 by jeberle           #+#    #+#             */
-/*   Updated: 2024/07/26 18:19:51 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/07/29 21:19:59 by jonathanebe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../include/minishell.h"
+
+void	afterbreakup(t_minishell *m)
+{
+	t_list	*current;
+	t_token	*cur_content;
+
+	current = m->tok_lst;
+	while (current != NULL)
+	{
+		cur_content = (t_token *)current->content;
+		ft_printf("%s ", cur_content->str);
+		ft_printf("%s ", cur_content->expmap);
+		ft_printf("%i", ft_strcontains(cur_content->expmap, '2'));
+		ft_printf("\n");
+		
+		//free(cur_content->expmap);
+		//cur_content->expmap = NULL;
+		current = current->next;
+	}
+}
 
 int	detect_lexing_errors(t_minishell *m)
 {
@@ -349,7 +369,7 @@ void	expand_toklst(t_minishell *m)
 	while (current != NULL)
 	{
 		cur_content = (t_token *)current->content;
-		expand_token(cur_content);
+		expand_token(m->exitcode, cur_content);
 		//free(cur_content->expmap);
 		//cur_content->expmap = NULL;
 		current = current->next;
@@ -362,11 +382,12 @@ void	lex_prompt(t_minishell *m)
 
 	tmpp = remove_chars(m->prompt, "\n");
 	m->prompt = tmpp;
-	m->errcode = detect_lexing_errors(m);
-	if (m->errcode == 0)
+	m->exitcode = detect_lexing_errors(m);
+	if (m->exitcode == 0)
 	{
 		prompt_to_token(m);
 		expand_toklst(m);
+		afterbreakup(m);
 		// Auspackn aller Word... 
 		//Folgen und INhalt check fuer Pipe und Redirections
 		ft_printf(Y"TOKENLIST:\n"D);

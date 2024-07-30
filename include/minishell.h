@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jonathaneberle <jonathaneberle@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:18:56 by jeberle           #+#    #+#             */
-/*   Updated: 2024/07/29 12:54:27 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/07/29 20:58:36 by jonathanebe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,7 +136,8 @@ typedef struct s_minishell
 	char		**envp;
 	char		*prompt;
 	int			is_interactive;
-	int			errcode;
+	int			exitcode;
+	int			pid;
 	t_list		*tok_lst;
 	t_btree		*ast;
 }	t_minishell;
@@ -155,7 +156,7 @@ int			check_next_rel(t_token *current, t_token *new);
 int			vd_tree_add(t_btree *current, char *branch, t_token *newtok);
 
 // expand.c
-void		expand_token(t_token *token);
+void		expand_token(int exitcode, t_token *token);
 
 // lexer.c
 void		lex_prompt(t_minishell *m);
