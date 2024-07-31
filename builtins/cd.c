@@ -6,7 +6,7 @@
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 15:10:58 by chorst            #+#    #+#             */
-/*   Updated: 2024/07/31 15:49:27 by chorst           ###   ########.fr       */
+/*   Updated: 2024/07/31 15:56:55 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,8 +55,8 @@ void	cd_path(char *path, t_envlst ***envp)
 		free(oldpwd);
 		return ;
 	}
-	change_env_node(&(**envp), "OLDPWD", oldpwd, 0);
-	change_env_node(&(**envp), "PWD", pwd, 0);
+	chng_env_nd(&(**envp), "OLDPWD", oldpwd, 0);
+	chng_env_nd(&(**envp), "PWD", pwd, 0);
 	free(oldpwd);
 	free(pwd);
 }
@@ -83,8 +83,8 @@ void	cd_home(t_envlst ***envp)
 	pwd = getcwd(NULL, 0);
 	if (!pwd)
 		return (perror("getcwd"), free(oldpwd));
-	change_env_node(&(**envp), "OLDPWD", oldpwd, 0);
-	change_env_node(&(**envp), "PWD", pwd, 0);
+	chng_env_nd(&(**envp), "OLDPWD", oldpwd, 0);
+	chng_env_nd(&(**envp), "PWD", pwd, 0);
 	free(oldpwd);
 }
 

@@ -6,7 +6,7 @@
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:01:33 by jeberle           #+#    #+#             */
-/*   Updated: 2024/07/31 15:38:29 by chorst           ###   ########.fr       */
+/*   Updated: 2024/07/31 15:58:18 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ void	execute_command(char *prompt, t_envlst **envlst)
 // minishell->interactive 1 = interactive mode
 // minishell->interactive 0 = non-interactive mode
 // Je nach dem also ob unsere minishell im interaktiven oder nicht-interaktiven Modus laeuft, wird die entsprechende Funktion aufgerufen
-int handle_input(t_minishell *minishell, t_envlst **envlst)
+int	handle_input(t_minishell *minishell, t_envlst **envlst)
 {
 	if (minishell->is_interactive)
 		interactive_mode(&(*minishell));
@@ -69,7 +69,7 @@ int handle_input(t_minishell *minishell, t_envlst **envlst)
 		non_interactive_mode(&(*minishell));
 	if (!minishell->prompt)
 		return (0);
-	minishell->errcode = 0;
+	minishell->exitcode = 0;
 	minishell->tok_lst = NULL;
 	minishell->ast = ft_btreenew(NULL);
 	if (minishell->prompt[0] != '\0')

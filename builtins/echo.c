@@ -3,17 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 11:49:45 by chorst            #+#    #+#             */
-/*   Updated: 2024/07/22 15:50:53 by chorst           ###   ########.fr       */
+/*   Updated: 2024/07/30 23:20:45 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../include/minishell.h"
 
 // Echo builtin
-void ft_echo(char **args)
+void	ft_echo(char **args)
 {
 	bool	newline;
 	int		start_index;
@@ -26,7 +26,7 @@ void ft_echo(char **args)
 }
 
 // Returns the index of the first argument that is not an option
-int handle_options(char **args, bool *newline, int start_index)
+int	handle_options(char **args, bool *newline, int start_index)
 {
 	int	i;
 	int	j;
@@ -44,13 +44,13 @@ int handle_options(char **args, bool *newline, int start_index)
 			i++;
 		}
 		else
-			break;
+			break ;
 	}
 	return (i);
 }
 
 // Print output with or without newline
-void print_output(char **args, int start_index, bool newline)
+void	print_output(char **args, int start_index, bool newline)
 {
 	int	i;
 

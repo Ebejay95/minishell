@@ -3,24 +3,24 @@
 /*                                                        :::      ::::::::   */
 /*   minishell_helper.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/23 13:04:21 by chorst            #+#    #+#             */
-/*   Updated: 2024/07/23 15:38:43 by chorst           ###   ########.fr       */
+/*   Updated: 2024/07/30 23:24:32 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../include/minishell.h"
 
 // Cleanup the minishell struct
-void cleanup_minishell(t_minishell *minishell)
+void	cleanup_minishell(t_minishell *minishell)
 {
 	free(minishell->prompt);
 	minishell->prompt = NULL;
 }
 
 // Initialize the minishell struct
-void initialize_minishell(t_minishell *minishell, char **envp)
+void	initialize_minishell(t_minishell *minishell, char **envp)
 {
 	minishell->envp = envp;
 	minishell->prompt = NULL;
@@ -38,8 +38,8 @@ void	interactive_mode(t_minishell *minishell)
 // Hier wird read anstatt readline verwendet
 void	non_interactive_mode(t_minishell *minishell)
 {
-	char buffer[1024];
-	ssize_t bytes_read;
+	char	buffer[1024];
+	ssize_t	bytes_read;
 
 	bytes_read = read(STDIN_FILENO, buffer, 1024);
 	if (bytes_read <= 0)
