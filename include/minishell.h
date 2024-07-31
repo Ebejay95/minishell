@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:18:56 by jeberle           #+#    #+#             */
-/*   Updated: 2024/07/30 23:28:30 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/07/31 16:27:42 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -181,8 +181,11 @@ char		*remove_chars(const char *str, const char *chrs_to_rmv);
 int			count_relevant_chars(const char *str, const char *chrs_to_rmv);
 void		remove_helper(const char *str, const char *chrs_to_rmv, char *new_str);
 
+// whitespace_handler.c
+char		*whitespace_handler(const char *str);
+
 // tokens.c
-t_token 	*create_token(char *str, char *expmap);
+t_token		*create_token(char *str, char *expmap);
 char		*toktype_to_str(enum e_toktype token);
 void		put_token(void *content);
 void		update_tok_type(t_token *tok, enum e_toktype token);
