@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:01:33 by jeberle           #+#    #+#             */
-/*   Updated: 2024/07/31 15:10:19 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/07/31 18:05:27 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,8 @@ int	handle_input(t_minishell *minishell, t_envlst **envlst)
 	if (minishell->prompt[0] != '\0')
 	{
 		execute_command(minishell->prompt, envlst);
-		// lex_prompt(minishell);
+		lex_prompt(minishell);
+		//execute(minishell);
 		// parse(minishell);
 		if (minishell->is_interactive)
 			add_history(minishell->prompt);
@@ -115,8 +116,9 @@ int	main(int argc, char **argv, char **envp)
 		{
 			execute_command(minishell.prompt, &envlst);
 			add_history(minishell.prompt);
-			// lex_prompt(&minishell);
-			parse(&minishell);
+			lex_prompt(&minishell);
+			execute(&minishell);
+			// parse(&minishell);
 			//free(minishell.prompt);
 		}
 	}

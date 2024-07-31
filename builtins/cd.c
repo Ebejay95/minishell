@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 15:10:58 by chorst            #+#    #+#             */
-/*   Updated: 2024/07/30 23:21:52 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/07/31 16:36:37 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ void	cd_oldpwd(t_envlst ***envp)
 	char	*oldpwd;
 	char	*current_pwd;
 
-	oldpwd = getenv("PWD");
+	oldpwd = my_getenv("OLDPWD", **envp);
 	if (!oldpwd)
 		return ((void)printf("🍕🚀🌈🦄🍺: cd: OLDPWD not set\n"));
 	if (chdir(oldpwd) == -1)
@@ -29,7 +29,7 @@ void	cd_oldpwd(t_envlst ***envp)
 	if (!current_pwd)
 		return (perror("getcwd"));
 	chng_env_nd(&(**envp), "OLDPWD", oldpwd, 0);
-	chng_env_nd(&(**envp), "PWD", oldpwd, 0);
+	chng_env_nd(&(**envp), "PWD", current_pwd, 0);
 	free(current_pwd);
 }
 

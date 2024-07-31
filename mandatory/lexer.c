@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 11:30:06 by jeberle           #+#    #+#             */
-/*   Updated: 2024/07/31 16:32:49 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/07/31 17:01:15 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -409,7 +409,6 @@ void	lex_prompt(t_minishell *m)
 		prompt_to_token(m);
 		expand_toklst(m);
 		afterbreakup(m);
-		ft_printf(C"sfsf\n"D);
 		ft_printf(Y"TOKENLIST:\n"D);
 		ft_lstput(&(m->tok_lst), put_token, '\n');
 	}

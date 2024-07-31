@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/26 13:42:12 by jkauker           #+#    #+#             */
-/*   Updated: 2024/07/30 23:22:48 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/07/31 16:37:38 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,8 @@ void	print_env_variable(const char *envar)
 	if (equal_sign != NULL)
 	{
 		namelen = equal_sign - envar;
-		printf("declare -x %.*s=\"%s\"\n", (int)namelen, envar, equal_sign + 1);
+		printf("declare -x %.*s=\"%s\"\n", (int)namelen,
+			envar, equal_sign + 1);
 	}
 	else
 		printf("declare -x %s\n", envar);
@@ -55,6 +56,17 @@ int	is_var_name(t_envlst *envp, char **argv)
 		current = current->next;
 	}
 	return (1);
+}
+
+char	*my_getenv(const char *name, t_envlst *envp)
+{
+	while (envp)
+	{
+		if (ft_strcmp(name, envp->name) == 0)
+			return (envp->value);
+		envp = envp->next;
+	}
+	return (NULL);
 }
 
 // Behaves like the strndup function from the standard library
