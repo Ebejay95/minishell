@@ -6,7 +6,7 @@
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 15:11:12 by chorst            #+#    #+#             */
-/*   Updated: 2024/07/22 13:21:47 by chorst           ###   ########.fr       */
+/*   Updated: 2024/07/31 11:58:58 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,3 +133,4 @@ char	**copy_envp(t_envlst *envp)
 	envp_copy[i] = NULL;
 	return (envp_copy);
 }
+

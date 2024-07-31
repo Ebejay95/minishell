@@ -6,7 +6,7 @@
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 10:00:01 by chorst            #+#    #+#             */
-/*   Updated: 2024/07/22 15:25:46 by chorst           ###   ########.fr       */
+/*   Updated: 2024/07/31 15:31:14 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@ t_envlst	*init_env_list(char **envp)
 	t_envlst	*env_list;
 	char		*name;
 	char		*value;
-	// int			exist;
 
 	env_list = NULL;
 	while (*envp != NULL)
