@@ -6,7 +6,7 @@
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 15:10:58 by chorst            #+#    #+#             */
-/*   Updated: 2024/07/31 15:56:55 by chorst           ###   ########.fr       */
+/*   Updated: 2024/08/01 11:40:20 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,8 @@ void	cd_oldpwd(t_envlst ***envp)
 	current_pwd = getcwd(NULL, 0);
 	if (!current_pwd)
 		return (perror("getcwd"));
-	change_env_node(&(**envp), "OLDPWD", oldpwd, 0);
-	change_env_node(&(**envp), "PWD", current_pwd, 0);
+	chng_env_nd(&(**envp), "OLDPWD", oldpwd, 0);
+	chng_env_nd(&(**envp), "PWD", current_pwd, 0);
 	free(current_pwd);
 }
 

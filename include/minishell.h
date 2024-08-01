@@ -6,7 +6,7 @@
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:18:56 by jeberle           #+#    #+#             */
-/*   Updated: 2024/07/31 15:59:11 by chorst           ###   ########.fr       */
+/*   Updated: 2024/08/01 11:39:34 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,12 +124,6 @@ typedef struct s_token
 
 
 // in dem *name sitzt immer der name und in value immer der value. das "=" zeichen ist nicht enthalten
-typedef struct s_envlst
-{
-	char			*name;
-	char			*value;
-	struct s_envlst	*next;
-}					t_envlst;
 
 typedef struct s_minishell
 {
@@ -142,6 +136,14 @@ typedef struct s_minishell
 	t_btree		*ast;
 }	t_minishell;
 
+typedef struct s_envlst
+{
+	char			*name;
+	char			*value;
+	struct s_envlst	*next;
+	t_minishell		*minishell;
+}					t_envlst;
+
 // #############################################################################
 // #                          Mandatory Functions                              #
 // #############################################################################
@@ -150,7 +152,7 @@ typedef struct s_minishell
 void		ast_add(t_btree **ast, t_btree *cur, char *branch, t_token *tok);
 
 // expand.c
-void		expand_token(t_token *token);
+void		expand_token(int exitcode, t_token *token);
 
 // hierarchy_validation.c
 int			vd_null_add(t_btree *ast, t_token *newtok);
@@ -159,9 +161,9 @@ int			check_next_rel(t_token *current, t_token *new);
 int			vd_tree_add(t_btree *current, char *branch, t_token *newtok);
 
 // init_envlst.c
-t_envlst	*init_env_list(char **envp);
+t_envlst	*init_env_list(char **envp, t_minishell *m);
 void		extract_name_value(char *arg, char **name, char **value);
-void		add_env_node(t_envlst **env_list, char *name, char *value);
+void		add_env_node(t_envlst **env_list, char *name, char *value, t_minishell *m);
 t_envlst	*find_env_var(t_envlst *head, const char *name);
 
 

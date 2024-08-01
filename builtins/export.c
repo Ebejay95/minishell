@@ -6,7 +6,7 @@
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 15:11:12 by chorst            #+#    #+#             */
-/*   Updated: 2024/07/31 15:58:35 by chorst           ###   ########.fr       */
+/*   Updated: 2024/08/01 11:41:35 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ void	chng_env_nd(t_envlst **env_list, char *name, char *value, int free_it)
 		}
 		current = current->next;
 	}
-	add_env_node(env_list, name, value);
+	chng_env_nd(env_list, name, value, 0);
 }
 
 // Sorts a char ** array of env variables alphabetically

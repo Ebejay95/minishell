@@ -6,7 +6,7 @@
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:01:33 by jeberle           #+#    #+#             */
-/*   Updated: 2024/07/31 15:58:18 by chorst           ###   ########.fr       */
+/*   Updated: 2024/08/01 11:31:33 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,7 @@ int	main(int argc, char **argv, char **envp)
 	t_minishell	minishell;
 	t_envlst	*envlst;
 
-	envlst = init_env_list(envp);
+	envlst = init_env_list(envp, &minishell);
 	(void)argv;
 	if (argc != 1)
 		return (0);

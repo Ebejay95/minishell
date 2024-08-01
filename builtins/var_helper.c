@@ -6,7 +6,7 @@
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/26 13:42:12 by jkauker           #+#    #+#             */
-/*   Updated: 2024/07/31 15:58:52 by chorst           ###   ########.fr       */
+/*   Updated: 2024/08/01 11:42:25 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,9 +35,9 @@ void	print_env_variable(const char *envar)
 	equal_sign = ft_strchr(envar, '=');
 	if (equal_sign != NULL)
 	{
-		name_len = equal_sign - env_var;
-		printf("declare -x %.*s=\"%s\"\n", (int)name_len,
-			env_var, equal_sign + 1);
+		namelen = equal_sign - envar;
+		printf("declare -x %.*s=\"%s\"\n", (int)namelen,
+			envar, equal_sign + 1);
 	}
 	else
 		printf("declare -x %s\n", envar);

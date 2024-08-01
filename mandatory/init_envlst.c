@@ -6,14 +6,14 @@
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 10:00:01 by chorst            #+#    #+#             */
-/*   Updated: 2024/07/31 15:59:20 by chorst           ###   ########.fr       */
+/*   Updated: 2024/08/01 11:34:53 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../include/minishell.h"
 
 // Function that initializes the environment list
-t_envlst	*init_env_list(char **envp)
+t_envlst	*init_env_list(char **envp, t_minishell *m)
 {
 	t_envlst	*env_list;
 	char		*name;
@@ -26,7 +26,7 @@ t_envlst	*init_env_list(char **envp)
 		if (ft_strcmp(name, "SHLVL") == 0)
 			value = ft_itoa(atoi(value) + 1);
 		if (ft_strcmp(name, "OLDPWD") != 0)
-			add_env_node(&env_list, name, value);
+			add_env_node(&env_list, name, value, m);
 		else
 		{
 			free(name);
@@ -34,7 +34,7 @@ t_envlst	*init_env_list(char **envp)
 		}
 		envp++;
 	}
-	add_env_node(&env_list, "OLDPWD", NULL);
+	add_env_node(&env_list, "OLDPWD", NULL, m);
 	return (env_list);
 }
 
@@ -63,7 +63,7 @@ void	extract_name_value(char *arg, char **name, char **value)
 }
 
 // Function that adds a node to the environment list
-void	add_env_node(t_envlst **env_list, char *name, char *value)
+void	add_env_node(t_envlst **env_list, char *name, char *value, t_minishell *m)
 {
 	t_envlst	*new_node;
 	t_envlst	*temp;
@@ -74,6 +74,7 @@ void	add_env_node(t_envlst **env_list, char *name, char *value)
 	new_node->name = name;
 	new_node->value = value;
 	new_node->next = NULL;
+	new_node->minishell = m;
 	if (*env_list == NULL)
 		*env_list = new_node;
 	else
