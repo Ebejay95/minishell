@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 11:12:44 by jeberle           #+#    #+#             */
-/*   Updated: 2024/07/31 19:05:20 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/01 10:40:45 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,8 @@ char	*toktype_to_str(enum e_toktype token)
 		return (ft_strdup("Command"));
 	if (token == WORD)
 		return (ft_strdup("Word"));
+	if (token == DELIMITER)
+		return (ft_strdup("Delimiter"));
 	if (token == UNSET)
 		return (ft_strdup("UNSET"));
 	return (ft_strdup(""));

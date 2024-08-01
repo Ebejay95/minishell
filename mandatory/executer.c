@@ -6,15 +6,38 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/31 17:01:26 by jeberle           #+#    #+#             */
-/*   Updated: 2024/07/31 22:10:45 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/01 11:37:47 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../include/minishell.h"
 
-void	check_semantics(t_list *last, t_list *current, t_token *token, t_list *current->next)
+void	check_semantics(t_list *last, t_list *current)
 {
-	ft_printf("check semantics\n");
+	t_token	*last_token;
+	t_token	*token;
+
+	last_token = NULL;
+	token = (t_token *)current->content;
+	if (last)
+	{
+		last_token = (t_token *)last->content;
+		if (ft_strcmp(token->type, "Word") == 0 && ft_strcmp(last_token->type, "Redirection") == 0 && ft_strcmp(last_token->str, "<<") == 0)
+		{
+			update_tok_type(token, DELIMITER);
+		}
+		if (ft_strcmp(token->type, "Word") == 0 && ft_strcmp(last_token->type, "Pipe") == 0 && ft_strcmp(last_token->str, "|") == 0)
+		{
+			update_tok_type(token, COMMAND);
+		}
+	}
+	else
+	{
+		if (ft_strcmp(token->type, "Word") == 0)
+		{
+			update_tok_type(token, COMMAND);
+		}
+	}
 }
 
 t_token	*init_pipe_details(t_token *pipetok)
@@ -62,7 +85,6 @@ int	check_pipes(t_minishell *m)
 	current = m->tok_lst;
 	while (current != NULL)
 	{
-		//check_semantics(NULL, current, token, current->next);
 		cur_content = (t_token *)current->content;
 		if (ft_strcmp(cur_content->type, "Pipe") == 0 && last_type == NULL)
 		{
@@ -82,7 +104,7 @@ int	check_pipes(t_minishell *m)
 
 void	set_rdrctype(t_list *last, t_list *current, t_token *token)
 {
-	check_semantics(last, current, token, current->next);
+	check_semantics(last, current);
 	if (ft_strcmp(token->type, "Redirection") == 0)
 	{
 		if (ft_strcmp(token->str, "<<") == 0)
@@ -119,7 +141,6 @@ int	check_redirections(t_minishell *m)
 	while (current != NULL)
 	{
 		cur_content = (t_token *)current->content;
-		set_rdrctype(last, current, cur_content);
 		if (ft_strcmp(cur_content->type, "Pipe") == 0 && ft_strcmp(last_type, "Redirection") == 0)
 		{
 			if (ft_strcmp(last_str, ">") != 0)
@@ -156,6 +177,7 @@ int	check_redirections(t_minishell *m)
 				return 2;
 			}
 		}
+		set_rdrctype(last, current, cur_content);
 		last_type = cur_content->type;
 		last_str = cur_content->str;
 		last = current;
@@ -173,17 +195,77 @@ int	pre_exec_checks(t_minishell *m)
 	return m->exitcode;
 }
 
-//void	exec_interpreter()
-
-void	execute(t_minishell *m)
+void execute(t_minishell *m)
 {
+	int		pipe_fd[2];
+	int		pid;
+	int		prev_pipe_read;
+	t_list	*current;
+	t_token	*token;
+	int		status;
+
 	pre_exec_prep(m);
 	if (m->exitcode == 0)
 		m->exitcode = pre_exec_checks(m);
 	if (m->exitcode == 0)
 	{
-		//exec_interpreter(m);
 		ft_printf(Y"EXECUTE:\n"D);
 		ft_lstput(&(m->tok_lst), put_token, '\n');
 	}
+	if (m->exitcode != 0)
+		return;
+	prev_pipe_read = STDIN_FILENO;
+	current = m->tok_lst;
+	while (current != NULL)
+	{
+		token = (t_token *)current->content;
+		if (token->token == PIPE)
+		{
+			if (pipe(pipe_fd) == -1)
+				handle_error(m, "Pipe creation failed");
+			pid = fork();
+			if (pid == -1)
+				handle_error(m, "Fork failed");
+			else if (pid == 0)
+			{
+				close(pipe_fd[0]);
+				dup2(prev_pipe_read, STDIN_FILENO);
+				dup2(pipe_fd[1], STDOUT_FILENO);
+				close(pipe_fd[1]);
+				run_command(m, current);
+				exit(EXIT_SUCCESS);
+			}
+			else
+			{
+				close(pipe_fd[1]);
+				if (prev_pipe_read != STDIN_FILENO)
+					close(prev_pipe_read);
+				prev_pipe_read = pipe_fd[0];
+			}
+		}
+		else if (token->token == COMMAND)
+		{
+			pid = fork();
+			if (pid == -1)
+				handle_error(m, "Fork failed");
+			else if (pid == 0)
+			{
+				if (prev_pipe_read != STDIN_FILENO)
+				{
+					dup2(prev_pipe_read, STDIN_FILENO);
+					close(prev_pipe_read);
+				}
+				run_command(m, current);
+				exit(EXIT_SUCCESS);
+			}
+		}
+		current = current->next;
+	}
+	while (wait(&status) > 0)
+	{
+		if (WIFEXITED(status))
+			m->exitcode = WEXITSTATUS(status);
+	}
+	if (prev_pipe_read != STDIN_FILENO)
+		close(prev_pipe_read);
 }

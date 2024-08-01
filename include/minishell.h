@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:18:56 by jeberle           #+#    #+#             */
-/*   Updated: 2024/07/31 18:50:01 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/01 09:23:36 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,7 @@ typedef enum e_toktype
 	PIPE,
 	COMMAND,
 	WORD,
+	DELIMITER,
 	UNSET
 }	t_toktype;
 

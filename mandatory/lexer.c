@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 11:30:06 by jeberle           #+#    #+#             */
-/*   Updated: 2024/07/31 17:01:15 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/01 10:19:19 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -186,7 +186,7 @@ void	prompt_to_token(t_minishell *m)
 			if (in_single_quotes)
 			{
 				current_token[current_pos] = *ptr;
-				expmap[current_pos] = in_single_quotes + '0';
+				expmap[current_pos] = '1';
 				current_pos++;
 			}
 			else if (in_double_quotes)
@@ -209,21 +209,26 @@ void	prompt_to_token(t_minishell *m)
 			ptr++;
 			continue ;
 		}
-		if (in_single_quotes)
+		if (*ptr == '\'')
 		{
-			if (*ptr == '\'')
+			if (!in_single_quotes)
 			{
-				in_single_quotes = 0;
+				in_single_quotes = 1;
 			}
 			else
 			{
-				current_token[current_pos] = *ptr;
-				expmap[current_pos] = in_single_quotes + '0';
-				current_pos++;
+				in_single_quotes = 0;
 			}
-			if (*(ptr + 1) != '\0')
-				ptr++;
-			continue ;
+			ptr++;
+			continue;
+		}
+		if (in_single_quotes)
+		{
+			current_token[current_pos] = *ptr;
+			expmap[current_pos] = '1';
+			current_pos++;
+			ptr++;
+			continue;
 		}
 		if (in_double_quotes)
 		{
