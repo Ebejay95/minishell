@@ -3,30 +3,32 @@
 /*                                                        :::      ::::::::   */
 /*   init_envlst.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 10:00:01 by chorst            #+#    #+#             */
-/*   Updated: 2024/07/31 15:59:20 by chorst           ###   ########.fr       */
+/*   Updated: 2024/08/01 12:46:07 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../include/minishell.h"
 
 // Function that initializes the environment list
-t_envlst	*init_env_list(char **envp)
+void	init_env_list(char **envp, t_minishell *m)
 {
-	t_envlst	*env_list;
-	char		*name;
-	char		*value;
+	char	*name;
+	char	*value;
+	int		shlvl;
 
-	env_list = NULL;
 	while (*envp != NULL)
 	{
 		extract_name_value(*envp, &name, &value);
 		if (ft_strcmp(name, "SHLVL") == 0)
-			value = ft_itoa(atoi(value) + 1);
+		{
+			shlvl = ft_atoi(value);
+			value = ft_itoa(shlvl + 1);
+		}
 		if (ft_strcmp(name, "OLDPWD") != 0)
-			add_env_node(&env_list, name, value);
+			add_env_node(&m->env_list, name, value);
 		else
 		{
 			free(name);
@@ -34,8 +36,7 @@ t_envlst	*init_env_list(char **envp)
 		}
 		envp++;
 	}
-	add_env_node(&env_list, "OLDPWD", NULL);
-	return (env_list);
+	add_env_node(&m->env_list, "OLDPWD", NULL);
 }
 
 // Function that extracts the name and value of an environment variable
@@ -62,25 +63,33 @@ void	extract_name_value(char *arg, char **name, char **value)
 	}
 }
 
+
 // Function that adds a node to the environment list
-void	add_env_node(t_envlst **env_list, char *name, char *value)
+void add_env_node(t_envlst **env_list, char *name, char *value)
 {
 	t_envlst	*new_node;
 	t_envlst	*temp;
 
 	new_node = malloc(sizeof(t_envlst));
 	if (new_node == NULL)
+	{
+		ft_printf("Memory allocation failed\n");
 		return ;
+	}
 	new_node->name = name;
 	new_node->value = value;
 	new_node->next = NULL;
 	if (*env_list == NULL)
+	{
 		*env_list = new_node;
+	}
 	else
 	{
 		temp = *env_list;
 		while (temp->next != NULL)
+		{
 			temp = temp->next;
+		}
 		temp->next = new_node;
 	}
 }

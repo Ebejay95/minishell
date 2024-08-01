@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:01:33 by jeberle           #+#    #+#             */
-/*   Updated: 2024/07/31 18:05:27 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/01 14:54:08 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,28 +29,30 @@ char	**parse_input(char *prompt, int *argc)
 
 // Function that choses which bultin to execute based on the prompt
 // Dieser Funktion kannst du natuerlich noch weitere Befehle hinzufuegen, oder komplett umschreiben
-void	execute_command(char *prompt, t_envlst **envlst)
+void	execute_command(t_minishell *minishell)
 {
-	int		argc;
-	char	**argv;
+	int			argc;
+	char		**argv;
+	t_envlst	**envlist;
 
-	argv = parse_input(prompt, &argc);
+	envlist = &(minishell->env_list);
+	argv = parse_input(minishell->prompt, &argc);
 	if (argv[0])
 	{
 		if (ft_strcmp(argv[0], "cd") == 0)
-			ft_cd(argc, argv, &envlst);
+			ft_cd(argc, argv, &envlist);
 		if (ft_strcmp(argv[0], "echo") == 0)
 			ft_echo(argv);
-		if (ft_strcmp(prompt, "env") == 0)
-			ft_env(*envlst);
+		if (ft_strcmp(minishell->prompt, "env") == 0)
+			ft_env(*envlist);
 		if (!(ft_strcmp(argv[0], "exit")))
 			ft_exit(argv);
-		if (!(ft_strcmp(argv[0], "export")) || !(is_var_name(*envlst, argv)))
-			ft_export(argc, argv, &envlst);
-		if (ft_strcmp(prompt, "pwd") == 0)
+		if (!(ft_strcmp(argv[0], "export")) || !(is_var_name(*envlist, argv)))
+			ft_export(argc, argv, &envlist);
+		if (ft_strcmp(minishell->prompt, "pwd") == 0)
 			ft_pwd(argv);
 		if (ft_strcmp(argv[0], "unset") == 0)
-			ft_unset(envlst, argv);
+			ft_unset(envlist, argv);
 	}
 	//while (argc >= 0)
 	//	free(argv[argc--]);
@@ -61,7 +63,7 @@ void	execute_command(char *prompt, t_envlst **envlst)
 // minishell->interactive 1 = interactive mode
 // minishell->interactive 0 = non-interactive mode
 // Je nach dem also ob unsere minishell im interaktiven oder nicht-interaktiven Modus laeuft, wird die entsprechende Funktion aufgerufen
-int	handle_input(t_minishell *minishell, t_envlst **envlst)
+int	handle_input(t_minishell *minishell)
 {
 	if (minishell->is_interactive)
 		interactive_mode(&(*minishell));
@@ -74,7 +76,7 @@ int	handle_input(t_minishell *minishell, t_envlst **envlst)
 	minishell->ast = ft_btreenew(NULL);
 	if (minishell->prompt[0] != '\0')
 	{
-		execute_command(minishell->prompt, envlst);
+		//execute_command(minishell);
 		lex_prompt(minishell);
 		//execute(minishell);
 		// parse(minishell);
@@ -88,14 +90,13 @@ int	handle_input(t_minishell *minishell, t_envlst **envlst)
 // Du kannst alle deutschen Kommentare loeschen. Die sind nur fuer dich, damit du weiss, was ich gemacht habe.
 // Was vorher in der main war, steht jetzt in handle_input (einfach ausgelagert). Ich habe zusatzlich den interactive mode und non-interactive mode in handle_input eingefügt)
 // #############################################################################
-
 // Main function that runs the minishell loop
 int	main(int argc, char **argv, char **envp)
 {
 	t_minishell	minishell;
-	t_envlst	*envlst;
 
-	envlst = init_env_list(envp);
+	minishell.env_list = NULL;
+	init_env_list(envp, &minishell);
 	(void)argv;
 	if (argc != 1)
 		return (0);
@@ -103,7 +104,6 @@ int	main(int argc, char **argv, char **envp)
 	initialize_minishell(&minishell, envp);
 	while (1)
 	{
-		minishell.envp = envp;
 		minishell.prompt = readline("🍕🚀🌈🦄🍺 ");
 		if (!minishell.prompt)
 		{
@@ -114,7 +114,7 @@ int	main(int argc, char **argv, char **envp)
 		minishell.ast = ft_btreenew(NULL);
 		if (minishell.prompt)
 		{
-			execute_command(minishell.prompt, &envlst);
+			//execute_command(&minishell);
 			add_history(minishell.prompt);
 			lex_prompt(&minishell);
 			execute(&minishell);

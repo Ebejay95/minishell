@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:18:56 by jeberle           #+#    #+#             */
-/*   Updated: 2024/08/01 09:23:36 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/01 14:09:25 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,8 +124,6 @@ typedef struct s_token
 //     token->detail.pipe.fdout = fdout;
 // }
 
-
-// in dem *name sitzt immer der name und in value immer der value. das "=" zeichen ist nicht enthalten
 typedef struct s_envlst
 {
 	char			*name;
@@ -136,6 +134,7 @@ typedef struct s_envlst
 typedef struct s_minishell
 {
 	char		**envp;
+	t_envlst	*env_list;
 	char		*prompt;
 	int			is_interactive;
 	int			exitcode;
@@ -143,6 +142,7 @@ typedef struct s_minishell
 	t_list		*tok_lst;
 	t_btree		*ast;
 }	t_minishell;
+
 
 // #############################################################################
 // #                          Mandatory Functions                              #
@@ -153,9 +153,10 @@ void		ast_add(t_btree **ast, t_btree *cur, char *branch, t_token *tok);
 
 // executer.c
 void		execute(t_minishell *m);
+void		handle_error(t_minishell *m, int code, char *message);
 
 // expand.c
-void		expand_token(int exitcode, t_token *token);
+void		expand_token(t_minishell *m, int exitcode, t_token *token);
 
 // hierarchy_validation.c
 int			vd_null_add(t_btree *ast, t_token *newtok);
@@ -164,11 +165,9 @@ int			check_next_rel(t_token *current, t_token *new);
 int			vd_tree_add(t_btree *current, char *branch, t_token *newtok);
 
 // init_envlst.c
-t_envlst	*init_env_list(char **envp);
+void		init_env_list(char **envp, t_minishell *m);
 void		extract_name_value(char *arg, char **name, char **value);
 void		add_env_node(t_envlst **env_list, char *name, char *value);
-t_envlst	*find_env_var(t_envlst *head, const char *name);
-
 
 // lexer.c
 void		lex_prompt(t_minishell *m);
@@ -181,8 +180,8 @@ void		non_interactive_mode(t_minishell *minishell);
 
 // minishell.c
 char		**parse_input(char *prompt, int *argc);
-void		execute_command(char *prompt, t_envlst **envlst);
-int			handle_input(t_minishell *minishell, t_envlst **envlst);
+void		execute_command(t_minishell *minishell);
+int			handle_input(t_minishell *minishell);
 
 // parser.c
 void		parse(t_minishell *m);

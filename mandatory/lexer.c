@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 11:30:06 by jeberle           #+#    #+#             */
-/*   Updated: 2024/08/01 10:19:19 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/01 14:19:25 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ void	afterbreakup(t_minishell *m)
 	}
 }
 
-int	detect_lexing_errors(t_minishell *m)
+void	detect_lexing_errors(t_minishell *m)
 {
 	int		quotecount;
 	char	*work;
@@ -65,11 +65,7 @@ int	detect_lexing_errors(t_minishell *m)
 		work++;
 	}
 	if (quotecount % 2 != 0)
-	{
-		ft_fprintf(2, "watch ur quotes bro\n");
-		return (-1);
-	}
-	return (0);
+		handle_error(m, 2, "unclosed quotes");
 }
 
 void	add_token_to_list(t_list **lst, t_token *token)
@@ -94,50 +90,6 @@ void	add_token_to_list(t_list **lst, t_token *token)
 	}
 }
 
-int	is_redirection_pattern(char *str)
-{
-	int	i;
-
-	i = 0;
-	if ((str[i] == '>' || str[i] == '<'))
-	{
-		while (str[i] == '>' || str[i] == '<')
-			i++;
-		if (str[i] == '\0')
-		{
-			ft_fprintf(2, "bash: syntax error near unexpected token `newline'\n");
-			return (-1);
-		}
-		if (str[i] == '|')
-		{
-			ft_fprintf(2, "bash: syntax error near unexpected token `|'\n");
-			return (-1);
-		}
-		return (i);
-	}
-	return (0);
-}
-
-int	is_pipe_pattern(char *str)
-{
-	int	i;
-
-	i = 0;
-	if (str[i] == '|')
-	{
-		i++;
-		if (str[i] == '|')
-		{
-			ft_fprintf(2, "bash: syntax error near unexpected token `|'\n");
-			return (-1);
-		}
-		return (i);
-	}
-	return (0);
-}
-
-//echo "sd'"s'$HOMEd""fds' "'fs" '$HOME'
-//echo "sd'"s$HOME'd""fds' "'fs" '$HOME'
 void	prompt_to_token(t_minishell *m)
 {
 	int		current_pos;
@@ -397,7 +349,7 @@ void	expand_toklst(t_minishell *m)
 	while (current != NULL)
 	{
 		cur_content = (t_token *)current->content;
-		expand_token(m->exitcode, cur_content);
+		expand_token(m, m->exitcode, cur_content);
 		current = current->next;
 	}
 }
@@ -408,7 +360,7 @@ void	lex_prompt(t_minishell *m)
 
 	tmpp = remove_chars(m->prompt, "\n");
 	m->prompt = tmpp;
-	m->exitcode = detect_lexing_errors(m);
+	detect_lexing_errors(m);
 	if (m->exitcode == 0)
 	{
 		prompt_to_token(m);
