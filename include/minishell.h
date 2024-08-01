@@ -3,10 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:18:56 by jeberle           #+#    #+#             */
+<<<<<<< HEAD
 /*   Updated: 2024/08/01 11:39:34 by chorst           ###   ########.fr       */
+=======
+/*   Updated: 2024/07/31 18:50:01 by jeberle          ###   ########.fr       */
+>>>>>>> 06adaba8590fb2acb6bed7e34f2211fbb9328f94
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,6 +100,7 @@ typedef struct s_token
 		{
 			int		fdin;
 			int		fdout;
+			int		open_prompt;
 		}	pipe;
 		int			arglen;
 	}	detail;
@@ -151,6 +156,9 @@ typedef struct s_envlst
 // ast.c
 void		ast_add(t_btree **ast, t_btree *cur, char *branch, t_token *tok);
 
+// executer.c
+void		execute(t_minishell *m);
+
 // expand.c
 void		expand_token(int exitcode, t_token *token);
 
@@ -191,8 +199,11 @@ char		*remove_chars(const char *str, const char *chrs_to_rmv);
 int			count_relevant_chars(const char *str, const char *chrs_to_rmv);
 void		remove_helper(const char *str, const char *chrs_to_rmv, char *new_str);
 
+// whitespace_handler.c
+char		*whitespace_handler(const char *str);
+
 // tokens.c
-t_token 	*create_token(char *str, char *expmap);
+t_token		*create_token(char *str, char *expmap);
 char		*toktype_to_str(enum e_toktype token);
 void		put_token(void *content);
 void		update_tok_type(t_token *tok, enum e_toktype token);

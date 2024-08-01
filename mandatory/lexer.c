@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 11:30:06 by jeberle           #+#    #+#             */
-/*   Updated: 2024/07/30 23:28:06 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/07/31 17:01:15 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,17 +16,37 @@ void	afterbreakup(t_minishell *m)
 {
 	t_list	*current;
 	t_token	*cur_content;
+	char	*work;
+	char	**words;
+	int		wordcount;
+	t_list	*new_node;
+	t_token	*new_token;
+	int		i;
 
 	current = m->tok_lst;
 	while (current != NULL)
 	{
 		cur_content = (t_token *)current->content;
-		ft_printf("%s ", cur_content->str);
-		ft_printf("%s ", cur_content->expmap);
-		ft_printf("%i", ft_strcontains(cur_content->expmap, '3'));
-		ft_printf("\n");
-		//free(cur_content->expmap);
-		//cur_content->expmap = NULL;
+		if (!ft_strcontains(cur_content->expmap, 'X') && ft_strcontains(cur_content->expmap, 'E'))
+		{
+			work = whitespace_handler(cur_content->str);
+			wordcount = ft_count_words(work, ' ');
+			words = ft_split(work, ' ');
+			free(cur_content->str);
+			cur_content->str = words[0];
+			i = 1;
+			while (i < wordcount)
+			{
+				new_token = create_token(words[i], cur_content->expmap);
+				update_tok_type(new_token, WORD);
+				new_node = ft_lstnew(new_token);
+				new_node->next = current->next;
+				current->next = new_node;
+				current = new_node;
+				i++;
+			}
+			free(words);
+		}
 		current = current->next;
 	}
 }
@@ -361,6 +381,8 @@ void	prompt_to_token(t_minishell *m)
 	free(expmap);
 }
 
+//free(cur_content->expmap);
+//cur_content->expmap = NULL;
 void	expand_toklst(t_minishell *m)
 {
 	t_list	*current;
@@ -371,8 +393,6 @@ void	expand_toklst(t_minishell *m)
 	{
 		cur_content = (t_token *)current->content;
 		expand_token(m->exitcode, cur_content);
-		//free(cur_content->expmap);
-		//cur_content->expmap = NULL;
 		current = current->next;
 	}
 }
@@ -389,8 +409,6 @@ void	lex_prompt(t_minishell *m)
 		prompt_to_token(m);
 		expand_toklst(m);
 		afterbreakup(m);
-		// Auspackn aller Word... 
-		//Folgen und INhalt check fuer Pipe und Redirections
 		ft_printf(Y"TOKENLIST:\n"D);
 		ft_lstput(&(m->tok_lst), put_token, '\n');
 	}

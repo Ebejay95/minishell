@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: jonathaneberle <jonathaneberle@student.    +#+  +:+       +#+         #
+#    By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/25 22:43:08 by jonathanebe       #+#    #+#              #
-#    Updated: 2024/07/29 12:27:39 by jonathanebe      ###   ########.fr        #
+#    Updated: 2024/07/31 17:12:21 by jeberle          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -84,6 +84,7 @@ SYSLIBFLAGS=-lreadline
 #------------------------------------------------------------------------------#
 
 SRCS=	mandatory/ast.c \
+		mandatory/executer.c \
 		mandatory/expand.c \
 		mandatory/hierarchy_validation.c \
 		mandatory/lexer.c \
@@ -94,6 +95,7 @@ SRCS=	mandatory/ast.c \
 		mandatory/parser.c \
 		mandatory/putters.c \
 		mandatory/remove_chars.c \
+		mandatory/whitespace_handler.c \
 		mandatory/signals.c \
 		mandatory/tokens.c \
 		mandatory/tokens2.c \
