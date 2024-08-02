@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokens.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
+/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 11:12:44 by jeberle           #+#    #+#             */
-/*   Updated: 2024/07/31 19:05:20 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/02 12:58:46 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,12 +40,6 @@ t_token	*create_token(char *str, char *expmap)
 	return (newtok);
 }
 
-void	update_tok_type(t_token *tok, enum e_toktype token)
-{
-	tok->token = token;
-	tok->type = toktype_to_str(token);
-}
-
 // tranform token type into string for readeable cmp and logging
 char	*toktype_to_str(enum e_toktype token)
 {
@@ -57,12 +51,14 @@ char	*toktype_to_str(enum e_toktype token)
 		return (ft_strdup("Command"));
 	if (token == WORD)
 		return (ft_strdup("Word"));
+	if (token == DELIMITER)
+		return (ft_strdup("Delimiter"));
 	if (token == UNSET)
 		return (ft_strdup("UNSET"));
 	return (ft_strdup(""));
 }
 
-void put_token_details(t_token *token)
+void	put_token_details(t_token *token)
 {
 	if (ft_strcmp(token->type, "Pipe") == 0)
 	{
@@ -73,15 +69,22 @@ void put_token_details(t_token *token)
 	}
 	else if (ft_strcmp(token->type, "Redirection") == 0)
 	{
-		ft_printf(" (fdin: %d, fdout: %d, rdrctype: %s)",
-		token->detail.redirection.fdin,
-		token->detail.redirection.fdout,
-		token->detail.redirection.rdrctype ? token->detail.redirection.rdrctype : "NULL");
+		if (token->detail.redirection.rdrctype)
+		{
+			ft_printf(" (fdin: %d, fdout: %d, rdrctype: %s)",
+				token->detail.redirection.fdin,
+				token->detail.redirection.fdout,
+				token->detail.redirection.rdrctype);
+		}
+		else
+		{
+			ft_printf(" (fdin: %d, fdout: %d, rdrctype: NULL)",
+				token->detail.redirection.fdin,
+				token->detail.redirection.fdout);
+		}
 	}
 	else
-	{
 		ft_printf(" (arglen: %d)", token->detail.arglen);
-	}
 }
 
 void	put_token(void *content)
@@ -94,7 +97,7 @@ void	put_token(void *content)
 		ft_printf(Y"["D);
 		ft_printf(C"%s "D, token->type);
 		ft_printf("%s", token->str);
-        put_token_details(token);
+		put_token_details(token);
 		ft_printf(Y"]"D);
 	}
 	else
@@ -109,3 +112,27 @@ t_token	tok_lst_get(void *n)
 {
 	return (*(t_token *)n);
 }
+
+// OLD
+// void	put_token_details(t_token *token)
+// {
+// 	if (ft_strcmp(token->type, "Pipe") == 0)
+// 	{
+// 		ft_printf(" (fdin: %d, fdout: %d, open_prompt: %d)",
+// 			token->detail.pipe.fdin,
+// 			token->detail.pipe.fdout,
+// 			token->detail.pipe.open_prompt);
+// 	}
+// 	else if (ft_strcmp(token->type, "Redirection") == 0)
+// 	{
+// 		ft_printf(" (fdin: %d, fdout: %d, rdrctype: %s)",
+// 			token->detail.redirection.fdin,
+// 			token->detail.redirection.fdout,
+// 			token->detail.redirection.rdrctype ?
+// 			token->detail.redirection.rdrctype : "NULL");
+// 	}
+// 	else
+// 	{
+// 		ft_printf(" (arglen: %d)", token->detail.arglen);
+// 	}
+// }

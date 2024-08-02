@@ -3,34 +3,200 @@
 /*                                                        :::      ::::::::   */
 /*   executer.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
+/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/31 17:01:26 by jeberle           #+#    #+#             */
-/*   Updated: 2024/07/31 22:10:45 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/02 14:34:23 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../include/minishell.h"
 
-void	check_semantics(t_list *last, t_list *current, t_token *token, t_list *current->next)
+static char	*get_executable(t_minishell *m, char *command)
 {
-	ft_printf("check semantics\n");
+	char	*pathline;
+	char	*joined;
+	char	**paths;
+	int		pathcount;
+	int		i;
+
+	pathline = my_getenv("PATH", m->env_list);
+	pathcount = ft_count_words(pathline, ':');
+	paths = ft_split(pathline, ':');
+	if (pathline != NULL)
+	{
+		i = 0;
+		while (i < pathcount)
+		{
+			joined = ft_strjoin(paths[i], command);
+			if (joined == NULL)
+				break ;
+			if (access(joined, X_OK) == 0)
+				return (ft_array_l_free(paths, pathcount), joined);
+			i++;
+			free(joined);
+		}
+	}
+	ft_array_l_free(paths, pathcount);
+	return (NULL);
 }
 
-t_token	*init_pipe_details(t_token *pipetok)
+static char	**own_env(t_envlst *env_lst)
 {
-	pipetok->detail.pipe.fdin = -1;
-	pipetok->detail.pipe.fdout = -1;
-	pipetok->detail.pipe.open_prompt = 0;
-	return (pipetok);
+	size_t		k;
+	char		**env;
+
+	k = 0;
+	env = (char **)malloc(sizeof(char *) * (count_list(env_lst) + 1));
+	if (!env)
+		return (NULL);
+	while (env_lst != NULL)
+	{
+		if (env_lst->value != NULL)
+		{
+			env[k] = ft_strjoin(ft_strjoin(env_lst->name, "="), env_lst->value);
+			if (!env[k])
+			{
+				while (k > 0)
+					free(env[--k]);
+				return (free(env), NULL);
+			}
+			k++;
+		}
+		env_lst = env_lst->next;
+	}
+	env[k] = NULL;
+	return (env);
 }
 
-t_token	*init_redirection_details(t_token *redirectiontoken)
+void	handle_error(t_minishell *m, int code, char *message)
 {
-	redirectiontoken->detail.redirection.fdin = -1;
-	redirectiontoken->detail.redirection.fdout = -1;
-	redirectiontoken->detail.redirection.rdrctype = NULL;
-	return (redirectiontoken);
+	ft_fprintf(2, R"%s\n"D, message);
+	m->exitcode = code;
+}
+
+void	ft_run_others(t_minishell *m, char *command, char **argv)
+{
+	char	*executable;
+	char	*message;
+
+	message = ft_strjoin(ft_strjoin("bash: ", command), ": command not found");
+	executable = get_executable(m, ft_strjoin("/", command));
+	if (!executable)
+		handle_error(m, 0, message); /// TODO fuer JOnathan Hnadle das korrekt!!!! ich habe pronbleme mit dem error code
+	execve(executable, argv, own_env(m->env_list));// Warum acuh immer werden wir hier rausgeschmissen
+}
+
+void run_command(t_minishell *m, t_list *current)
+{
+	t_token		*token;
+	t_envlst	**envlist;
+	t_list		*arg_list;
+	int			i;
+	int			argc;
+	int			noword;
+	char		**argv;
+	char		*command;
+
+	i = 0;
+	argc = 0;
+	noword = 0;
+	if (current == NULL)
+		return ((void)ft_printf("No command to run.\n"));
+	envlist = &(m->env_list);
+	token = (t_token *)current->content;
+	command = whitespace_handler(token->str);
+	current = current->next;
+	arg_list = current;
+	noword = 0;
+	while (arg_list != NULL && noword == 0)
+	{
+		token = (t_token *)arg_list->content;
+		if (token->token == WORD)
+			argc++;
+		else
+			noword = 1;
+		arg_list = arg_list->next;
+	}
+	// Allocate space for argv, including space for the command and NULL terminator
+	argv = (char **)malloc((argc + 2) * sizeof(char *)); // +1 for command, +1 for NULL
+	if (!argv)
+		return (perror("malloc failed"));
+	// Set the command as the first element of argv
+	argv[i++] = ft_strdup(command);
+	if (!argv[0])
+		return (perror("ft_strdup failed"), free(argv));
+	noword = 0;
+	// Add the rest of the arguments to argv
+	while (current != NULL && noword == 0)
+	{
+		token = (t_token *)current->content;
+		if (token->token == WORD)
+		{
+			argv[i] = ft_strdup(token->str);
+			if (!argv[i])
+			{
+				perror("ft_strdup failed");
+				while (i > 0)
+					free(argv[--i]);
+				return (free(argv));
+			}
+			i++;
+		}
+		else
+			noword = 1;
+		current = current->next;
+	}
+	argv[i] = NULL; // Null-terminate the argv array
+	ft_printf("execute %s\n", command);
+	// Execute the command with arguments
+	if (ft_strcmp(command, "cd") == 0)
+		ft_cd(i, argv, &envlist);
+	else if (!ft_strcmp(command, "echo"))
+		ft_echo(argv);
+	else if (!ft_strcmp(command, "env"))
+		ft_env(*envlist);
+	else if (!ft_strcmp(command, "exit"))
+		ft_exit(argv);
+	else if (!ft_strcmp(command, "export"))
+		ft_export(i, argv, &envlist);
+	else if (!is_var_name(*envlist, &argv[0]))
+		ft_export(i, argv, &envlist);
+	else if (!ft_strcmp(command, "pwd"))
+		ft_pwd(argv);
+	else if (!ft_strcmp(command, "unset"))
+		ft_unset(envlist, argv);
+	else
+		ft_run_others(m, command, argv);
+	i = 0;
+	while (argv[i] != NULL)
+		free(argv[i++]);
+	ft_printf(B"exitcode: %i\n"D, m->exitcode);
+	free(argv);
+}
+
+void	check_semantics(t_list *last, t_list *current)
+{
+	t_token	*last_token;
+	t_token	*token;
+
+	last_token = NULL;
+	token = (t_token *)current->content;
+	if (last)
+	{
+		last_token = (t_token *)last->content;
+		if (!ft_strcmp(token->type, "Word")
+			&& !ft_strcmp(last_token->type, "Redirection")
+			&& !ft_strcmp(last_token->str, "<<"))
+			update_tok_type(token, DELIMITER);
+		if (!ft_strcmp(token->type, "Word")
+			&& !ft_strcmp(last_token->type, "Pipe")
+			&& !ft_strcmp(last_token->str, "|"))
+			update_tok_type(token, COMMAND);
+	}
+	else
+		if (!ft_strcmp(token->type, "Word"))
+			update_tok_type(token, COMMAND);
 }
 
 void	pre_exec_prep(t_minishell *m)
@@ -50,7 +216,7 @@ void	pre_exec_prep(t_minishell *m)
 	}
 }
 
-int	check_pipes(t_minishell *m)
+void	check_pipes(t_minishell *m)
 {
 	t_list	*current;
 	t_token	*cur_content;
@@ -62,49 +228,34 @@ int	check_pipes(t_minishell *m)
 	current = m->tok_lst;
 	while (current != NULL)
 	{
-		//check_semantics(NULL, current, token, current->next);
 		cur_content = (t_token *)current->content;
 		if (ft_strcmp(cur_content->type, "Pipe") == 0 && last_type == NULL)
-		{
-			ft_fprintf(2, "bash: syntax error near unexpected token `|'\n");
-			return 2;
-		}
-		else if (current->next == NULL && ft_strcmp(cur_content->type, "Pipe") == 0)
-		{
+			handle_error(m, 2, "bash: syntax error near unexpected token `|'");
+		else if (current->next == NULL && !ft_strcmp(cur_content->type, "Pipe"))
 			cur_content->detail.pipe.open_prompt = 1;
-		}
 		last_type = cur_content->type;
 		last_str = cur_content->str;
 		current = current->next;
 	}
-	return 0;
 }
 
 void	set_rdrctype(t_list *last, t_list *current, t_token *token)
 {
-	check_semantics(last, current, token, current->next);
+	check_semantics(last, current);
 	if (ft_strcmp(token->type, "Redirection") == 0)
 	{
 		if (ft_strcmp(token->str, "<<") == 0)
-		{
 			token->detail.redirection.rdrctype = ft_strdup("here_doc");
-		}
 		if (ft_strcmp(token->str, ">>") == 0)
-		{
 			token->detail.redirection.rdrctype = ft_strdup("append");
-		}
 		if (ft_strcmp(token->str, "<") == 0)
-		{
 			token->detail.redirection.rdrctype = ft_strdup("redirection");
-		}
 		if (ft_strcmp(token->str, ">") == 0)
-		{
 			token->detail.redirection.rdrctype = ft_strdup("truncate");
-		}
 	}
 }
-
-int	check_redirections(t_minishell *m)
+// |---------------------------------------------------------------------------|
+void	check_redirections(t_minishell *m)
 {
 	t_list	*current;
 	t_list	*last;
@@ -119,71 +270,113 @@ int	check_redirections(t_minishell *m)
 	while (current != NULL)
 	{
 		cur_content = (t_token *)current->content;
-		set_rdrctype(last, current, cur_content);
 		if (ft_strcmp(cur_content->type, "Pipe") == 0 && ft_strcmp(last_type, "Redirection") == 0)
-		{
-			if (ft_strcmp(last_str, ">") != 0)
-			{
-				ft_fprintf(2, "bash: syntax error near unexpected token `|'\n");
-				return 2;
-			}
-		}
+			handle_error(m, 2, "bash: syntax error near unexpected token `|'");
 		else if (current->next == NULL && ft_strcmp(cur_content->type, "Redirection") == 0)
-		{
-			ft_fprintf(2, "bash: syntax error near unexpected token `newline'\n");
-			return 2;
-		}
+			handle_error(m, 2, "bash: syntax error near unexpected token `newline'");
 		else if (ft_strcmp(last_type, "Redirection") == 0 && ft_strcmp(cur_content->type, "Redirection") == 0)
 		{
 			if ((ft_strcmp(last_str, "<<") == 0 || ft_strcmp(last_str, ">>") == 0) && ft_strcmp(cur_content->str, ">") == 0)
-			{
-				ft_fprintf(2, "bash: syntax error near unexpected token `>'\n");
-				return 2;
-			}
+				handle_error(m, 2, "bash: syntax error near unexpected token `>'");
 			if ((ft_strcmp(last_str, "<<") == 0 || ft_strcmp(last_str, ">>") == 0) && ft_strcmp(cur_content->str, ">>") == 0)
-			{
-				ft_fprintf(2, "bash: syntax error near unexpected token `>>'\n");
-				return 2;
-			}
+				handle_error(m, 2, "bash: syntax error near unexpected token `>>'");
 			if ((ft_strcmp(last_str, "<<") == 0 || ft_strcmp(last_str, ">>") == 0) && ft_strcmp(cur_content->str, "<") == 0)
-			{
-				ft_fprintf(2, "bash: syntax error near unexpected token `<'\n");
-				return 2;
-			}
+				handle_error(m, 2, "bash: syntax error near unexpected token `<'");
 			if ((ft_strcmp(last_str, "<<") == 0 || ft_strcmp(last_str, ">>") == 0) && ft_strcmp(cur_content->str, "<<") == 0)
-			{
-				ft_fprintf(2, "bash: syntax error near unexpected token `<<'\n");
-				return 2;
-			}
+				handle_error(m, 2, "bash: syntax error near unexpected token `<<'");
 		}
+		set_rdrctype(last, current, cur_content);
 		last_type = cur_content->type;
 		last_str = cur_content->str;
 		last = current;
 		current = current->next;
 	}
-	return 0;
 }
 
 int	pre_exec_checks(t_minishell *m)
 {
 	if (m->exitcode == 0)
-		m->exitcode = check_pipes(m);
+		check_pipes(m);
 	if (m->exitcode == 0)
-		m->exitcode = check_redirections(m);
-	return m->exitcode;
+		check_redirections(m);
+	return (m->exitcode);
 }
 
-//void	exec_interpreter()
-
-void	execute(t_minishell *m)
+void execute(t_minishell *m)
 {
+	//int		pipe_fd[2];
+	//int		pid;
+	int		prev_pipe_read;
+	t_list	*current;
+	t_token	*token;
+	//int		status;
+
 	pre_exec_prep(m);
 	if (m->exitcode == 0)
 		m->exitcode = pre_exec_checks(m);
 	if (m->exitcode == 0)
 	{
-		//exec_interpreter(m);
 		ft_printf(Y"EXECUTE:\n"D);
 		ft_lstput(&(m->tok_lst), put_token, '\n');
 	}
+	if (m->exitcode != 0)
+		return;
+	prev_pipe_read = STDIN_FILENO;
+	current = m->tok_lst;
+	while (current != NULL)
+	{
+		token = (t_token *)current->content;
+		if (token->token == COMMAND)
+		{
+			run_command(m, current);
+		}
+		// if (token->token == PIPE)
+		// {
+		// 	if (pipe(pipe_fd) == -1)
+		// 		handle_error(m, 2, "Pipe creation failed");
+		// 	pid = fork();
+		// 	if (pid == -1)
+		// 		handle_error(m, 2, "Fork failed");
+		// 	else if (pid == 0)
+		// 	{
+		// 		close(pipe_fd[0]);
+		// 		dup2(prev_pipe_read, STDIN_FILENO);
+		// 		dup2(pipe_fd[1], STDOUT_FILENO);
+		// 		close(pipe_fd[1]);
+		// 		run_command(m, current);
+		// 		exit(EXIT_SUCCESS);
+		// 	}
+		// 	else
+		// 	{
+		// 		close(pipe_fd[1]);
+		// 		if (prev_pipe_read != STDIN_FILENO)
+		// 			close(prev_pipe_read);
+		// 		prev_pipe_read = pipe_fd[0];
+		// 	}
+		// }
+		// else if (token->token == COMMAND)
+		// {
+		// 	pid = fork();
+		// 	if (pid == -1)
+		// 		handle_error(m, 2, "Fork failed");
+		// 	else if (pid == 0)
+		// 	{
+		// 		if (prev_pipe_read != STDIN_FILENO)
+		// 		{
+		// 			dup2(prev_pipe_read, STDIN_FILENO);
+		// 			close(prev_pipe_read);
+		// 		}
+		// 		run_command(m, current);
+		// 		exit(EXIT_SUCCESS);
+		// 	}
+		// }
+		current = current->next;
+	}
+	// while (wait(&status) > 0)
+	// {
+	// 	if (WIFEXITED(status))
+	// 		m->exitcode = WEXITSTATUS(status);
+	// }
+	// if (prev_pipe_read != STDIN_FILENO)
+	// 	close(prev_pipe_read);
 }

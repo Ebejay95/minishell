@@ -1,33 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   exit.c                                             :+:      :+:    :+:   */
+/*   executer_inits.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/06/12 15:12:06 by chorst            #+#    #+#             */
-/*   Updated: 2024/08/02 12:07:43 by chorst           ###   ########.fr       */
+/*   Created: 2024/08/02 14:09:50 by chorst            #+#    #+#             */
+/*   Updated: 2024/08/02 14:22:13 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../include/minishell.h"
 
-void	ft_exit(char **argv)
+t_token	*init_pipe_details(t_token *pipetok)
 {
-	int	exit_status;
-
-	exit_status = 0;
-	if (argv[1])
-	{
-		exit_status = atoi(argv[1]);
-		if (exit_status == 0 && argv[1][0] != '0')
-		{
-			printf("exit\n🍕🚀🌈🦄🍺: exit: %s: numeric argument required\n",
-				argv[1]);
-			exit(2);
-		}
-	}
-	exit(exit_status);
+	pipetok->detail.pipe.fdin = -1;
+	pipetok->detail.pipe.fdout = -1;
+	pipetok->detail.pipe.open_prompt = 0;
+	return (pipetok);
 }
 
-// exit status der letzten funktion oder command returnen.
+t_token	*init_redirection_details(t_token *redirectiontoken)
+{
+	redirectiontoken->detail.redirection.fdin = -1;
+	redirectiontoken->detail.redirection.fdout = -1;
+	redirectiontoken->detail.redirection.rdrctype = NULL;
+	return (redirectiontoken);
+}

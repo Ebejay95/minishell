@@ -6,14 +6,14 @@
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/26 13:42:12 by jkauker           #+#    #+#             */
-/*   Updated: 2024/08/01 11:46:49 by chorst           ###   ########.fr       */
+/*   Updated: 2024/08/02 13:31:07 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../include/minishell.h"
 
 // Counts the number of elements in the envp list
-int	count_env_list(t_envlst *envp)
+int	count_list(t_envlst *envp)
 {
 	int	count;
 

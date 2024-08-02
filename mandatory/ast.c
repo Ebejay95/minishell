@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ast.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jonathaneberle <jonathaneberle@student.    +#+  +:+       +#+        */
+/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 11:31:17 by jeberle           #+#    #+#             */
-/*   Updated: 2024/07/29 12:20:14 by jonathanebe      ###   ########.fr       */
+/*   Updated: 2024/08/02 13:14:47 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,45 +27,47 @@
 	ast_add(&ast, ast, "child", pipe);
 
  hadnling to add nodes to ast at postiion cur as child or sibling by token */
-void	ast_add(t_btree **ast, t_btree *cur, char *branch, t_token *tok)
+static void	handle_null_cur(char *branch, t_token *tok)
+{
+	if (ft_strcmp(branch, "child") == 0)
+		ft_printf(R AD_C_ON_N D, tok->type);
+	else if (ft_strcmp(branch, "next") == 0)
+		ft_printf(R AD_N_ON_N D, tok->type);
+}
+
+static t_btree	*add_node(t_btree **ast, t_btree *cur, char *br, t_token *tok)
 {
 	t_btree	*new;
-	t_token	*asttok;
 
-	new = NULL;
-	if (cur == NULL)
-	{
-		if (ft_strcmp(branch, "child") == 0)
-			ft_printf(R AD_C_ON_N D, tok->type);
-		else if (ft_strcmp(branch, "next") == 0)
-			ft_printf(R AD_N_ON_N D, tok->type);
-		return ;
-	}
-	if (ft_strcmp(branch, "next") != 0 && ft_strcmp(branch, "child") != 0)
-	{
-		ft_printf(R B_NO_DEF D);
-		return ;
-	}
+	new = ft_btreenew((void *)tok);
 	if (vd_null_add(cur, tok))
 	{
-		new = ft_btreenew((void *)tok);
 		if (cur == *ast)
-		{
 			*ast = new;
-		}
 		else
-		{
 			cur = new;
-		}
 	}
-	else if (vd_tree_add(cur, branch, tok) && cur->content != NULL)
+	else if (vd_tree_add(cur, br, tok) && cur->content != NULL)
 	{
-		new = ft_btreenew((void *)tok);
-		if (ft_strcmp(branch, "next") == 0)
+		if (ft_strcmp(br, "next") == 0)
 			ft_btreeadd_next(cur, new);
-		if (ft_strcmp(branch, "child") == 0)
+		if (ft_strcmp(br, "child") == 0)
 			ft_btreeadd_child(cur, new);
 	}
+	return (new);
+}
+
+void	ast_add(t_btree **ast, t_btree *cur, char *branch, t_token *tok)
+{
+	t_token	*asttok;
+
+	if (cur == NULL)
+		return (handle_null_cur(branch, tok));
+	if (ft_strcmp(branch, "next") != 0 && ft_strcmp(branch, "child") != 0)
+		return ((void)ft_printf(R B_NO_DEF D));
+	if (vd_null_add(cur, tok) || (vd_tree_add(cur, branch, tok)
+			&& cur->content != NULL))
+		add_node(ast, cur, branch, tok);
 	else if (cur->content != NULL)
 	{
 		asttok = cur->content;
@@ -73,6 +75,5 @@ void	ast_add(t_btree **ast, t_btree *cur, char *branch, t_token *tok)
 			ft_printf(R AD_C_N_AL D, tok->type, asttok->type);
 		else if (ft_strcmp(branch, "next") == 0)
 			ft_printf(R AD_N_N_AL D, tok->type, asttok->type);
-		return ;
 	}
 }

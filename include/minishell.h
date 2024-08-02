@@ -6,7 +6,7 @@
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:18:56 by jeberle           #+#    #+#             */
-/*   Updated: 2024/08/01 11:47:59 by chorst           ###   ########.fr       */
+/*   Updated: 2024/08/02 14:25:34 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,7 @@ typedef enum e_toktype
 	PIPE,
 	COMMAND,
 	WORD,
+	DELIMITER,
 	UNSET
 }	t_toktype;
 
@@ -102,7 +103,8 @@ typedef struct s_token
 	}	detail;
 }	t_token;
 
-// void set_rdrct_token_details(t_token *token, int fdin, int fdout, const char *rdrctype) {
+// void set_tok_io_param(t_token *tok, int fdin, int fdout, const char *rdrctyp)
+// {
 //     if (token == NULL) return;
 //     token->token = REDIRECTION;
 //     token->detail.redirection.fdin = fdin;
@@ -110,7 +112,8 @@ typedef struct s_token
 //     token->detail.redirection.rdrctype = rdrctype;
 // }
 
-// void set_command_arg_token_details(t_token *token, int arglen, int is_command) {
+// void set_command_arg_tok_detail(t_token *token, int arglen, int is_command)
+// {
 //     if (token == NULL) return;
 //     token->token = is_command ? COMMAND : ARGUMENT;
 //     token->detail.arglen = arglen;
@@ -123,12 +126,17 @@ typedef struct s_token
 //     token->detail.pipe.fdout = fdout;
 // }
 
-
-// in dem *name sitzt immer der name und in value immer der value. das "=" zeichen ist nicht enthalten
+typedef struct s_envlst
+{
+	char			*name;
+	char			*value;
+	struct s_envlst	*next;
+}					t_envlst;
 
 typedef struct s_minishell
 {
 	char		**envp;
+	t_envlst	*env_list;
 	char		*prompt;
 	int			is_interactive;
 	int			exitcode;
@@ -137,14 +145,6 @@ typedef struct s_minishell
 	t_btree		*ast;
 }	t_minishell;
 
-typedef struct s_envlst
-{
-	char			*name;
-	char			*value;
-	struct s_envlst	*next;
-	t_minishell		*minishell;
-}					t_envlst;
-
 // #############################################################################
 // #                          Mandatory Functions                              #
 // #############################################################################
@@ -152,11 +152,18 @@ typedef struct s_envlst
 // ast.c
 void		ast_add(t_btree **ast, t_btree *cur, char *branch, t_token *tok);
 
+// executer_checks.c
+
+// executer_inits.c
+t_token		*init_pipe_details(t_token *pipetok);
+t_token		*init_redirection_details(t_token *redirectiontoken);
+
 // executer.c
 void		execute(t_minishell *m);
+void		handle_error(t_minishell *m, int code, char *message);
 
 // expand.c
-void		expand_token(int exitcode, t_token *token);
+void		expand_token(t_minishell *m, int exitcode, t_token *token);
 
 // hierarchy_validation.c
 int			vd_null_add(t_btree *ast, t_token *newtok);
@@ -165,11 +172,9 @@ int			check_next_rel(t_token *current, t_token *new);
 int			vd_tree_add(t_btree *current, char *branch, t_token *newtok);
 
 // init_envlst.c
-t_envlst	*init_env_list(char **envp, t_minishell *m);
+void		init_env_list(char **envp, t_minishell *m);
 void		extract_name_value(char *arg, char **name, char **value);
-void		add_env_node(t_envlst **env_list, char *name, char *value, t_minishell *m);
-t_envlst	*find_env_var(t_envlst *head, const char *name);
-
+void		add_env_node(t_envlst **env_list, char *name, char *value);
 
 // lexer.c
 void		lex_prompt(t_minishell *m);
@@ -177,13 +182,9 @@ void		lex_prompt(t_minishell *m);
 // minishell_helper.c
 void		cleanup_minishell(t_minishell *minishell);
 void		initialize_minishell(t_minishell *minishell, char **envp);
-void		interactive_mode(t_minishell *minishell);
-void		non_interactive_mode(t_minishell *minishell);
 
 // minishell.c
-char		**parse_input(char *prompt, int *argc);
-void		execute_command(char *prompt, t_envlst **envlst);
-int			handle_input(t_minishell *minishell, t_envlst **envlst);
+int			main(int argc, char **argv, char **envp);
 
 // parser.c
 void		parse(t_minishell *m);
@@ -193,7 +194,7 @@ void		parse(t_minishell *m);
 // remove_chars.c
 char		*remove_chars(const char *str, const char *chrs_to_rmv);
 int			count_relevant_chars(const char *str, const char *chrs_to_rmv);
-void		remove_helper(const char *str, const char *chrs_to_rmv, char *new_str);
+void		remove_helper(const char *s, const char *chrs_to_rmv, char *new_s);
 
 // whitespace_handler.c
 char		*whitespace_handler(const char *str);
@@ -231,7 +232,7 @@ void		ft_exit(char **argv);
 // export.c
 void		ft_export(int argc, char **argv, t_envlst ***envp);
 void		my_export(t_envlst **envp, char **argv);
-void		chng_env_nd(t_envlst **env_list, char *name, char *value, int free_it);
+void		change_env(t_envlst **env_lst, char *key, char *value, int free_it);
 void		sort_envp(char **envp);
 char		**copy_envp(t_envlst *envp);
 
@@ -248,7 +249,7 @@ void		ft_unset(t_envlst **envp, char **argv);
 void		free_envlst_node(t_envlst *node);
 
 // var_helper.c
-int			count_env_list(t_envlst *envp);
+int			count_list(t_envlst *envp);
 void		print_env_variable(const char *env_var);
 int			is_var_name(t_envlst *envp, char **argv);
 char		*my_getenv(const char *name, t_envlst *envp);

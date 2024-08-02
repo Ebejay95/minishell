@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/21 13:23:03 by jeberle           #+#    #+#             */
-/*   Updated: 2024/07/31 16:32:06 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/01 13:49:29 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ char	*get_var_name(const char *str, const char *expmap, size_t *pos)
 	return (var_name);
 }
 
-void	expand_part(char **expanded, char **expanded_map, int exitcode, const char *str, char *expmap, size_t start, size_t end)
+void	expand_part(t_minishell *m, char **expanded, char **expanded_map, int exitcode, const char *str, char *expmap, size_t start, size_t end)
 {
 	char	*result;
 	char	*expmap_result;
@@ -135,7 +135,7 @@ void	expand_part(char **expanded, char **expanded_map, int exitcode, const char 
 			var_name = get_var_name(str, expmap, &i);
 			if (var_name)
 			{
-				var_value = getenv(var_name);
+				var_value = my_getenv(var_name, m->env_list);
 				if (var_value)
 				{
 					temp = ft_realloc(result, ft_strlen(result) + ft_strlen(var_value) + 1);
@@ -218,7 +218,7 @@ void	expand_part(char **expanded, char **expanded_map, int exitcode, const char 
 	*expanded_map = expmap_result;
 }
 
-void	expand_token(int exitcode, t_token *token)
+void	expand_token(t_minishell *m, int exitcode, t_token *token)
 {
 	char	*temp;
 	char	*expmap_temp;
@@ -267,7 +267,7 @@ void	expand_token(int exitcode, t_token *token)
 			current_mode = token->expmap[i];
 			while (i < len && token->expmap[i] == current_mode)
 				i++;
-			expand_part(&expanded, &expanded_map, exitcode, &token->str[start], &token->expmap[start], 0, i - start);
+			expand_part(m, &expanded, &expanded_map, exitcode, &token->str[start], &token->expmap[start], 0, i - start);
 			if (expanded && expanded_map)
 			{
 				temp = ft_realloc(result, ft_strlen(result) + ft_strlen(expanded) + 1);

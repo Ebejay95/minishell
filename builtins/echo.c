@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
+/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 11:49:45 by chorst            #+#    #+#             */
-/*   Updated: 2024/07/30 23:20:45 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/02 12:34:45 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,3 @@ void	print_output(char **args, int start_index, bool newline)
 	if (newline)
 		printf("\n");
 }
-
-// echo.c bekommt die Argumente richtig übergeben vom parsing teil.
-// also z.b. ''"Hallo Welt"'' wird als "Hallo Welt" übergeben

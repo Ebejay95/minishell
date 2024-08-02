@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+         #
+#    By: chorst <chorst@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/25 22:43:08 by jonathanebe       #+#    #+#              #
-#    Updated: 2024/07/31 17:12:21 by jeberle          ###   ########.fr        #
+#    Updated: 2024/08/02 14:24:27 by chorst           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -84,14 +84,16 @@ SYSLIBFLAGS=-lreadline
 #------------------------------------------------------------------------------#
 
 SRCS=	mandatory/ast.c \
+		mandatory/executer_checks.c \
+		mandatory/executer_inits.c \
 		mandatory/executer.c \
 		mandatory/expand.c \
 		mandatory/hierarchy_validation.c \
 		mandatory/lexer.c \
 		mandatory/init_envlst.c \
 		mandatory/lexer.c \
-		mandatory/minishell_helper.c \
 		mandatory/minishell.c \
+		mandatory/minishell2.c \
 		mandatory/parser.c \
 		mandatory/putters.c \
 		mandatory/remove_chars.c \

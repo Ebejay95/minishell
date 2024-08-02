@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   set_var.c                                          :+:      :+:    :+:   */
+/*   set.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jkauker <jkauker@student.42heilbronn.de    +#+  +:+       +#+        */
+/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/26 13:42:23 by jkauker           #+#    #+#             */
-/*   Updated: 2024/07/03 08:24:54 by jkauker          ###   ########.fr       */
+/*   Updated: 2024/08/01 16:37:57 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,9 +30,11 @@ void	change_var_value(t_envlst **envp, char **argv)
 			current = current->next;
 		temp = ft_strjoin(current->name, "+=");
 		if (!(ft_strncmp(argv[i], temp, ft_strlen(temp))))
-			upgrade_var_value(&(*envp), argv[i]);
+			upgrade_var_value(envp, argv[i]);
 		else
-			my_export(&(*envp), &argv[i]);
+		{
+			my_export(envp, &argv[i]);
+		}
 		free(temp);
 		i++;
 	}

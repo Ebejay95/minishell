@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   remove_chars.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
+/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/09 09:58:55 by chorst            #+#    #+#             */
-/*   Updated: 2024/07/16 21:02:50 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/02 11:22:20 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,16 +15,16 @@
 // Function that removes characters from a string
 // str = string to remove chars from
 // chrs_to_rmv = chars to remove from str
-char	*remove_chars(const char *str, const char *chrs_to_rmv)
+char	*remove_chars(const char *s, const char *chrs_to_rmv)
 {
 	int		count;
 	char	*new_str;
 
-	count = count_relevant_chars(str, chrs_to_rmv);
+	count = count_relevant_chars(s, chrs_to_rmv);
 	new_str = (char *)malloc(sizeof(char) * (count + 1));
 	if (new_str == NULL)
 		exit(EXIT_FAILURE);
-	remove_helper(str, chrs_to_rmv, new_str);
+	remove_helper(s, chrs_to_rmv, new_str);
 	return (new_str);
 }
 
@@ -50,7 +50,7 @@ int	count_relevant_chars(const char *str, const char *chrs_to_rmv)
 }
 
 // Function that removes characters from a string
-void	remove_helper(const char *str, const char *chrs_to_rmv, char *new_str)
+void	remove_helper(const char *str, const char *chrs_to_rmv, char *new_s)
 {
 	int	i;
 	int	j;
@@ -65,10 +65,10 @@ void	remove_helper(const char *str, const char *chrs_to_rmv, char *new_str)
 			j++;
 		if (chrs_to_rmv[j] == '\0')
 		{
-			new_str[k] = str[i];
+			new_s[k] = str[i];
 			k++;
 		}
 		i++;
 	}
-	new_str[k] = '\0';
+	new_s[k] = '\0';
 }
