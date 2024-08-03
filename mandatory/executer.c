@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executer.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/31 17:01:26 by jeberle           #+#    #+#             */
-/*   Updated: 2024/08/02 14:34:23 by chorst           ###   ########.fr       */
+/*   Updated: 2024/08/03 07:34:02 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,28 +16,31 @@ static char	*get_executable(t_minishell *m, char *command)
 {
 	char	*pathline;
 	char	*joined;
+	char	*temp;
 	char	**paths;
 	int		pathcount;
 	int		i;
 
 	pathline = my_getenv("PATH", m->env_list);
-	pathcount = ft_count_words(pathline, ':');
-	paths = ft_split(pathline, ':');
 	if (pathline != NULL)
 	{
+		pathcount = ft_count_words(pathline, ':');
+		paths = ft_split(pathline, ':');
 		i = 0;
 		while (i < pathcount)
 		{
-			joined = ft_strjoin(paths[i], command);
+			temp = ft_strjoin(paths[i], "/");
+			joined = ft_strjoin(temp, command);
+			free(temp);
 			if (joined == NULL)
-				break ;
+				break;
 			if (access(joined, X_OK) == 0)
 				return (ft_array_l_free(paths, pathcount), joined);
 			i++;
 			free(joined);
 		}
+		ft_array_l_free(paths, pathcount);
 	}
-	ft_array_l_free(paths, pathcount);
 	return (NULL);
 }
 
@@ -79,12 +82,44 @@ void	ft_run_others(t_minishell *m, char *command, char **argv)
 {
 	char	*executable;
 	char	*message;
+	pid_t	pid;
+	int		status;
 
 	message = ft_strjoin(ft_strjoin("bash: ", command), ": command not found");
-	executable = get_executable(m, ft_strjoin("/", command));
+	executable = get_executable(m, command);
 	if (!executable)
-		handle_error(m, 0, message); /// TODO fuer JOnathan Hnadle das korrekt!!!! ich habe pronbleme mit dem error code
-	execve(executable, argv, own_env(m->env_list));// Warum acuh immer werden wir hier rausgeschmissen
+	{
+		handle_error(m, 127, message);
+		free(message);
+		return;
+	}
+
+	pid = fork();
+	if (pid == -1)
+	{
+		handle_error(m, 1, "Fork failed");
+		free(executable);
+		free(message);
+		return;
+	}
+	else if (pid == 0)
+	{
+		// Kindprozess
+		execve(executable, argv, own_env(m->env_list));
+		perror("execve failed");
+		free(executable);
+		free(message);
+		exit(EXIT_FAILURE);
+	}
+	else
+	{
+		// Elternprozess
+		waitpid(pid, &status, 0);
+		if (WIFEXITED(status))
+			m->exitcode = WEXITSTATUS(status);
+	}
+	free(executable);
+	free(message);
 }
 
 void run_command(t_minishell *m, t_list *current)
