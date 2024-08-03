@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 11:30:06 by jeberle           #+#    #+#             */
-/*   Updated: 2024/08/02 13:05:43 by chorst           ###   ########.fr       */
+/*   Updated: 2024/08/03 14:23:13 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,7 @@ void	detect_lexing_errors(t_minishell *m)
 	if (quotecount % 2 != 0)
 		handle_error(m, 2, "unclosed quotes");
 }
+
 
 void	add_token_to_list(t_list **lst, t_token *token)
 {
@@ -361,11 +362,11 @@ void	lex_prompt(t_minishell *m)
 	tmpp = remove_chars(m->prompt, "\n");
 	m->prompt = tmpp;
 	detect_lexing_errors(m);
-	if (m->exitcode == 0)
+	prompt_to_token(m);
+	expand_toklst(m);
+	afterbreakup(m);
+	if (DEBUG == 1)
 	{
-		prompt_to_token(m);
-		expand_toklst(m);
-		afterbreakup(m);
 		ft_printf(Y"TOKENLIST:\n"D);
 		ft_lstput(&(m->tok_lst), put_token, '\n');
 	}

@@ -6,11 +6,68 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/31 17:01:26 by jeberle           #+#    #+#             */
-/*   Updated: 2024/08/03 07:34:02 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/03 17:22:43 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../include/minishell.h"
+
+t_list	**split_by_pipe(t_minishell *m)
+{
+	t_list	*current;
+	t_list	*sequence;
+	t_list	**cmd_sequences;
+	int		sequence_count;
+	t_token	*token;
+
+	current = m->tok_lst;
+	sequence = NULL;
+	cmd_sequences = NULL;
+	sequence_count = 0;
+	while (current != NULL)
+	{
+		token = (t_token *)current->content;
+		if (token->token == PIPE)
+		{
+			if (sequence != NULL)
+			{
+				cmd_sequences = ft_realloc(cmd_sequences, sizeof(t_list *) * (sequence_count + 1));
+				if (cmd_sequences == NULL)
+				{
+					perror("realloc");
+					exit(EXIT_FAILURE);
+				}
+				cmd_sequences[sequence_count++] = sequence;
+				sequence = NULL;
+			}
+			m->pipes++;
+		}
+		else
+		{
+			add_token_to_list(&sequence, token);
+		}
+		current = current->next;
+	}
+	if (sequence != NULL)
+	{
+		cmd_sequences = ft_realloc(cmd_sequences, sizeof(t_list *) * (sequence_count + 1));
+		if (cmd_sequences == NULL)
+		{
+			perror("realloc");
+			exit(EXIT_FAILURE);
+		}
+		cmd_sequences[sequence_count++] = sequence;
+		sequence = NULL;
+	}
+	cmd_sequences = ft_realloc(cmd_sequences, sizeof(t_list *) * (sequence_count + 1));
+	if (cmd_sequences == NULL)
+	{
+		perror("realloc");
+		exit(EXIT_FAILURE);
+	}
+	cmd_sequences[sequence_count] = NULL;
+	return (cmd_sequences);
+}
 
 static char	*get_executable(t_minishell *m, char *command)
 {
@@ -33,7 +90,7 @@ static char	*get_executable(t_minishell *m, char *command)
 			joined = ft_strjoin(temp, command);
 			free(temp);
 			if (joined == NULL)
-				break;
+				break ;
 			if (access(joined, X_OK) == 0)
 				return (ft_array_l_free(paths, pathcount), joined);
 			i++;
@@ -86,7 +143,10 @@ void	ft_run_others(t_minishell *m, char *command, char **argv)
 	int		status;
 
 	message = ft_strjoin(ft_strjoin("bash: ", command), ": command not found");
-	executable = get_executable(m, command);
+	if (access(command, X_OK) == 0)
+		executable = command;
+	else
+		executable = get_executable(m, command);
 	if (!executable)
 	{
 		handle_error(m, 127, message);
@@ -104,7 +164,6 @@ void	ft_run_others(t_minishell *m, char *command, char **argv)
 	}
 	else if (pid == 0)
 	{
-		// Kindprozess
 		execve(executable, argv, own_env(m->env_list));
 		perror("execve failed");
 		free(executable);
@@ -113,10 +172,11 @@ void	ft_run_others(t_minishell *m, char *command, char **argv)
 	}
 	else
 	{
-		// Elternprozess
 		waitpid(pid, &status, 0);
 		if (WIFEXITED(status))
+		{
 			m->exitcode = WEXITSTATUS(status);
+		}
 	}
 	free(executable);
 	free(message);
@@ -137,7 +197,7 @@ void run_command(t_minishell *m, t_list *current)
 	argc = 0;
 	noword = 0;
 	if (current == NULL)
-		return ((void)ft_printf("No command to run.\n"));
+		return ;
 	envlist = &(m->env_list);
 	token = (t_token *)current->content;
 	command = whitespace_handler(token->str);
@@ -153,16 +213,13 @@ void run_command(t_minishell *m, t_list *current)
 			noword = 1;
 		arg_list = arg_list->next;
 	}
-	// Allocate space for argv, including space for the command and NULL terminator
-	argv = (char **)malloc((argc + 2) * sizeof(char *)); // +1 for command, +1 for NULL
+	argv = (char **)malloc((argc + 2) * sizeof(char *));
 	if (!argv)
 		return (perror("malloc failed"));
-	// Set the command as the first element of argv
 	argv[i++] = ft_strdup(command);
 	if (!argv[0])
 		return (perror("ft_strdup failed"), free(argv));
 	noword = 0;
-	// Add the rest of the arguments to argv
 	while (current != NULL && noword == 0)
 	{
 		token = (t_token *)current->content;
@@ -182,9 +239,7 @@ void run_command(t_minishell *m, t_list *current)
 			noword = 1;
 		current = current->next;
 	}
-	argv[i] = NULL; // Null-terminate the argv array
-	ft_printf("execute %s\n", command);
-	// Execute the command with arguments
+	argv[i] = NULL;
 	if (ft_strcmp(command, "cd") == 0)
 		ft_cd(i, argv, &envlist);
 	else if (!ft_strcmp(command, "echo"))
@@ -206,7 +261,8 @@ void run_command(t_minishell *m, t_list *current)
 	i = 0;
 	while (argv[i] != NULL)
 		free(argv[i++]);
-	ft_printf(B"exitcode: %i\n"D, m->exitcode);
+	if (DEBUG == 1)
+		ft_printf(B"exitcode: %i\n"D, m->exitcode);
 	free(argv);
 }
 
@@ -289,7 +345,7 @@ void	set_rdrctype(t_list *last, t_list *current, t_token *token)
 			token->detail.redirection.rdrctype = ft_strdup("truncate");
 	}
 }
-// |---------------------------------------------------------------------------|
+
 void	check_redirections(t_minishell *m)
 {
 	t_list	*current;
@@ -328,90 +384,261 @@ void	check_redirections(t_minishell *m)
 	}
 }
 
-int	pre_exec_checks(t_minishell *m)
+void	pre_exec_checks(t_minishell *m)
 {
-	if (m->exitcode == 0)
-		check_pipes(m);
-	if (m->exitcode == 0)
-		check_redirections(m);
-	return (m->exitcode);
+	check_pipes(m);
+	check_redirections(m);
 }
 
-void execute(t_minishell *m)
+char	*get_last_cmd(t_list *ref, t_list *item)
 {
-	//int		pipe_fd[2];
-	//int		pid;
-	int		prev_pipe_read;
 	t_list	*current;
-	t_token	*token;
-	//int		status;
+	t_token	*cur_content;
+	char	*last_cmd;
 
+	last_cmd = NULL;
+	current = ref;
+	while (current != NULL && current != item)
+	{
+		cur_content = (t_token *)current->content;
+		if (cur_content != NULL)
+		{
+			if (cur_content->token == COMMAND)
+			{
+				last_cmd = cur_content->str;
+			}
+		}
+		current = current->next;
+	}
+	return last_cmd;
+}
+
+int handle_redirections(t_minishell *m, t_list *ref, t_list *seq)
+{
+	int		fd = -1;
+	t_token	*token;
+	char	*file_name = NULL;
+	int		pipe_fd[2];
+
+	while (seq != NULL) {
+		token = (t_token *)seq->content;
+		if (token->token == REDIRECTION)
+		{
+			if (ft_strcmp(token->detail.redirection.rdrctype, "truncate") == 0 || ft_strcmp(token->detail.redirection.rdrctype, "append") == 0)
+				{
+				if (seq->next == NULL)
+					break ;
+				seq = seq->next;
+				if (seq != NULL)
+				{
+					token = (t_token *)seq->content;
+					if (token->token == WORD)
+					{
+						if (file_name != NULL)
+						{
+							free(file_name);
+						}
+						file_name = ft_strdup(token->str);
+					}
+				}
+				if (seq->next == NULL)
+					break ;
+				seq = seq->next;
+				while (seq != NULL)
+				{
+					token = (t_token *)seq->content;
+					handle_error(m, 2, ft_strjoin(ft_strjoin(ft_strjoin(get_last_cmd(ref, seq), ": "), token->str), ": No such file or directory"));
+					if (token->token == WORD)
+					{
+						if (file_name != NULL)
+						{
+							free(file_name);
+						}
+						file_name = strdup(token->str);
+					}
+					else
+					{
+						break ;
+					}
+					seq = seq->next;
+				}
+				if (file_name == NULL)
+				{
+					fprintf(stderr, "No file name specified for redirection\n");
+					return -1;
+				}
+				if (ft_strcmp(token->detail.redirection.rdrctype, "truncate"))
+					fd = open(file_name, (O_WRONLY | O_CREAT | O_TRUNC), 0644);
+				else
+					fd = open(file_name, (O_WRONLY | O_CREAT | O_APPEND), 0644);
+				if (fd == -1)
+				{
+					perror("Failed to open file for writing (truncate/append)");
+					free(file_name);
+					return -1;
+				}
+				if (dup2(fd, STDOUT_FILENO) == -1)
+				{
+					perror("dup2 failed for stdout redirection");
+					close(fd);
+					free(file_name);
+					return -1;
+				}
+				close(fd);
+
+				free(file_name);
+				file_name = NULL;
+			}
+			else if (ft_strcmp(token->detail.redirection.rdrctype, "redirection") == 0)
+			{
+				seq = seq->next;
+				if (seq != NULL) {
+					token = (t_token *)seq->content;
+					if (token->token == WORD)
+						file_name = token->str;
+					else
+					{
+						fprintf(stderr, "Expected a file name after redirection symbol\n");
+						return -1;
+					}
+					fd = open(file_name, O_RDONLY);
+					if (fd == -1)
+					{
+						perror("Failed to open file for reading");
+						return -1;
+					}
+					if (dup2(fd, STDIN_FILENO) == -1)
+					{
+						perror("dup2 failed for stdin redirection");
+						close(fd);
+						return -1;
+					}
+					close(fd);
+				}
+			} else if (ft_strcmp(token->detail.redirection.rdrctype, "here_doc") == 0)
+			{
+				if (pipe(pipe_fd) == -1)
+				{
+					perror("pipe failed for heredoc");
+					return (-1);
+				}
+				write(pipe_fd[1], token->str, strlen(token->str));
+				close(pipe_fd[1]);
+				if (dup2(pipe_fd[0], STDIN_FILENO) == -1)
+				{
+					perror("dup2 failed for heredoc stdin");
+					close(pipe_fd[0]);
+					return (-1);
+				}
+				close(pipe_fd[0]);
+			}
+		}
+		else
+		{
+			seq = seq->next;
+		}
+	}
+	return (0);
+}
+
+
+void	execute(t_minishell *m)
+{
+	int		pipe_fd[2];
+	int		prev_pipe_read;
+	pid_t	pid;
+	int		status;
+	int		i;
+	t_list	*seq;
+
+	prev_pipe_read = -1;
+	i = 0;
+	m->pipes = 0;
 	pre_exec_prep(m);
-	if (m->exitcode == 0)
-		m->exitcode = pre_exec_checks(m);
-	if (m->exitcode == 0)
+	pre_exec_checks(m);
+	if (DEBUG == 1)
 	{
 		ft_printf(Y"EXECUTE:\n"D);
 		ft_lstput(&(m->tok_lst), put_token, '\n');
 	}
-	if (m->exitcode != 0)
-		return;
-	prev_pipe_read = STDIN_FILENO;
-	current = m->tok_lst;
-	while (current != NULL)
+	m->cmd_sequences = split_by_pipe(m);
+	if (m->pipes != 0)
 	{
-		token = (t_token *)current->content;
-		if (token->token == COMMAND)
+		if (DEBUG == 1)
+			ft_printf(Y"PIPE SEGMENTS:\n"D);
+		while (m->cmd_sequences[i] != NULL)
 		{
-			run_command(m, current);
+			if (DEBUG == 1)
+			{
+				ft_printf(Y"seg %i:\n"D, i);
+				ft_lstput(&(m->cmd_sequences[i]), put_token, '\n');
+			}
+			seq = m->cmd_sequences[i];
+			if (m->cmd_sequences[i + 1] != NULL)
+			{
+				if (pipe(pipe_fd) == -1)
+				{
+					perror("pipe failed");
+					exit(EXIT_FAILURE);
+				}
+			}
+			pid = fork();
+			if (pid == -1)
+			{
+				perror("fork failed");
+				exit(EXIT_FAILURE);
+			}
+			else if (pid == 0)
+			{
+				if (prev_pipe_read != -1)
+				{
+					if (dup2(prev_pipe_read, STDIN_FILENO) == -1)
+					{
+						perror("dup2 failed for stdin");
+						exit(EXIT_FAILURE);
+					}
+					close(prev_pipe_read);
+				}
+				if (m->cmd_sequences[i + 1] != NULL)
+				{
+					close(pipe_fd[0]);
+					if (dup2(pipe_fd[1], STDOUT_FILENO) == -1)
+					{
+						perror("dup2 failed for stdout");
+						exit(EXIT_FAILURE);
+					}
+					close(pipe_fd[1]);
+				}
+				if (handle_redirections(m, m->cmd_sequences[i], seq) == -1)
+					exit(EXIT_FAILURE);
+				run_command(m, seq);
+				exit(m->exitcode);
+			}
+			else
+			{
+				if (prev_pipe_read != -1)
+					close(prev_pipe_read);
+				if (m->cmd_sequences[i + 1] != NULL)
+				{
+					close(pipe_fd[1]);
+					prev_pipe_read = pipe_fd[0];
+				}
+			}
+			i++;
 		}
-		// if (token->token == PIPE)
-		// {
-		// 	if (pipe(pipe_fd) == -1)
-		// 		handle_error(m, 2, "Pipe creation failed");
-		// 	pid = fork();
-		// 	if (pid == -1)
-		// 		handle_error(m, 2, "Fork failed");
-		// 	else if (pid == 0)
-		// 	{
-		// 		close(pipe_fd[0]);
-		// 		dup2(prev_pipe_read, STDIN_FILENO);
-		// 		dup2(pipe_fd[1], STDOUT_FILENO);
-		// 		close(pipe_fd[1]);
-		// 		run_command(m, current);
-		// 		exit(EXIT_SUCCESS);
-		// 	}
-		// 	else
-		// 	{
-		// 		close(pipe_fd[1]);
-		// 		if (prev_pipe_read != STDIN_FILENO)
-		// 			close(prev_pipe_read);
-		// 		prev_pipe_read = pipe_fd[0];
-		// 	}
-		// }
-		// else if (token->token == COMMAND)
-		// {
-		// 	pid = fork();
-		// 	if (pid == -1)
-		// 		handle_error(m, 2, "Fork failed");
-		// 	else if (pid == 0)
-		// 	{
-		// 		if (prev_pipe_read != STDIN_FILENO)
-		// 		{
-		// 			dup2(prev_pipe_read, STDIN_FILENO);
-		// 			close(prev_pipe_read);
-		// 		}
-		// 		run_command(m, current);
-		// 		exit(EXIT_SUCCESS);
-		// 	}
-		// }
-		current = current->next;
 	}
-	// while (wait(&status) > 0)
-	// {
-	// 	if (WIFEXITED(status))
-	// 		m->exitcode = WEXITSTATUS(status);
-	// }
-	// if (prev_pipe_read != STDIN_FILENO)
-	// 	close(prev_pipe_read);
+	else
+	{
+		if (handle_redirections(m, m->tok_lst, m->tok_lst) == -1)
+			return ;
+		run_command(m, m->tok_lst);
+	}
+	while ( wait(&status) > 0 )
+	{
+		ft_printf("waiting ... \n");
+	}
+	if (WIFEXITED(status))
+	{
+		m->exitcode = WEXITSTATUS(status);
+	}
 }

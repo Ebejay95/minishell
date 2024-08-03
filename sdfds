@@ -260,3 +260,6 @@ char		*my_getenv(const char *name, t_envlst *envp);
 char		*ft_strndup(const char *s, size_t n);
 
 #endif
+[?2004h🍕🚀🌈🦄🍺 cat ./include/minishell.h >> ou sdfds^C[?2004l
+🍕🚀🌈🦄🍺 [?2004hexit
+[?2004l
