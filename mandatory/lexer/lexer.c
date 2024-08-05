@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   lexer.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
+/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 11:30:06 by jeberle           #+#    #+#             */
-/*   Updated: 2024/08/03 14:23:13 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/05 17:49:44 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "./../include/minishell.h"
+#include "./../../include/minishell.h"
 
 void	afterbreakup(t_minishell *m)
 {
@@ -65,7 +65,7 @@ void	detect_lexing_errors(t_minishell *m)
 		work++;
 	}
 	if (quotecount % 2 != 0)
-		handle_error(m, 2, "unclosed quotes");
+		pic_err(m, 2, "unclosed quotes");
 }
 
 
@@ -113,16 +113,8 @@ void	prompt_to_token(t_minishell *m)
 	current_token = malloc(current_token_size);
 	expmap = malloc(current_token_size);
 	ptr = m->prompt;
-	if (!current_token)
-	{
-		perror("malloc");
-		exit(EXIT_FAILURE);
-	}
-	if (!expmap)
-	{
-		perror("malloc");
-		exit(EXIT_FAILURE);
-	}
+	if (!current_token || !expmap)
+		ft_error_exit("malloc");
 	while (*ptr)
 	{
 		if (escape_next)
@@ -144,10 +136,8 @@ void	prompt_to_token(t_minishell *m)
 			}
 			else if (in_double_quotes)
 			{
-				if (*(ptr + 1) == '$' || *(ptr + 1) == '`' || *(ptr + 1) == '"' || *(ptr + 1) == '\\' || *(ptr + 1) == '\n')
-				{
+				if (ft_strpbrk(&(*(ptr + 1)), "$`\"\\\n"))
 					escape_next = 1;
-				}
 				else
 				{
 					current_token[current_pos] = *ptr;
@@ -156,22 +146,16 @@ void	prompt_to_token(t_minishell *m)
 				}
 			}
 			else
-			{
 				escape_next = 1;
-			}
 			ptr++;
 			continue ;
 		}
 		if (*ptr == '\'')
 		{
 			if (!in_single_quotes)
-			{
 				in_single_quotes = 1;
-			}
 			else
-			{
 				in_single_quotes = 0;
-			}
 			ptr++;
 			continue ;
 		}
@@ -186,9 +170,7 @@ void	prompt_to_token(t_minishell *m)
 		if (in_double_quotes)
 		{
 			if (*ptr == '"')
-			{
 				in_double_quotes = 0;
-			}
 			else
 			{
 				current_token[current_pos] = *ptr;
@@ -265,9 +247,7 @@ void	prompt_to_token(t_minishell *m)
 				ptr++;
 			}
 			else
-			{
 				token = create_token(">", "0");
-			}
 			update_tok_type(token, REDIRECTION);
 			add_token_to_list(&m->tok_lst, token);
 			ptr++;
@@ -292,9 +272,7 @@ void	prompt_to_token(t_minishell *m)
 				ptr++;
 			}
 			else
-			{
 				token = create_token("<", "0");
-			}
 			update_tok_type(token, REDIRECTION);
 			add_token_to_list(&m->tok_lst, token);
 			ptr++;

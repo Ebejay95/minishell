@@ -6,7 +6,7 @@
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 11:12:44 by jeberle           #+#    #+#             */
-/*   Updated: 2024/08/02 12:58:46 by chorst           ###   ########.fr       */
+/*   Updated: 2024/08/05 17:32:34 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,18 +69,18 @@ void	put_token_details(t_token *token)
 	}
 	else if (ft_strcmp(token->type, "Redirection") == 0)
 	{
-		if (token->detail.redirection.rdrctype)
+		if (token->detail.rdrc.rdrctype)
 		{
 			ft_printf(" (fdin: %d, fdout: %d, rdrctype: %s)",
-				token->detail.redirection.fdin,
-				token->detail.redirection.fdout,
-				token->detail.redirection.rdrctype);
+				token->detail.rdrc.fdin,
+				token->detail.rdrc.fdout,
+				token->detail.rdrc.rdrctype);
 		}
 		else
 		{
 			ft_printf(" (fdin: %d, fdout: %d, rdrctype: NULL)",
-				token->detail.redirection.fdin,
-				token->detail.redirection.fdout);
+				token->detail.rdrc.fdin,
+				token->detail.rdrc.fdout);
 		}
 	}
 	else
@@ -126,10 +126,10 @@ t_token	tok_lst_get(void *n)
 // 	else if (ft_strcmp(token->type, "Redirection") == 0)
 // 	{
 // 		ft_printf(" (fdin: %d, fdout: %d, rdrctype: %s)",
-// 			token->detail.redirection.fdin,
-// 			token->detail.redirection.fdout,
-// 			token->detail.redirection.rdrctype ?
-// 			token->detail.redirection.rdrctype : "NULL");
+// 			token->detail.rdrc.fdin,
+// 			token->detail.rdrc.fdout,
+// 			token->detail.rdrc.rdrctype ?
+// 			token->detail.rdrc.rdrctype : "NULL");
 // 	}
 // 	else
 // 	{

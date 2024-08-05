@@ -6,19 +6,19 @@
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 15:10:58 by chorst            #+#    #+#             */
-/*   Updated: 2024/08/02 12:03:42 by chorst           ###   ########.fr       */
+/*   Updated: 2024/08/05 16:17:54 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../include/minishell.h"
 
 // Function to handle 'cd -' case
-void	cd_oldpwd(t_envlst ***envp)
+void	cd_oldpwd(t_envlst **envp)
 {
 	char	*oldpwd;
 	char	*current_pwd;
 
-	oldpwd = my_getenv("OLDPWD", **envp);
+	oldpwd = my_getenv("OLDPWD", *envp);
 	if (!oldpwd)
 		return ((void)printf("🍕🚀🌈🦄🍺: cd: OLDPWD not set\n"));
 	if (chdir(oldpwd) == -1)
@@ -28,13 +28,13 @@ void	cd_oldpwd(t_envlst ***envp)
 	current_pwd = getcwd(NULL, 0);
 	if (!current_pwd)
 		return (perror("getcwd"));
-	change_env(&(**envp), "OLDPWD", oldpwd, 0);
-	change_env(&(**envp), "PWD", current_pwd, 0);
+	change_env(&(*envp), "OLDPWD", oldpwd, 0);
+	change_env(&(*envp), "PWD", current_pwd, 0);
 	free(current_pwd);
 }
 
 // Function to handle changing to a specific path
-void	cd_path(char *path, t_envlst ***envp)
+void	cd_path(char *path, t_envlst **envp)
 {
 	char	*oldpwd;
 	char	*pwd;
@@ -55,14 +55,14 @@ void	cd_path(char *path, t_envlst ***envp)
 		free(oldpwd);
 		return ;
 	}
-	change_env(&(**envp), "OLDPWD", oldpwd, 0);
-	change_env(&(**envp), "PWD", pwd, 0);
+	change_env(&(*envp), "OLDPWD", oldpwd, 0);
+	change_env(&(*envp), "PWD", pwd, 0);
 	free(oldpwd);
 	free(pwd);
 }
 
 // Helper function to change the current working directory to the home directory
-void	cd_home(t_envlst ***envp)
+void	cd_home(t_envlst **envp)
 {
 	char	*home;
 	char	*oldpwd;
@@ -83,13 +83,13 @@ void	cd_home(t_envlst ***envp)
 	pwd = getcwd(NULL, 0);
 	if (!pwd)
 		return (perror("getcwd"), free(oldpwd));
-	change_env(&(**envp), "OLDPWD", oldpwd, 0);
-	change_env(&(**envp), "PWD", pwd, 0);
+	change_env(&(*envp), "OLDPWD", oldpwd, 0);
+	change_env(&(*envp), "PWD", pwd, 0);
 	free(oldpwd);
 }
 
 // Main function that changes the current working directory
-void	ft_cd(int argc, char **argv, t_envlst ***envp)
+void	ft_cd(int argc, char **argv, t_envlst **envp)
 {
 	if (argc == 1 || !ft_strcmp(argv[1], "~") || !ft_strcmp(argv[1], "--"))
 	{

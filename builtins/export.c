@@ -6,14 +6,14 @@
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 15:11:12 by chorst            #+#    #+#             */
-/*   Updated: 2024/08/02 13:31:32 by chorst           ###   ########.fr       */
+/*   Updated: 2024/08/05 16:22:08 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../include/minishell.h"
 
 // Recreates the expport behavior from bash
-void	ft_export(int argc, char **argv, t_envlst ***envp)
+void	ft_export(int argc, char **argv, t_envlst **envp)
 {
 	int		i;
 	char	**envp_export;
@@ -21,7 +21,7 @@ void	ft_export(int argc, char **argv, t_envlst ***envp)
 	i = 0;
 	if (argc == 1 && ft_strcmp(argv[0], "export") == 0)
 	{
-		envp_export = copy_envp(**envp);
+		envp_export = copy_envp(*envp);
 		sort_envp(envp_export);
 		while (envp_export[i])
 		{
@@ -31,7 +31,7 @@ void	ft_export(int argc, char **argv, t_envlst ***envp)
 		free(envp_export);
 	}
 	else
-		change_var_value(&(**envp), argv);
+		change_var_value(&(*envp), argv);
 }
 
 // Adds or updates the env variables in the envp list

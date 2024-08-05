@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
+/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:18:56 by jeberle           #+#    #+#             */
-/*   Updated: 2024/08/03 15:10:36 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/05 17:59:01 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,7 @@ typedef struct s_token
 			int		fdin;
 			int		fdout;
 			char	*rdrctype;
-		}	redirection;
+		}	rdrc;
 		struct s_pipe_tokdetail
 		{
 			int		fdin;
@@ -149,21 +149,66 @@ typedef struct s_minishell
 }	t_minishell;
 
 // #############################################################################
+// #                                Executer                                   #
+// #############################################################################
+
+// executer_checks.c
+void		pre_exec_checks(t_minishell *m);
+void		check_semantics(t_list *last, t_list *current);
+
+// executer_command_helper.c
+int			is_builtin(char *command);
+void		execute_builtin(t_minishell *m, char *com, char **argv, int argc);
+void		pic_var_or_others(t_minishell *m, char *com, char **argv, int argc);
+void		cleanup(char **argv);
+int			is_word_token(t_list *node);
+
+// executer_command.c
+void		run_command(t_minishell *m, t_list *current);
+char		**prepare_argv(t_list *current, int *argc);
+int			add_first_arg(char **argv, t_list *current, int *argc);
+int			add_arg(char ***argv, int *capacity, t_list *current, int *argc);
+int			resize_argv(char ***argv, int *capacity);
+
+// executer_env.c
+char		*get_executable(t_minishell *m, char *command);
+char		**own_env(t_envlst *env_lst);
+
+// executer_helper.c
+void		ft_error_exit(const char *message);
+void		pic_err(t_minishell *m, int code, char *mes);
+char		*text(int message);
+char		*get_last_cmd(t_list *ref, t_list *item);
+void		ft_run_others(t_minishell *m, char *command, char **argv);
+
+// executer_inits.c
+t_token		*init_pipe_details(t_token *pipetok);
+t_token		*init_redirection_details(t_token *redirectiontoken);
+void		init_check_rdrc(t_list *last, char *last_type, char *last_str);
+void		set_rdrctype(t_list *last, t_list *current, t_token *cur_content);
+void		pre_exec_prep(t_minishell *m);
+
+// executer_redirections.c
+int			handle_trunc_append(t_minishell *m, t_list **seq, char **file_name, int *fd);
+int			process_additional_words(t_minishell *m, t_list **seq, char **file_name);
+int			open_and_redirect_output(char *file_name, char *redir_type, int *fd);
+
+int			handle_input_redirection(t_list **seq, int *fd);
+int			handle_redirections(t_minishell *m, t_list *ref, t_list *seq);
+
+// executer_utils.c
+char		*prepare_executable_and_message(t_minishell *m, char *command);
+void		execute_command(t_minishell *m, char *executable, char **argv);
+
+// executer.c
+void		execute(t_minishell *m);
+
+// #############################################################################
 // #                          Mandatory Functions                              #
 // #############################################################################
 
 // ast.c
 void		ast_add(t_btree **ast, t_btree *cur, char *branch, t_token *tok);
-
-// executer_checks.c
-
-// executer_inits.c
-t_token		*init_pipe_details(t_token *pipetok);
-t_token		*init_redirection_details(t_token *redirectiontoken);
-
-// executer.c
-void		execute(t_minishell *m);
-void		handle_error(t_minishell *m, int code, char *message);
 
 // expand.c
 void		expand_token(t_minishell *m, int exitcode, t_token *token);
@@ -193,6 +238,9 @@ int			main(int argc, char **argv, char **envp);
 // parser.c
 void		parse(t_minishell *m);
 
+// pipes.c
+t_list		**split_by_pipe(t_minishell *m);
+
 // putters.c
 
 // remove_chars.c
@@ -218,9 +266,9 @@ void		setup_signals(t_minishell *minishell);
 // #############################################################################
 
 // cd.c
-void		ft_cd(int argc, char **argv, t_envlst ***envp);
-void		cd_home(t_envlst ***envp);
-void		cd_oldpwd(t_envlst ***envp);
+void		ft_cd(int argc, char **argv, t_envlst **envp);
+void		cd_home(t_envlst **envp);
+void		cd_oldpwd(t_envlst **envp);
 
 // echo.c
 void		ft_echo(char **args);
@@ -234,7 +282,7 @@ void		ft_env(t_envlst *env_list); // works
 void		ft_exit(char **argv);
 
 // export.c
-void		ft_export(int argc, char **argv, t_envlst ***envp);
+void		ft_export(int argc, char **argv, t_envlst **envp);
 void		my_export(t_envlst **envp, char **argv);
 void		change_env(t_envlst **env_lst, char *key, char *value, int free_it);
 void		sort_envp(char **envp);

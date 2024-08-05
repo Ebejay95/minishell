@@ -6,7 +6,7 @@
 #    By: chorst <chorst@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/25 22:43:08 by jonathanebe       #+#    #+#              #
-#    Updated: 2024/08/02 14:24:27 by chorst           ###   ########.fr        #
+#    Updated: 2024/08/05 16:09:38 by chorst           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -84,17 +84,23 @@ SYSLIBFLAGS=-lreadline
 #------------------------------------------------------------------------------#
 
 SRCS=	mandatory/ast.c \
-		mandatory/executer_checks.c \
-		mandatory/executer_inits.c \
-		mandatory/executer.c \
+		mandatory/executer/executer_checks.c \
+		mandatory/executer/executer_command_helper.c \
+		mandatory/executer/executer_command.c \
+		mandatory/executer/executer_env.c \
+		mandatory/executer/executer_helper.c \
+		mandatory/executer/executer_inits.c \
+		mandatory/executer/executer_redirections.c \
+		mandatory/executer/executer_utils.c \
+		mandatory/executer/executer.c \
+		mandatory/lexer/lexer.c \
 		mandatory/expand.c \
 		mandatory/hierarchy_validation.c \
-		mandatory/lexer.c \
 		mandatory/init_envlst.c \
-		mandatory/lexer.c \
 		mandatory/minishell.c \
 		mandatory/minishell2.c \
 		mandatory/parser.c \
+		mandatory/pipes.c \
 		mandatory/putters.c \
 		mandatory/remove_chars.c \
 		mandatory/whitespace_handler.c \
