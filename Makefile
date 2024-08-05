@@ -6,7 +6,7 @@
 #    By: chorst <chorst@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/25 22:43:08 by jonathanebe       #+#    #+#              #
-#    Updated: 2024/08/05 16:09:38 by chorst           ###   ########.fr        #
+#    Updated: 2024/08/05 18:15:47 by chorst           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -93,8 +93,10 @@ SRCS=	mandatory/ast.c \
 		mandatory/executer/executer_redirections.c \
 		mandatory/executer/executer_utils.c \
 		mandatory/executer/executer.c \
+		mandatory/expander/expand_token.c \
+		mandatory/expander/expand.c \
+		mandatory/expander/expand_helper.c \
 		mandatory/lexer/lexer.c \
-		mandatory/expand.c \
 		mandatory/hierarchy_validation.c \
 		mandatory/init_envlst.c \
 		mandatory/minishell.c \

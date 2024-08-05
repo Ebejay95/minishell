@@ -3,75 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   expand.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
+/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/21 13:23:03 by jeberle           #+#    #+#             */
-/*   Updated: 2024/08/03 13:16:17 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/05 18:14:38 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "./../include/minishell.h"
+#include "./../../include/minishell.h"
 
-void	ft_strfillcat(char *dest, const char *src, char fill_char)
-{
-	char	*dest_end;
-	size_t	src_len;
-	size_t	i;
-
-	dest_end = dest + ft_strlen(dest);
-	src_len = ft_strlen(src);
-	i = 0;
-	while (i < src_len)
-	{
-		dest_end[i] = fill_char;
-		i++;
-	}
-	dest_end[src_len] = '\0';
-}
-
-void	ft_strfillncat(char *dest, const char *src, size_t n, char fill_char)
-{
-	char	*dest_end;
-	size_t	src_len;
-	size_t	i;
-
-	dest_end = dest + strlen(dest);
-	src_len = strlen(src);
-	i = 0;
-	if (src_len > n)
-	{
-		src_len = n;
-	}
-	while (i < src_len)
-	{
-		dest_end[i] = fill_char;
-		i++;
-	}
-	dest_end[src_len] = '\0';
-}
-
-char	*get_var_name(const char *str, const char *expmap, size_t *pos)
-{
-	size_t	start;
-	size_t	end;
-	char	*var_name;
-
-	start = *pos + 1;
-	end = start;
-	while (str[end] && ft_strchr(VS, str[end]) && (expmap[end] == expmap[start]))
-		end++;
-	if (end == start)
-		return (NULL);
-	var_name = malloc(end - start + 1);
-	if (!var_name)
-		return (NULL);
-	ft_strncpy(var_name, &str[start], end - start);
-	var_name[end - start] = '\0';
-	*pos = end;
-	return (var_name);
-}
-
-void	expand_part(t_minishell *m, char **expanded, char **expanded_map, int exitcode, const char *str, char *expmap, size_t start, size_t end)
+void	expand(t_minishell *m, char **expanded, char **expanded_map, int exitcode, const char *str, char *expmap, size_t start, size_t end)
 {
 	char	*result;
 	char	*expmap_result;
@@ -88,10 +29,7 @@ void	expand_part(t_minishell *m, char **expanded, char **expanded_map, int exitc
 		return ;
 	expmap_result = malloc(sizeof(char));
 	if (!expmap_result)
-	{
-		free(result);
-		return ;
-	}
+		return (free(result));
 	result[0] = '\0';
 	expmap_result[0] = '\0';
 	i = start;
@@ -216,82 +154,4 @@ void	expand_part(t_minishell *m, char **expanded, char **expanded_map, int exitc
 	}
 	*expanded = result;
 	*expanded_map = expmap_result;
-}
-
-void	expand_token(t_minishell *m, int exitcode, t_token *token)
-{
-	char	*temp;
-	char	*expmap_temp;
-	size_t	len;
-	size_t	i;
-	size_t	start;
-	char	current_mode;
-	char	*expanded;
-	char	*expanded_map;
-	char	*result;
-	char	*expmap_result;
-
-	expanded = NULL;
-	expanded_map = NULL;
-	if (!token || !token->str || !token->expmap)
-		return ;
-	len = strlen(token->str);
-	result = malloc(sizeof(char));
-	if (!result)
-		return ;
-	result[0] = '\0';
-	expmap_result = malloc(sizeof(char));
-	if (!expmap_result)
-		return ;
-	expmap_result[0] = '\0';
-	i = 0;
-	while (i < len)
-	{
-		if (token->expmap[i] == '1')
-		{
-			start = i;
-			while (i < len && token->expmap[i] == '1')
-				i++;
-			temp = realloc(result, strlen(result) + (i - start) + 1);
-			if (!temp)
-			{
-				free(result);
-				return ;
-			}
-			result = temp;
-			strncat(result, &token->str[start], i - start);
-		}
-		else
-		{
-			start = i;
-			current_mode = token->expmap[i];
-			while (i < len && token->expmap[i] == current_mode)
-				i++;
-			expand_part(m, &expanded, &expanded_map, exitcode, &token->str[start], &token->expmap[start], 0, i - start);
-			if (expanded && expanded_map)
-			{
-				temp = ft_realloc(result, ft_strlen(result) + ft_strlen(expanded) + 1);
-				if (!temp)
-				{
-					free(result);
-					free(expanded);
-					return ;
-				}
-				result = temp;
-				ft_strcat(result, expanded);
-				expmap_temp = ft_realloc(expmap_result, ft_strlen(expmap_result) + ft_strlen(expanded_map) + 1);
-				if (!expmap_temp)
-				{
-					free(expmap_result);
-					free(expanded_map);
-					return ;
-				}
-				expmap_result = expmap_temp;
-				ft_strcat(expmap_result, expanded_map);
-			}
-		}
-	}
-	free(token->str);
-	token->str = result;
-	token->expmap = expmap_result;
 }
