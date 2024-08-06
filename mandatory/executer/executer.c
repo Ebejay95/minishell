@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/31 17:01:26 by jeberle           #+#    #+#             */
-/*   Updated: 2024/08/06 19:45:11 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/06 20:41:06 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ void	execute(t_minishell *m)
 	m->pipes = 0;
 	pre_exec_prep(m);
 	pre_exec_checks(m);
+	printf("leave %i\n", m->leave);
 	if (m->leave)
 		return ;
 	if (DEBUG == 1)

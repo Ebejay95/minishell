@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 11:11:38 by chorst            #+#    #+#             */
-/*   Updated: 2024/08/06 19:21:00 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/06 20:51:26 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,8 +84,11 @@ void	ft_run_others(t_minishell *m, char *command, char **argv)
 
 	executable = prepare_executable_and_message(m, command);
 	if (!executable)
+	{
+		mes = ft_strjoin(ft_strjoin("bash: ", command), ": command not found");
+		pic_err(m, 127, mes);
+		free(mes);
 		return ;
-	mes = ft_strjoin(ft_strjoin("bash: ", command), ": command not found");
+	}
 	execute_command(m, executable, argv);
-	free(mes);
 }
