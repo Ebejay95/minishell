@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executer.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jonathaneberle <jonathaneberle@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/31 17:01:26 by jeberle           #+#    #+#             */
-/*   Updated: 2024/08/03 17:22:43 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/05 23:09:22 by jonathanebe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -312,10 +312,8 @@ void	check_pipes(t_minishell *m)
 	t_list	*current;
 	t_token	*cur_content;
 	char	*last_type;
-	char	*last_str;
 
 	last_type = NULL;
-	last_str = NULL;
 	current = m->tok_lst;
 	while (current != NULL)
 	{
@@ -325,7 +323,6 @@ void	check_pipes(t_minishell *m)
 		else if (current->next == NULL && !ft_strcmp(cur_content->type, "Pipe"))
 			cur_content->detail.pipe.open_prompt = 1;
 		last_type = cur_content->type;
-		last_str = cur_content->str;
 		current = current->next;
 	}
 }
