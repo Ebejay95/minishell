@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   signals.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/05 13:17:22 by chorst            #+#    #+#             */
-/*   Updated: 2024/08/02 12:31:31 by chorst           ###   ########.fr       */
+/*   Updated: 2024/08/06 22:38:53 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,21 +29,47 @@ void	handle_signal(int sig)
 	}
 }
 
+void	handle_non_interacive_signal(int sig)
+{
+	if (sig == SIGINT)
+	{
+		write(STDOUT_FILENO, "\n", 1);
+	}
+	else if (sig == SIGQUIT)
+	{
+		write(STDOUT_FILENO, "Quit: 3\n", 8);
+	}
+}
+
+// sleep(1);
+// printf("...3\n");
+// sleep(1);
+// printf("...2\n");
+// sleep(1);
+// printf("...1\n");
+// sleep(1);
+// mode 0 = interactive mode
+// mode > 0 = non-interactive mode
 // Function that sets up the signals
 void	setup_signals(t_minishell *minishell)
 {
 	struct sigaction	sa;
 
-	minishell->is_interactive = isatty(STDIN_FILENO);
+	minishell->modus = isatty(STDIN_FILENO);
 	sigemptyset(&sa.sa_mask);
 	sa.sa_flags = 0;
-	sa.sa_handler = handle_signal;
-	sigaction(SIGINT, &sa, NULL);
-	sigaction(SIGQUIT, &sa, NULL);
-	signal(SIGQUIT, SIG_IGN);
-	if (!minishell->is_interactive)
+	if (minishell->modus > 0)
 	{
-		signal(SIGINT, SIG_DFL);
-		signal(SIGQUIT, SIG_DFL);
+		sa.sa_handler = handle_signal;
+		sigaction(SIGINT, &sa, NULL);
+		sigaction(SIGQUIT, &sa, NULL);
+		printf(G"Interactive mode is running...\n"D);
+	}
+	else if (minishell->modus == 0)
+	{
+		sa.sa_handler = SIG_DFL;
+		sigaction(SIGINT, &sa, NULL);
+		sigaction(SIGQUIT, &sa, NULL);
+		ft_printf(Y"Non-interactive mode is running...\n"D);
 	}
 }

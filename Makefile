@@ -6,7 +6,7 @@
 #    By: chorst <chorst@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/25 22:43:08 by jonathanebe       #+#    #+#              #
-#    Updated: 2024/08/05 18:15:47 by chorst           ###   ########.fr        #
+#    Updated: 2024/08/06 20:34:07 by chorst           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -47,7 +47,7 @@ NAME_BONUS=minishell_bonus
 
 CC=cc
 CFLAGS=-Wall -Wextra -Werror -I/usr/local/opt/readline/include
-LDFLAGS=-L/usr/local/opt/readline/lib
+LDFLAGS=
 
 ifeq ($(DEBUG), 1)
 	CFLAGS += -fsanitize=address -g
