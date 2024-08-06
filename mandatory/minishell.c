@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:01:33 by jeberle           #+#    #+#             */
-/*   Updated: 2024/08/03 14:23:28 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/06 19:23:01 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,9 +49,9 @@ static int	handle_input(t_minishell *minishell)
 	minishell->ast = ft_btreenew(NULL);
 	if (minishell->prompt)
 	{
+		minishell->leave = 0;
 		lex_prompt(minishell);
 		execute(minishell);
-		// parse(minishell);
 		if (minishell->is_interactive)
 			add_history(minishell->prompt);
 	}
@@ -63,10 +63,22 @@ int	main(int argc, char **argv, char **envp)
 {
 	t_minishell	minishell;
 
+	minishell.leave = 0;
 	minishell.exitcode = 0;
 	minishell.env_list = NULL;
 	init_env_list(envp, &minishell);
 	(void)argv;
+	if (argc >= 2)
+	{
+		// set non inteactive mode (we think)
+		ft_printf("verarbeite %s\n", argv[1]);
+		// open file argv[1]
+		// get file content
+		// use as prompt
+		// if argv[1] == irgendweinscheisse
+		// set exitcode 127, leave by no scuh file or directorz
+		return (0);
+	}
 	if (argc != 1)
 		return (0);
 	setup_signals(&minishell);

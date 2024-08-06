@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executer_helper.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 11:11:38 by chorst            #+#    #+#             */
-/*   Updated: 2024/08/05 17:53:07 by chorst           ###   ########.fr       */
+/*   Updated: 2024/08/06 19:21:00 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ void	ft_error_exit(const char *message)
 void	pic_err(t_minishell *m, int code, char *mes)
 {
 	ft_fprintf(2, R"%s\n"D, mes);
+	m->leave = 1;
 	m->exitcode = code;
 }
 
