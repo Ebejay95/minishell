@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executer_checks.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 14:04:35 by chorst            #+#    #+#             */
-/*   Updated: 2024/08/05 15:18:55 by chorst           ###   ########.fr       */
+/*   Updated: 2024/08/06 19:22:39 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,9 +42,11 @@ static void	check_pipes(t_minishell *m)
 	t_token	*cont;
 	char	*end;
 	char	*last_str;
+	char	*ltype;
 
 	end = NULL;
 	last_str = NULL;
+	ltype = NULL;
 	current = m->tok_lst;
 	while (current != NULL)
 	{
@@ -52,9 +54,12 @@ static void	check_pipes(t_minishell *m)
 		if (ft_strcmp(cont->type, text(8)) == 0 && end == NULL)
 			pic_err(m, 2, text(2));
 		else if (current->next == NULL && !ft_strcmp(cont->type, text(8)))
-			cont->detail.pipe.open_prompt = 1;
+			pic_err(m, 2, text(1));
+		else if (!ft_strcmp(ltype, text(8)) && !ft_strcmp(cont->type, text(8)))
+			pic_err(m, 2, text(2));
 		end = cont->type;
 		last_str = cont->str;
+		ltype = cont->type;
 		current = current->next;
 	}
 }
@@ -95,8 +100,10 @@ static void	check_redirections(t_minishell *m)
 
 void	pre_exec_checks(t_minishell *m)
 {
-	check_pipes(m);
-	check_redirections(m);
+	if (!m->leave)
+		check_pipes(m);
+	if (!m->leave)
+		check_redirections(m);
 }
 
 void	check_semantics(t_list *last, t_list *current)

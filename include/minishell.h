@@ -3,10 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:18:56 by jeberle           #+#    #+#             */
+<<<<<<< HEAD
 /*   Updated: 2024/08/06 20:36:31 by chorst           ###   ########.fr       */
+=======
+/*   Updated: 2024/08/06 18:50:10 by jeberle          ###   ########.fr       */
+>>>>>>> 45bbc43249e252c8c22833faaad695ddd26f86b9
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,17 +140,18 @@ typedef struct s_envlst
 
 typedef struct s_minishell
 {
-	char			**envp;
-	t_envlst		*env_list;
-	char			*prompt;
-	int				modus;
-	int				is_interactive;
-	int				exitcode;
-	int				pid;
-	t_list			*tok_lst;
-	int				pipes;
-	t_list			**cmd_sequences;
-	t_btree			*ast;
+	char		**envp;
+	t_envlst	*env_list;
+	char		*prompt;
+	int			is_interactive;
+	int			leave;
+	int			moudes;
+	int			exitcode;
+	int			pid;
+	t_list		*tok_lst;
+	int			pipes;
+	t_list		**cmd_sequences;
+	t_btree		*ast;
 }	t_minishell;
 
 // #############################################################################
