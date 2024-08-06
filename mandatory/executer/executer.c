@@ -6,7 +6,7 @@
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/31 17:01:26 by jeberle           #+#    #+#             */
-/*   Updated: 2024/08/05 17:22:44 by chorst           ###   ########.fr       */
+/*   Updated: 2024/08/06 20:37:37 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ void	execute(t_minishell *m)
 	m->pipes = 0;
 	pre_exec_prep(m);
 	pre_exec_checks(m);
+	printf("executer is running....\n");
 	if (DEBUG == 1)
 	{
 		ft_printf(Y"EXECUTE:\n"D);
@@ -105,8 +106,8 @@ void	execute(t_minishell *m)
 			return ;
 		run_command(m, m->tok_lst);
 	}
-	while (wait(&status) > 0)
-		ft_printf("waiting ... \n");
+	// while (wait(&status) > 0)
+	// 	ft_printf("waiting ... \n");
 	if (WIFEXITED(status))
 		m->exitcode = WEXITSTATUS(status);
 }
