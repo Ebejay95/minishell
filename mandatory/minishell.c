@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:01:33 by jeberle           #+#    #+#             */
-/*   Updated: 2024/08/07 08:35:14 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/07 11:03:25 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,6 +86,7 @@ int	main(int argc, char **argv, char **envp)
 	t_minishell	minishell;
 
 	minishell.leave = 0;
+	minishell.last_exitcode = 0;
 	minishell.exitcode = 0;
 	minishell.env_list = NULL;
 	init_env_list(envp, &minishell);
@@ -103,5 +104,5 @@ int	main(int argc, char **argv, char **envp)
 			break ;
 	rl_clear_history();
 	cleanup_minishell(&minishell);
-	return (0);
+	return (minishell.exitcode);
 }

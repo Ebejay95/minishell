@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:18:56 by jeberle           #+#    #+#             */
-/*   Updated: 2024/08/07 08:10:49 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/07 11:25:23 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@
 # define RDRCSET "><0123456789"
 
 // mode
-# define DEBUG 1
+# define DEBUG 0
 
 // #############################################################################
 // #                                 Enums                                     #
@@ -142,6 +142,7 @@ typedef struct s_minishell
 	int			is_interactive;
 	int			leave;
 	int			modus;
+	int			last_exitcode;
 	int			exitcode;
 	int			pid;
 	t_list		*tok_lst;
