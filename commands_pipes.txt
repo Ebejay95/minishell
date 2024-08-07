@@ -1,1 +1,1 @@
-cat ./lude/minishell.h | grep error
+cat ./include/minishell.h | grep error

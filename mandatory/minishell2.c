@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minishell_helper.c                                 :+:      :+:    :+:   */
+/*   minishell2.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/23 13:04:21 by chorst            #+#    #+#             */
-/*   Updated: 2024/08/02 11:26:22 by chorst           ###   ########.fr       */
+/*   Updated: 2024/08/07 13:47:16 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,10 @@ void	cleanup_minishell(t_minishell *minishell)
 // Initialize the minishell struct
 void	initialize_minishell(t_minishell *minishell, char **envp)
 {
+	minishell->leave = 0;
+	minishell->last_exitcode = 0;
+	minishell->exitcode = 0;
+	minishell->env_list = NULL;
 	minishell->envp = envp;
 	minishell->prompt = NULL;
 }

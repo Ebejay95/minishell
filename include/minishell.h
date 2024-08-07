@@ -6,7 +6,7 @@
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:18:56 by jeberle           #+#    #+#             */
-/*   Updated: 2024/08/07 11:31:09 by chorst           ###   ########.fr       */
+/*   Updated: 2024/08/07 14:01:45 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,6 +143,7 @@ typedef struct s_minishell
 	int			is_interactive;
 	int			leave;
 	int			modus;
+	int			last_exitcode;
 	int			exitcode;
 	int			pid;
 	t_list		*tok_lst;

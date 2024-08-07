@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executer_utils.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 14:58:30 by chorst            #+#    #+#             */
-/*   Updated: 2024/08/05 15:19:13 by chorst           ###   ########.fr       */
+/*   Updated: 2024/08/07 11:27:20 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,26 +30,36 @@ char	*prepare_executable_and_message(t_minishell *m, char *command)
 	return (executable);
 }
 
-void	execute_command(t_minishell *m, char *executable, char **argv)
+void execute_command(t_minishell *m, char *executable, char **argv)
 {
-	pid_t	pid;
-	int		status;
+    pid_t   pid;
+    int     status;
 
-	pid = fork();
-	if (pid == -1)
-		return (pic_err(m, 1, "Fork failed"), free(executable));
-	else if (pid == 0)
-	{
-		execve(executable, argv, own_env(m->env_list));
-		perror("execve failed");
-		free(executable);
-		exit(EXIT_FAILURE);
-	}
-	else
-	{
-		waitpid(pid, &status, 0);
-		if (WIFEXITED(status))
-			m->exitcode = WEXITSTATUS(status);
-	}
-	free(executable);
+    pid = fork();
+    if (pid == -1)
+    {
+        ft_printf(R"Fork failed\n"D);
+        free(executable);
+        return (pic_err(m, 1, "Fork failed"));
+    }
+    else if (pid == 0)
+    {
+        execve(executable, argv, own_env(m->env_list));
+        perror("execve failed");
+        free(executable);
+        exit(EXIT_FAILURE);
+    }
+    else
+    {
+        waitpid(pid, &status, 0);
+        if (WIFEXITED(status))
+        {
+            m->exitcode = WEXITSTATUS(status);
+        }
+        else if (WIFSIGNALED(status))
+        {
+            m->exitcode = 128 + WTERMSIG(status);
+        }
+    }
+    free(executable);
 }
