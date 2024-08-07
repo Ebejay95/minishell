@@ -6,7 +6,7 @@
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:01:33 by jeberle           #+#    #+#             */
-/*   Updated: 2024/08/06 21:09:42 by chorst           ###   ########.fr       */
+/*   Updated: 2024/08/06 21:34:22 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,10 +15,10 @@
 // Function that defines the interactive mode
 static void	interactive_mode(t_minishell *minishell)
 {
-	printf("readline waits for input\n");
-	printf("minishell->prompt3: %s\n", minishell->prompt);
+	freopen("/dev/tty", "r", stdin);
+	printf("Before readline call\n");
+	fflush(stdout);
 	minishell->prompt = readline("🍕🚀🌈🦄🍺 ");
-	printf("\nThats the prompt 1: %s\n", minishell->prompt);
 	if (!minishell->prompt)
 	{
 		printf("Thats the prompt 2: %s\n", minishell->prompt);
@@ -71,6 +71,7 @@ static int	handle_input(t_minishell *minishell)
 		if (minishell->modus)
 			add_history(minishell->prompt);
 		printf("minishell->prompt1: %s\n", minishell->prompt);
+		printf("minishell-modus: %d\n", minishell->modus);
 		// minishell->modus = isatty(STDIN_FILENO);
 	}
 	return (0);

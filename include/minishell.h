@@ -3,14 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
+/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:18:56 by jeberle           #+#    #+#             */
-<<<<<<< HEAD
-/*   Updated: 2024/08/06 20:36:31 by chorst           ###   ########.fr       */
-=======
-/*   Updated: 2024/08/06 18:50:10 by jeberle          ###   ########.fr       */
->>>>>>> 45bbc43249e252c8c22833faaad695ddd26f86b9
+/*   Updated: 2024/08/06 21:28:52 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +29,7 @@
 # include <sys/time.h>
 # include <unistd.h>
 # include <fcntl.h>
+# include <termios.h>
 
 // Define Colours
 # define R "\033[0;31m"
@@ -145,7 +142,7 @@ typedef struct s_minishell
 	char		*prompt;
 	int			is_interactive;
 	int			leave;
-	int			moudes;
+	int			modus;
 	int			exitcode;
 	int			pid;
 	t_list		*tok_lst;
