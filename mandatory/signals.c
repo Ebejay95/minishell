@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/05 13:17:22 by chorst            #+#    #+#             */
-/*   Updated: 2024/08/06 22:38:53 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/07 08:07:23 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,13 +63,11 @@ void	setup_signals(t_minishell *minishell)
 		sa.sa_handler = handle_signal;
 		sigaction(SIGINT, &sa, NULL);
 		sigaction(SIGQUIT, &sa, NULL);
-		printf(G"Interactive mode is running...\n"D);
 	}
 	else if (minishell->modus == 0)
 	{
 		sa.sa_handler = SIG_DFL;
 		sigaction(SIGINT, &sa, NULL);
 		sigaction(SIGQUIT, &sa, NULL);
-		ft_printf(Y"Non-interactive mode is running...\n"D);
 	}
 }

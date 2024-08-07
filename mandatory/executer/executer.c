@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/31 17:01:26 by jeberle           #+#    #+#             */
-/*   Updated: 2024/08/06 21:12:09 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/07 08:46:42 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,15 +23,15 @@ void	execute(t_minishell *m)
 	int		i;
 	t_list	*seq;
 
+	ft_printf(G"execute\n"D);
 	prev_pipe_read = -1;
 	i = 0;
 	m->pipes = 0;
 	pre_exec_prep(m);
 	pre_exec_checks(m);
-	printf("leave %i\n", m->leave);
+	ft_printf("leave %i\n", m->leave);
 	if (m->leave)
 		return ;
-	printf("executer is running....\n");
 	if (DEBUG == 1)
 	{
 		ft_printf(Y"EXECUTE:\n"D);
