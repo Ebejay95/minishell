@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokens.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 11:12:44 by jeberle           #+#    #+#             */
-/*   Updated: 2024/08/05 17:32:34 by chorst           ###   ########.fr       */
+/*   Updated: 2024/08/07 08:37:53 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,10 +71,9 @@ void	put_token_details(t_token *token)
 	{
 		if (token->detail.rdrc.rdrctype)
 		{
-			ft_printf(" (fdin: %d, fdout: %d, rdrctype: %s)",
+			ft_printf(" (fdin: %d, fdout: %d)",
 				token->detail.rdrc.fdin,
-				token->detail.rdrc.fdout,
-				token->detail.rdrc.rdrctype);
+				token->detail.rdrc.fdout);
 		}
 		else
 		{

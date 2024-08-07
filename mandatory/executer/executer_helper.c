@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executer_helper.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
+/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 11:11:38 by chorst            #+#    #+#             */
-/*   Updated: 2024/08/06 19:21:00 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/07 10:25:37 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ char	*text(int message)
 	if (message == 11)
 		return ("Failed to open file for writing (truncate/append)");
 	if (message == 12)
-		return ("Command");
+		return ("numeric argument required");
 	return (NULL);
 }
 
@@ -84,8 +84,11 @@ void	ft_run_others(t_minishell *m, char *command, char **argv)
 
 	executable = prepare_executable_and_message(m, command);
 	if (!executable)
+	{
+		mes = ft_strjoin(ft_strjoin("bash: ", command), ": command not found");
+		pic_err(m, 127, mes);
+		free(mes);
 		return ;
-	mes = ft_strjoin(ft_strjoin("bash: ", command), ": command not found");
+	}
 	execute_command(m, executable, argv);
-	free(mes);
 }

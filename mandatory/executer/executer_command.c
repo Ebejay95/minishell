@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executer_command.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 15:29:07 by chorst            #+#    #+#             */
-/*   Updated: 2024/08/05 16:11:15 by chorst           ###   ########.fr       */
+/*   Updated: 2024/08/07 08:36:06 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ void	run_command(t_minishell *m, t_list *current)
 		pic_var_or_others(m, command, argv, argc);
 	cleanup(argv);
 	if (DEBUG == 1)
-		ft_printf(B"exitcode: %i\n"D, m->exitcode);
+		ft_printf(B"%s exitcode: %i\n"D, command, m->exitcode);
 }
 
 char	**prepare_argv(t_list *current, int *argc)

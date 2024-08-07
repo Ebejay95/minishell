@@ -6,7 +6,7 @@
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 16:08:29 by chorst            #+#    #+#             */
-/*   Updated: 2024/08/05 16:21:48 by chorst           ###   ########.fr       */
+/*   Updated: 2024/08/07 10:41:49 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ void	execute_builtin(t_minishell *m, char *com, char **argv, int argc)
 	else if (!ft_strcmp(com, "env"))
 		ft_env(m->env_list);
 	else if (!ft_strcmp(com, "exit"))
-		ft_exit(argv);
+		ft_exit(argv, &m->exitcode);
 	else if (!ft_strcmp(com, "export"))
 		ft_export(argc, argv, &m->env_list);
 	else if (!ft_strcmp(com, "pwd"))

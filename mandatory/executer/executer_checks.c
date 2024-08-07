@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 14:04:35 by chorst            #+#    #+#             */
-/*   Updated: 2024/08/06 19:22:39 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/06 20:39:26 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,12 +51,12 @@ static void	check_pipes(t_minishell *m)
 	while (current != NULL)
 	{
 		cont = (t_token *)current->content;
-		if (ft_strcmp(cont->type, text(8)) == 0 && end == NULL)
+		if (!m->leave && !ft_strcmp(ltype, text(8)) && !ft_strcmp(cont->type, text(8)))
 			pic_err(m, 2, text(2));
-		else if (current->next == NULL && !ft_strcmp(cont->type, text(8)))
+		else if (!m->leave && ft_strcmp(cont->type, text(8)) == 0 && end == NULL)
+			pic_err(m, 2, text(2));
+		else if (!m->leave && current->next == NULL && !ft_strcmp(cont->type, text(8)))
 			pic_err(m, 2, text(1));
-		else if (!ft_strcmp(ltype, text(8)) && !ft_strcmp(cont->type, text(8)))
-			pic_err(m, 2, text(2));
 		end = cont->type;
 		last_str = cont->str;
 		ltype = cont->type;
@@ -84,11 +84,11 @@ static void	check_redirections(t_minishell *m)
 	while (cur != NULL)
 	{
 		cont = (t_token *)cur->content;
-		if (!ft_strcmp(cont->type, text(8)) && !ft_strcmp(end, text(7)))
+		if (!m->leave && !ft_strcmp(cont->type, text(8)) && !ft_strcmp(end, text(7)))
 			pic_err(m, 2, text(2));
-		else if (cur->next == NULL && !ft_strcmp(cont->type, text(7)))
+		else if (!m->leave && cur->next == NULL && !ft_strcmp(cont->type, text(7)))
 			pic_err(m, 2, text(1));
-		else if (!ft_strcmp(end, text(7)) && !ft_strcmp(cont->type, text(7)))
+		else if (!m->leave && !ft_strcmp(end, text(7)) && !ft_strcmp(cont->type, text(7)))
 			check_rdrc_norm(last_str, cont, m);
 		set_rdrctype(last, cur, cont);
 		end = cont->type;

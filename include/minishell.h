@@ -6,7 +6,7 @@
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:18:56 by jeberle           #+#    #+#             */
-/*   Updated: 2024/08/06 21:28:52 by chorst           ###   ########.fr       */
+/*   Updated: 2024/08/07 11:31:09 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -297,7 +297,7 @@ void		print_output(char **args, int start_index, bool newline);
 void		ft_env(t_envlst *env_list); // works
 
 // exit.c
-void		ft_exit(char **argv);
+void		ft_exit(char **argv, int *exitcode);
 
 // export.c
 void		ft_export(int argc, char **argv, t_envlst **envp);

@@ -3,31 +3,27 @@
 /*                                                        :::      ::::::::   */
 /*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
+/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 15:12:06 by chorst            #+#    #+#             */
-/*   Updated: 2024/08/03 13:16:36 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/07 10:36:07 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../include/minishell.h"
 
-void	ft_exit(char **argv)
+void	ft_exit(char **argv, int *exitcode)
 {
-	int	exit_status;
-
-	exit_status = 0;
 	if (argv[1])
 	{
-		exit_status = atoi(argv[1]);
-		if (exit_status == 0 && argv[1][0] != '0')
+		if (exitcode == 0 && argv[1][0] != '0')
 		{
-			printf("exit\n🍕🚀🌈🦄🍺: exit: %s: numeric argument required\n",
-				argv[1]);
+			printf("🍕🚀🌈🦄🍺: exit: %s: %s\n",
+				argv[1], text(12));
 			exit(2);
 		}
 	}
-	exit(exit_status);
+	exit(*exitcode);
 }
 
 // exit status der letzten funktion oder command returnen.

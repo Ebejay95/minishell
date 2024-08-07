@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init_envlst.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 10:00:01 by chorst            #+#    #+#             */
-/*   Updated: 2024/08/02 10:41:41 by chorst           ###   ########.fr       */
+/*   Updated: 2024/08/06 22:41:54 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,6 @@ void	extract_name_value(char *arg, char **name, char **value)
 		*value = NULL;
 	}
 }
-
 
 // Function that adds a node to the environment list
 void	add_env_node(t_envlst **env_list, char *name, char *value)
