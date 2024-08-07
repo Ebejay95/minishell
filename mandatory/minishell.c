@@ -6,7 +6,7 @@
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:01:33 by jeberle           #+#    #+#             */
-/*   Updated: 2024/08/07 14:05:50 by chorst           ###   ########.fr       */
+/*   Updated: 2024/08/07 17:27:59 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,6 @@ static void	non_interactive_mode(t_minishell *minishell)
 // Function that handles the input from the user or the script
 static int	handle_input(t_minishell *minishell)
 {
-	printf("modus: %d\n", minishell->modus);
 	if (minishell->modus > 0)
 		interactive_mode(&(*minishell));
 	else if (minishell->modus == 0)
@@ -89,9 +88,16 @@ int	main(int argc, char **argv, char **envp)
 
 	init_env_list(envp, &minishell);
 	(void)argv;
+	(void)argc;
 	setup_signals(&minishell);
 	initialize_minishell(&minishell, envp);
-	printf("argc: %d\n", argc);
+	if (argc >= 2)
+		if (access(argv[1], F_OK) == -1)
+		{
+			ft_printf("🍕🚀🌈🦄🍺: %s: No such file or directory\n", argv[1]);
+			minishell.last_exitcode = 127;
+			minishell.leave = 1;
+		}
 	while (1)
 		if (handle_input(&minishell))
 			break ;
