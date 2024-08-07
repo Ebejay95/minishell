@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 15:29:28 by chorst            #+#    #+#             */
-/*   Updated: 2024/08/06 18:42:31 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/07 11:49:51 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,13 @@
 
 int handle_redirections(t_minishell *m, t_list *ref, t_list *seq)
 {
-	int		fd = -1;
+	int		fd;
 	t_token	*token;
-	char	*file_name = NULL;
+	char	*file_name;
 	int		pipe_fd[2];
 
+	fd = -1;
+	file_name = NULL;
 	while (seq != NULL) {
 		token = (t_token *)seq->content;
 		if (token->token == REDIRECTION)

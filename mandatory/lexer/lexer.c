@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 11:30:06 by jeberle           #+#    #+#             */
-/*   Updated: 2024/08/05 17:49:44 by chorst           ###   ########.fr       */
+/*   Updated: 2024/08/07 11:59:47 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,6 @@ void	detect_lexing_errors(t_minishell *m)
 	if (quotecount % 2 != 0)
 		pic_err(m, 2, "unclosed quotes");
 }
-
 
 void	add_token_to_list(t_list **lst, t_token *token)
 {
@@ -328,7 +327,7 @@ void	expand_toklst(t_minishell *m)
 	while (current != NULL)
 	{
 		cur_content = (t_token *)current->content;
-		expand_token(m, m->exitcode, cur_content);
+		expand_token(m, m->last_exitcode, cur_content);
 		current = current->next;
 	}
 }

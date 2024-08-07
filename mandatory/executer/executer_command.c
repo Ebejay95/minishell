@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 15:29:07 by chorst            #+#    #+#             */
-/*   Updated: 2024/08/07 11:24:44 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/07 11:46:40 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,40 +14,26 @@
 
 void run_command(t_minishell *m, t_list *current)
 {
-    t_token *token;
-    char    *command;
-    char    **argv;
-    int     argc;
-    int     original_exitcode;
+	t_token	*token;
+	char	*command;
+	char	**argv;
+	int		argc;
 
-    if (current == NULL)
-        return;
-    token = (t_token *)current->content;
-    command = whitespace_handler(token->str);
-    argv = prepare_argv(current, &argc);
-    if (!argv)
-        return;
+	if (current == NULL)
+		return ;
+	token = (t_token *)current->content;
+	command = whitespace_handler(token->str);
+	argv = prepare_argv(current, &argc);
+	if (!argv)
+		return ;
 
-    original_exitcode = m->exitcode;
 	m->exitcode = 0;
-    if (is_builtin(command))
-    {
-        execute_builtin(m, command, argv, argc);
-    }
-    else
-    {
-        pic_var_or_others(m, command, argv, argc);
-    }
-
-    // Behandlung von echo $?
-    if (ft_strcmp(command, "echo") == 0 && argc == 2 && ft_strcmp(argv[1], "$?") == 0)
-    {
-        m->exitcode = original_exitcode;
-    }
-
-    cleanup(argv);
-    if (DEBUG == 1)
-        ft_printf(B"%s exitcode: %i\n"D, command, m->exitcode);
+	if (is_builtin(command))
+		execute_builtin(m, command, argv, argc);
+	else
+		pic_var_or_others(m, command, argv, argc);
+	m->last_exitcode = m->exitcode;
+	cleanup(argv);
 }
 
 char	**prepare_argv(t_list *current, int *argc)

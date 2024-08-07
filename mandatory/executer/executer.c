@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/31 17:01:26 by jeberle           #+#    #+#             */
-/*   Updated: 2024/08/07 11:26:45 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/07 11:47:51 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ void	execute(t_minishell *m)
 {
 	int		pipe_fd[2];
 	int		prev_pipe_read;
-	pid_t	pid;
+	int		pid;
 	int		status;
 	int		i;
 	t_list	*seq;
@@ -107,11 +107,11 @@ void	execute(t_minishell *m)
 			return ;
 		run_command(m, m->tok_lst);
 	}
-	while (wait(&status) > 0) {
-	    if (WIFEXITED(status)) {
-	        m->exitcode = WEXITSTATUS(status);
-	    } else if (WIFSIGNALED(status)) {
-	        m->exitcode = 128 + WTERMSIG(status);
-	    }
+	while (wait(&status) > 0)
+	{
+		if (WIFEXITED(status))
+			m->exitcode = WEXITSTATUS(status);
+		else if (WIFSIGNALED(status))
+			m->exitcode = 128 + WTERMSIG(status);
 	}
 }
