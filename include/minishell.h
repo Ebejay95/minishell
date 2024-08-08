@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:18:56 by jeberle           #+#    #+#             */
-/*   Updated: 2024/08/08 15:35:13 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/08 17:10:01 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -277,8 +277,10 @@ void		put_token(void *content);
 void		update_tok_type(t_token *tok, enum e_toktype token);
 
 // signal.c
-void		handle_signal(int sig);
+void		handle_child_process(int sig);
+void		handle_main_process(int sig);
 void		setup_signals(t_minishell *minishell);
+
 
 // #############################################################################
 // #                               Builtins                                    #
