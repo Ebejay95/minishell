@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:01:33 by jeberle           #+#    #+#             */
-/*   Updated: 2024/08/07 14:56:27 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/08 02:05:28 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,8 +89,18 @@ int	main(int argc, char **argv, char **envp)
 	init_env_list(envp, &minishell);
 	(void)argc;
 	(void)argv;
+	(void)argc;
 	setup_signals(&minishell);
 	initialize_minishell(&minishell, envp);
+	if (argc >= 2)
+	{
+		if (access(argv[1], F_OK) == -1)
+		{
+			ft_printf("🍕🚀🌈🦄🍺: %s: No such file or directory\n", argv[1]);
+			minishell.last_exitcode = 127;
+			minishell.leave = 1;
+		}
+	}
 	while (1)
 		if (handle_input(&minishell))
 			break ;

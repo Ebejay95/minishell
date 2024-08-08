@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:18:56 by jeberle           #+#    #+#             */
-/*   Updated: 2024/08/08 01:22:42 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/08 02:04:48 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,8 @@
 # include <unistd.h>
 # include <fcntl.h>
 # include <termios.h>
+#include <sys/stat.h>
+
 
 // Define Colours
 # define R "\033[0;31m"
