@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 11:12:44 by jeberle           #+#    #+#             */
-/*   Updated: 2024/08/07 12:38:02 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/08 17:28:21 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,8 +94,8 @@ void	put_token(void *content)
 	if (token != NULL)
 	{
 		ft_printf(Y"["D);
-		ft_printf(C"%s "D, token->type);
-		ft_printf("%s ", token->str);
+		ft_printf(C"%s$ "D, token->type);
+		ft_printf("%s$ ", token->str);
 		ft_printf("map: %s", token->expmap);
 		put_token_details(token);
 		ft_printf(Y"]"D);

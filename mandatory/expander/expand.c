@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/21 13:23:03 by jeberle           #+#    #+#             */
-/*   Updated: 2024/08/08 15:44:01 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/08 18:07:59 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,42 +44,46 @@ void	expand(t_minishell *m, char **expanded, char **expanded_map, const char *st
 		return ;
 	expmap_result = malloc(sizeof(char));
 	if (!expmap_result)
-		return (free(result));
+	{
+		free(result);
+		return ;
+	}
 	result[0] = '\0';
 	expmap_result[0] = '\0';
 	i = start;
 	escaped = 0;
 	while (i < end)
 	{
+		if (expmap[i] == 'S')
+		{
+			i++;
+			continue ;
+		}
 		if (str[i] == '\\')
 		{
 			if (escaped == 0)
 			{
 				escaped = 1;
 				i++;
-				continue;
+				continue ;
 			}
 			else if (escaped == 1)
 			{
 				escaped = 0;
-
-				// Füge einen Backslash hinzu, da dieser escaped war
-				char *temp = ft_realloc(result, strlen(result) + 2);
-				char *expmap_temp = ft_realloc(expmap_result, strlen(expmap_result) + 2);
-
+				temp = ft_realloc(result, ft_strlen(result) + 2);
+				expmap_temp = ft_realloc(expmap_result, ft_strlen(expmap_result) + 2);
 				if (!temp || !expmap_temp)
 				{
 					free(result);
 					free(expmap_result);
-					return;
+					return ;
 				}
 				result = temp;
 				expmap_result = expmap_temp;
-				strncat(result, "\\", 1);
-				strncat(expmap_result, "0", 1);
-
+				ft_strncat(result, "\\", 1);
+				ft_strncat(expmap_result, "0", 1);
 				i++;
-				continue;
+				continue ;
 			}
 		}
 		if (str[i] == '$' && str[i + 1] == '?' && expmapcheck(expmap, str, i, escaped) == 1)
@@ -160,7 +164,7 @@ void	expand(t_minishell *m, char **expanded, char **expanded_map, const char *st
 			else
 			{
 				i = var_start + 1;
-				temp = ft_realloc(result, strlen(result) + 2);
+				temp = ft_realloc(result, ft_strlen(result) + 2);
 				if (!temp)
 				{
 					free(result);
@@ -168,8 +172,8 @@ void	expand(t_minishell *m, char **expanded, char **expanded_map, const char *st
 					return ;
 				}
 				result = temp;
-				ft_strncat(result, &str[var_start], 1);
-				expmap_temp = ft_realloc(expmap_result, strlen(expmap_result) + 2);
+				ft_ft_strncat(result, &str[var_start], 1);
+				expmap_temp = ft_realloc(expmap_result, ft_strlen(expmap_result) + 2);
 				if (!expmap_temp)
 				{
 					free(result);
@@ -177,7 +181,7 @@ void	expand(t_minishell *m, char **expanded, char **expanded_map, const char *st
 					return ;
 				}
 				expmap_result = expmap_temp;
-				ft_strncat(expmap_result, &expmap[var_start], 1);
+				ft_ft_strncat(expmap_result, &expmap[var_start], 1);
 			}
 		}
 		else
@@ -192,7 +196,7 @@ void	expand(t_minishell *m, char **expanded, char **expanded_map, const char *st
 					return ;
 				}
 				result = temp;
-				ft_strncat(result, &str[i], 1);
+				ft_ft_strncat(result, &str[i], 1);
 				expmap_temp = ft_realloc(expmap_result, ft_strlen(expmap_result) + 2);
 				if (!expmap_temp)
 				{
@@ -201,7 +205,7 @@ void	expand(t_minishell *m, char **expanded, char **expanded_map, const char *st
 					return ;
 				}
 				expmap_result = expmap_temp;
-				ft_strncat(expmap_result, &expmap[i], 1);
+				ft_ft_strncat(expmap_result, &expmap[i], 1);
 			}
 			i++;
 		}
