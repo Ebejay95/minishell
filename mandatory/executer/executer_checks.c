@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 14:04:35 by chorst            #+#    #+#             */
-/*   Updated: 2024/08/07 14:14:08 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/08 14:30:55 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,23 @@ static void	check_pipes(t_minishell *m)
 		last_str = cont->str;
 		ltype = cont->type;
 		current = current->next;
+	}
+}
+
+void	red_need_next_file(t_minishell *m, t_list *cur, t_token *cont)
+{
+	t_token	*cont_next;
+	int		lookat;
+
+	lookat = 0;
+	cont_next = NULL;
+	if (!ft_strcmp(cont->str, "<") || !ft_strcmp(cont->str, ">>") || !ft_strcmp(cont->str, ">"))
+		lookat = 1;
+	if (lookat && cur->next)
+	{
+		cont_next = (t_token *)cur->next->content;
+		if (access(cont_next->str, R_OK) != 0)
+			pic_err(m, 2, ft_strjoin(ft_strjoin("bash: ", cont_next->str), ": No such file or directory"));
 	}
 }
 

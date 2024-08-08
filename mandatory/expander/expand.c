@@ -6,15 +6,15 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/21 13:23:03 by jeberle           #+#    #+#             */
-/*   Updated: 2024/08/08 02:03:05 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/08 15:44:01 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../../include/minishell.h"
 
-int	expmapcheck(char *expmap, const char *str, int i)
+int	expmapcheck(char *expmap, const char *str, int i, int escaped)
 {
-	if (expmap[i + 1] != '\0' && str[i + 1] != '\0')
+	if (expmap[i + 1] != '\0' && str[i + 1] != '\0' && !escaped)
 	{
 		if (expmap[i] == '0' && expmap[i + 1] == '2' && str[i + 1] == '\"')
 			return (2);
@@ -37,6 +37,7 @@ void	expand(t_minishell *m, char **expanded, char **expanded_map, const char *st
 	char	*temp;
 	char	*expmap_temp;
 	char	*exit_status_str;
+	int		escaped;
 
 	result = malloc(sizeof(char));
 	if (!result)
@@ -47,9 +48,41 @@ void	expand(t_minishell *m, char **expanded, char **expanded_map, const char *st
 	result[0] = '\0';
 	expmap_result[0] = '\0';
 	i = start;
+	escaped = 0;
 	while (i < end)
 	{
-		if (str[i] == '$' && str[i + 1] == '?' && expmapcheck(expmap, str, i) == 1)
+		if (str[i] == '\\')
+		{
+			if (escaped == 0)
+			{
+				escaped = 1;
+				i++;
+				continue;
+			}
+			else if (escaped == 1)
+			{
+				escaped = 0;
+
+				// Füge einen Backslash hinzu, da dieser escaped war
+				char *temp = ft_realloc(result, strlen(result) + 2);
+				char *expmap_temp = ft_realloc(expmap_result, strlen(expmap_result) + 2);
+
+				if (!temp || !expmap_temp)
+				{
+					free(result);
+					free(expmap_result);
+					return;
+				}
+				result = temp;
+				expmap_result = expmap_temp;
+				strncat(result, "\\", 1);
+				strncat(expmap_result, "0", 1);
+
+				i++;
+				continue;
+			}
+		}
+		if (str[i] == '$' && str[i + 1] == '?' && expmapcheck(expmap, str, i, escaped) == 1)
 		{
 			exit_status_str = ft_itoa(m->last_exitcode);
 			if (!exit_status_str)
@@ -81,11 +114,11 @@ void	expand(t_minishell *m, char **expanded, char **expanded_map, const char *st
 			free(exit_status_str);
 			i += 2;
 		}
-		else if (str[i] == '$' && expmapcheck(expmap, str, i) == 2)
+		else if (str[i] == '$' && expmapcheck(expmap, str, i, escaped) == 2)
 		{
 			i += 2;
 		}
-		else if (str[i] == '$' && expmapcheck(expmap, str, i) == 1)
+		else if (str[i] == '$' && expmapcheck(expmap, str, i, escaped) == 1)
 		{
 			var_start = i;
 			var_name = get_var_name(str, expmap, &i);

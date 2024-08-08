@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:18:56 by jeberle           #+#    #+#             */
-/*   Updated: 2024/08/08 02:04:48 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/08 15:35:13 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -161,6 +161,7 @@ typedef struct s_minishell
 // executer_checks.c
 void		pre_exec_checks(t_minishell *m);
 void		check_semantics(t_list *last, t_list *current);
+void		red_need_next_file(t_minishell *m, t_list *cur, t_token *cont);
 
 // executer_command_helper.c
 int			is_builtin(char *command);

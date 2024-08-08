@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 15:29:28 by chorst            #+#    #+#             */
-/*   Updated: 2024/08/07 17:01:46 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/08 14:31:50 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ int handle_redirections(t_minishell *m, t_list *ref, t_list *seq)
 	file_name = NULL;
 	while (seq != NULL) {
 		token = (t_token *)seq->content;
+		red_need_next_file(m, seq, token);
 		if (token->token == REDIRECTION)
 		{
 			if (ft_strcmp(token->detail.rdrc.rdrctype, "truncate") == 0 || ft_strcmp(token->detail.rdrc.rdrctype, "append") == 0)

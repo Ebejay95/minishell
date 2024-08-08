@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 11:30:06 by jeberle           #+#    #+#             */
-/*   Updated: 2024/08/08 01:55:51 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/08 15:51:17 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,21 +51,24 @@ void	afterbreakup(t_minishell *m)
 	}
 }
 
-void	detect_lexing_errors(t_minishell *m)
-{
-	int		quotecount;
-	char	*work;
+void detect_lexing_errors(t_minishell *m) {
+    char *work = m->prompt;
+    char quote_char = 0;
+    int in_quote = 0;
 
-	quotecount = 0;
-	work = m->prompt;
-	while (*work != '\0')
-	{
-		if (*work == '\"' || *work == '\'')
-			quotecount++;
-		work++;
-	}
-	if (quotecount % 2 != 0)
-		pic_err(m, 2, "unclosed quotes");
+    while (*work != '\0') {
+        if (!in_quote && (*work == '\'' || *work == '\"')) {
+            quote_char = *work;
+            in_quote = 1;
+        } else if (in_quote && *work == quote_char) {
+            in_quote = 0;
+        }
+        work++;
+    }
+
+    if (in_quote) {
+        pic_err(m, 2, "unclosed quotes");
+    }
 }
 
 void	add_token_to_list(t_list **lst, t_token *token)
@@ -126,12 +129,12 @@ void	prompt_to_token(t_minishell *m)
 			ptr++;
 			continue ;
 		}
-		if (*ptr == '\\' && quote_level != 1)
-		{
-			escape_next = 1;
-			ptr++;
-			continue ;
-		}
+		// if (*ptr == '\\' && quote_level != 1)
+		// {
+		// 	escape_next = 1;
+		// 	ptr++;
+		// 	continue ;
+		// }
 		if (*ptr == '\'' && quote_level == 0)
 		{
 			quote_level = 1;
