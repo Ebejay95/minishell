@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:01:33 by jeberle           #+#    #+#             */
-/*   Updated: 2024/08/07 14:05:50 by chorst           ###   ########.fr       */
+/*   Updated: 2024/08/07 14:56:27 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,6 @@ static void	non_interactive_mode(t_minishell *minishell)
 // Function that handles the input from the user or the script
 static int	handle_input(t_minishell *minishell)
 {
-	printf("modus: %d\n", minishell->modus);
 	if (minishell->modus > 0)
 		interactive_mode(&(*minishell));
 	else if (minishell->modus == 0)
@@ -88,10 +87,10 @@ int	main(int argc, char **argv, char **envp)
 	t_minishell	minishell;
 
 	init_env_list(envp, &minishell);
+	(void)argc;
 	(void)argv;
 	setup_signals(&minishell);
 	initialize_minishell(&minishell, envp);
-	printf("argc: %d\n", argc);
 	while (1)
 		if (handle_input(&minishell))
 			break ;

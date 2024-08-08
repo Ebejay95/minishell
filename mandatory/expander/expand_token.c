@@ -6,13 +6,13 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 18:09:22 by chorst            #+#    #+#             */
-/*   Updated: 2024/08/07 13:23:47 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/07 16:41:40 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../../include/minishell.h"
 
-void	expand_token(t_minishell *m, int exitcode, t_token *token)
+void	expand_token(t_minishell *m, t_token *token)
 {
 	char	*temp;
 	char	*expmap_temp;
@@ -61,7 +61,7 @@ void	expand_token(t_minishell *m, int exitcode, t_token *token)
 			current_mode = token->expmap[i];
 			while (i < len && token->expmap[i] == current_mode)
 				i++;
-			expand(m, &expanded, &expanded_map, exitcode, &token->str[start], &token->expmap[start], 0, i - start);
+			expand(m, &expanded, &expanded_map, &token->str[start], &token->expmap[start], 0, i - start);
 			if (expanded && expanded_map)
 			{
 				temp = ft_realloc(result, ft_strlen(result) + ft_strlen(expanded) + 1);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:18:56 by jeberle           #+#    #+#             */
-/*   Updated: 2024/08/07 14:10:22 by chorst           ###   ########.fr       */
+/*   Updated: 2024/08/08 01:22:42 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -212,10 +212,10 @@ void		execute(t_minishell *m);
 // #############################################################################
 
 // expand_token.c
-void		expand_token(t_minishell *m, int exitcode, t_token *token);
+void		expand_token(t_minishell *m, t_token *token);
 
 // expander.c
-void		expand(t_minishell *m, char **expanded, char **expanded_map, int exitcode, const char *str, char *expmap, size_t start, size_t end);
+void		expand(t_minishell *m, char **expanded, char **expanded_map, const char *str, char *expmap, size_t start, size_t end);
 
 // expand_helper.c
 void		ft_strfillcat(char *dest, const char *src, char fill_char);
@@ -228,9 +228,6 @@ char		*get_var_name(const char *str, const char *expmap, size_t *pos);
 
 // ast.c
 void		ast_add(t_btree **ast, t_btree *cur, char *branch, t_token *tok);
-
-// expand.c
-void		expand_token(t_minishell *m, int exitcode, t_token *token);
 
 // hierarchy_validation.c
 int			vd_null_add(t_btree *ast, t_token *newtok);

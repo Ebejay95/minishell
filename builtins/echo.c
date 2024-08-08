@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 11:49:45 by chorst            #+#    #+#             */
-/*   Updated: 2024/08/07 12:39:44 by chorst           ###   ########.fr       */
+/*   Updated: 2024/08/07 16:57:32 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,10 +18,6 @@ void	ft_echo(char **args)
 	bool	newline;
 	int		start_index;
 
-	printf("args[0]: %s\n", args[0]);
-	printf("args[1]: %s\n", args[1]);
-	printf("args[2]: %s\n", args[2]);
-	printf("args[3]: %s\n", args[3]);
 	if (strcmp(args[0], "echo") == 0)
 		start_index = handle_options(args, &newline, 1);
 	else
