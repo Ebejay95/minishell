@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/21 13:23:03 by jeberle           #+#    #+#             */
-/*   Updated: 2024/08/09 00:02:13 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/11 21:42:36 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,7 +125,7 @@ void	expand(t_minishell *m, char **expanded, char **expanded_map, const char *st
 		else if (str[i] == '$' && expmapcheck(expmap, str, i, escaped) == 1)
 		{
 			var_start = i;
-			var_name = get_var_name(str, expmap, &i);
+			var_name = get_var_name_exp(str, expmap, &i);
 			if (var_name)
 			{
 				var_value = my_getenv(var_name, m->env_list);

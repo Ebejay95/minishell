@@ -6,13 +6,13 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 11:30:06 by jeberle           #+#    #+#             */
-/*   Updated: 2024/08/08 18:13:04 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/11 15:02:17 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../../include/minishell.h"
 
-void	afterbreakup(t_minishell *m)
+void	afterbreakup(t_list **tok_lst)
 {
 	t_list	*current;
 	t_list	*new_node;
@@ -23,7 +23,7 @@ void	afterbreakup(t_minishell *m)
 	char	*work;
 	char	**words;
 
-	current = m->tok_lst;
+	current = *tok_lst;
 	while (current != NULL)
 	{
 		cur = (t_token *)current->content;
@@ -97,7 +97,7 @@ void	add_token_to_list(t_list **lst, t_token *token)
 	}
 }
 
-void	prompt_to_token(t_minishell *m)
+void	prompt_to_token(char *prompt, t_list **tok_lst)
 {
 	int		current_pos;
 	int		quote_level;
@@ -114,7 +114,7 @@ void	prompt_to_token(t_minishell *m)
 	quote_level = 0;
 	escape_next = 0;
 	current_token_size = 10;
-	ptr = m->prompt;
+	ptr = prompt;
 	current_token = malloc(current_token_size);
 	expmap = malloc(current_token_size);
 	if (!current_token || !expmap)
@@ -171,7 +171,7 @@ void	prompt_to_token(t_minishell *m)
 				expmap[current_pos] = '\0';
 				token = create_token(current_token, expmap);
 				update_tok_type(token, WORD);
-				add_token_to_list(&m->tok_lst, token);
+				add_token_to_list(tok_lst, token);
 				current_pos = 0;
 			}
 			ptr++;
@@ -185,12 +185,12 @@ void	prompt_to_token(t_minishell *m)
 				expmap[current_pos] = '\0';
 				token = create_token(current_token, expmap);
 				update_tok_type(token, WORD);
-				add_token_to_list(&m->tok_lst, token);
+				add_token_to_list(tok_lst, token);
 				current_pos = 0;
 			}
 			token = create_token("|", "0");
 			update_tok_type(token, PIPE);
-			add_token_to_list(&m->tok_lst, token);
+			add_token_to_list(tok_lst, token);
 			ptr++;
 			continue ;
 		}
@@ -202,7 +202,7 @@ void	prompt_to_token(t_minishell *m)
 				expmap[current_pos] = '\0';
 				token = create_token(current_token, expmap);
 				update_tok_type(token, WORD);
-				add_token_to_list(&m->tok_lst, token);
+				add_token_to_list(tok_lst, token);
 				current_pos = 0;
 			}
 			if (*(ptr + 1) == *ptr)
@@ -221,7 +221,7 @@ void	prompt_to_token(t_minishell *m)
 					token = create_token("<", "0");
 			}
 			update_tok_type(token, REDIRECTION);
-			add_token_to_list(&m->tok_lst, token);
+			add_token_to_list(tok_lst, token);
 			ptr++;
 			continue ;
 		}
@@ -255,7 +255,7 @@ void	prompt_to_token(t_minishell *m)
 		expmap[current_pos] = '\0';
 		token = create_token(current_token, expmap);
 		update_tok_type(token, WORD);
-		add_token_to_list(&m->tok_lst, token);
+		add_token_to_list(tok_lst, token);
 	}
 	free(current_token);
 	free(expmap);
@@ -265,12 +265,12 @@ void	prompt_to_token(t_minishell *m)
 //cur_content->expmap = NULL;
 //ft_printf(R"%s\n"D, cur_content->str);
 //ft_printf(G"%s\n"D, cur_content->expmap);
-void	expand_toklst(t_minishell *m)
+void expand_toklst(t_minishell *m, t_list **tok_lst)
 {
 	t_list	*current;
 	t_token	*cur_content;
 
-	current = m->tok_lst;
+	current = *tok_lst;
 	while (current != NULL)
 	{
 		cur_content = (t_token *)current->content;
@@ -286,9 +286,9 @@ void	lex_prompt(t_minishell *m)
 	tmpp = remove_chars(m->prompt, "\n");
 	m->prompt = tmpp;
 	detect_lexing_errors(m);
-	prompt_to_token(m);
-	expand_toklst(m);
-	afterbreakup(m);
+	prompt_to_token(m->prompt, &(m->tok_lst));
+	expand_toklst(m, &(m->tok_lst));
+	afterbreakup(&(m->tok_lst));
 	if (DEBUG == 1)
 	{
 		ft_printf(Y"TOKENLIST:\n"D);

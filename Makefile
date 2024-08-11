@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: chorst <chorst@student.42.fr>              +#+  +:+       +#+         #
+#    By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/25 22:43:08 by jonathanebe       #+#    #+#              #
-#    Updated: 2024/08/06 20:34:07 by chorst           ###   ########.fr        #
+#    Updated: 2024/08/11 20:37:33 by jeberle          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -85,6 +85,8 @@ SYSLIBFLAGS=-lreadline
 
 SRCS=	mandatory/ast.c \
 		mandatory/executer/executer_checks.c \
+		mandatory/executer/executer_checks2.c \
+		mandatory/executer/executer_checks3.c \
 		mandatory/executer/executer_command_helper.c \
 		mandatory/executer/executer_command.c \
 		mandatory/executer/executer_env.c \

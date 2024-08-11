@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 11:12:44 by jeberle           #+#    #+#             */
-/*   Updated: 2024/08/08 17:28:21 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/11 17:57:39 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,9 @@ t_token	*create_token(char *str, char *expmap)
 	newtok->token = WORD;
 	newtok->type = toktype_to_str(WORD);
 	newtok->str = ft_strdup(str);
+	newtok->had_quote = 0;
+	if(ft_strcontains(str, '\"') || ft_strcontains(str, '\''))
+		newtok->had_quote = 1;
 	if (!newtok->str)
 	{
 		free(newtok->type);
@@ -37,6 +40,10 @@ t_token	*create_token(char *str, char *expmap)
 		free(newtok);
 		return (NULL);
 	}
+	newtok->detail.rdrc.rdrcmeta = NULL;
+	newtok->detail.rdrc.rdrctarget = NULL;
+	newtok->detail.pipe.open_prompt = 0;
+	newtok->detail.minifile.fd = 0;
 	return (newtok);
 }
 
@@ -51,6 +58,8 @@ char	*toktype_to_str(enum e_toktype token)
 		return (ft_strdup("Command"));
 	if (token == WORD)
 		return (ft_strdup("Word"));
+	if (token == MINIFILE)
+		return (ft_strdup("File"));
 	if (token == DELIMITER)
 		return (ft_strdup("Delimiter"));
 	if (token == UNSET)
@@ -62,28 +71,16 @@ void	put_token_details(t_token *token)
 {
 	if (ft_strcmp(token->type, "Pipe") == 0)
 	{
-		ft_printf(" (fdin: %d, fdout: %d, open_prompt: %d)",
-			token->detail.pipe.fdin,
-			token->detail.pipe.fdout,
-			token->detail.pipe.open_prompt);
+		ft_printf(" (open_prompt: %d)", token->detail.pipe.open_prompt);
 	}
 	else if (ft_strcmp(token->type, "Redirection") == 0)
 	{
-		if (token->detail.rdrc.rdrctype)
-		{
-			ft_printf(" (fdin: %d, fdout: %d)",
-				token->detail.rdrc.fdin,
-				token->detail.rdrc.fdout);
-		}
-		else
-		{
-			ft_printf(" (fdin: %d, fdout: %d, rdrctype: NULL)",
-				token->detail.rdrc.fdin,
-				token->detail.rdrc.fdout);
-		}
+		ft_printf(" ( rdrcmeta: %s rdrctarget: %s)", token->detail.rdrc.rdrcmeta, token->detail.rdrc.rdrctarget);
 	}
-	else
-		ft_printf(" (arglen: %d)", token->detail.arglen);
+	else if (ft_strcmp(token->type, "File") == 0)
+	{
+		ft_printf(" (fd: %d)", token->detail.minifile.fd);
+	}
 }
 
 void	put_token(void *content)
@@ -125,11 +122,11 @@ t_token	tok_lst_get(void *n)
 // 	}
 // 	else if (ft_strcmp(token->type, "Redirection") == 0)
 // 	{
-// 		ft_printf(" (fdin: %d, fdout: %d, rdrctype: %s)",
+// 		ft_printf(" (fdin: %d, fdout: %d, rdrcmeta: %s)",
 // 			token->detail.rdrc.fdin,
 // 			token->detail.rdrc.fdout,
-// 			token->detail.rdrc.rdrctype ?
-// 			token->detail.rdrc.rdrctype : "NULL");
+// 			token->detail.rdrc.rdrcmeta ?
+// 			token->detail.rdrc.rdrcmeta : "NULL");
 // 	}
 // 	else
 // 	{
