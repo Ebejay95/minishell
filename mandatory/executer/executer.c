@@ -6,12 +6,29 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/31 17:01:26 by jeberle           #+#    #+#             */
-/*   Updated: 2024/08/11 21:55:39 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/11 22:31:18 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-
 #include "./../../include/minishell.h"
+
+void	reset_sequences(t_minishell *m)
+{
+	int	i;
+	ft_printf("reset_sequences %i\n", m->exitcode);
+	if (m->exec_seqs)
+	{
+		i = 0;
+		while (m->exec_seqs[i])
+		{
+			ft_lstclear(&(m->exec_seqs[i]), free_token);
+			i++;
+		}
+		m->exec_seqs = NULL;
+	}
+	//ft_lstclear(&(m->tok_lst), free_token);
+	ft_lstclear(&(m->exec_lst), free_token);
+}
 
 char	*get_executable(t_minishell *m, char *command)
 {
@@ -47,10 +64,17 @@ char	*get_executable(t_minishell *m, char *command)
 //signal(SIGQUIT, handle_main_process);
 void	execute_command(t_minishell *m, char *executable, char **argv)
 {
-	execve(executable, argv, own_env(m->env_list));
-	perror("execve failed");
-	free(executable);
-	exit(EXIT_FAILURE);
+	if (is_builtin(executable))
+	{
+		execute_builtin(m, executable, argv, ft_array_length(argv));
+	}
+	else
+	{
+		execve(executable, argv, own_env(m->env_list));
+		perror("execve failed");
+		free(executable);
+		exit(EXIT_FAILURE);
+	}
 }
 
 static int	append_str(char **dst, const char *src)
@@ -430,26 +454,32 @@ void	run_seg(t_minishell *m, t_list *exec_lst, int input_fd, int output_fd)
 	}
 	if (args && args[0])
 	{
-		pid = fork();
-		if (pid == 0)
+		if (is_builtin(args[0]))
 		{
+			// Handle builtins in the parent process
 			if (last_input_fd != input_fd)
-			{
 				dup2(last_input_fd, STDIN_FILENO);
-				close(last_input_fd);
-			}
 			if (last_output_fd != output_fd)
-			{
 				dup2(last_output_fd, STDOUT_FILENO);
-				close(last_output_fd);
-			}
-			if (is_builtin(args[0]))
+			execute_builtin(m, args[0], args, arg_count);
+			if (ft_strcmp(args[0], "exit") == 0)
+				exit(m->exitcode); // Exit the shell if the command was 'exit'
+		}
+		else
+		{
+			pid = fork();
+			if (pid == 0)
 			{
-				execute_builtin(m, args[0], args, arg_count);
-				exit(0);
-			}
-			else
-			{
+				if (last_input_fd != input_fd)
+				{
+					dup2(last_input_fd, STDIN_FILENO);
+					close(last_input_fd);
+				}
+				if (last_output_fd != output_fd)
+				{
+					dup2(last_output_fd, STDOUT_FILENO);
+					close(last_output_fd);
+				}
 				path = get_executable(m, args[0]);
 				if (path)
 				{
@@ -459,18 +489,18 @@ void	run_seg(t_minishell *m, t_list *exec_lst, int input_fd, int output_fd)
 				ft_fprintf(2, "Command not found: %s\n", args[0]);
 				exit(1);
 			}
-		}
-		else if (pid < 0)
-		{
-			ft_fprintf(2, "Fork failed\n");
-		}
-		else
-		{
-			waitpid(pid, &status, 0);
-			if (WIFEXITED(status))
-				m->exitcode = WEXITSTATUS(status);
-			else if (WIFSIGNALED(status))
-				m->exitcode = 128 + WTERMSIG(status);
+			else if (pid < 0)
+			{
+				ft_fprintf(2, "Fork failed\n");
+			}
+			else
+			{
+				waitpid(pid, &status, 0);
+				if (WIFEXITED(status))
+					m->exitcode = WEXITSTATUS(status);
+				else if (WIFSIGNALED(status))
+					m->exitcode = 128 + WTERMSIG(status);
+			}
 		}
 	}
 	if (last_input_fd != input_fd)
@@ -570,5 +600,6 @@ void	execute(t_minishell *m)
 		prexecute(m, &(m->tok_lst), &(m->exec_lst));
 		run_seg(m, m->exec_lst, STDIN_FILENO, STDOUT_FILENO);
 	}
+	reset_sequences(m);
 }
 

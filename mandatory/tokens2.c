@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 20:46:49 by jeberle           #+#    #+#             */
-/*   Updated: 2024/08/11 13:02:15 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/11 22:27:55 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,16 @@ void	free_token(void *n)
 			free(token->type);
 			token->type = NULL;
 		}
+		// if (token->detail.rdrc.rdrcmeta)
+		// {
+		// 	free(token->detail.rdrc.rdrcmeta);
+		// 	token->detail.rdrc.rdrcmeta = NULL;
+		// }
+		// if (token->detail.rdrc.rdrctarget)
+		// {
+		// 	free(token->detail.rdrc.rdrctarget);
+		// 	token->detail.rdrc.rdrctarget = NULL;
+		// }
 		free(token);
 		token = NULL;
 	}

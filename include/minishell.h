@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:18:56 by jeberle           #+#    #+#             */
-/*   Updated: 2024/08/11 21:48:32 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/11 22:27:11 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -291,7 +291,7 @@ void		put_token(void *content);
 void		update_tok_type(t_token *tok, enum e_toktype token);
 void		update_tok_type_next(t_list *current, enum e_toktype token);
 void		update_tok_type_next_word(t_list *current, enum e_toktype token);
-
+void		free_token(void *n);
 // signal.c
 void		handle_child_process(int sig);
 void		handle_main_process(int sig);
