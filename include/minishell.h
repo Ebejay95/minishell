@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:18:56 by jeberle           #+#    #+#             */
-/*   Updated: 2024/08/08 17:59:01 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/11 20:52:11 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,8 @@
 # define RDRCSET "><0123456789"
 
 // mode
-# define DEBUG 0
+# define DEBUG 1
+# define DEBUG_LOG "/tmp/minishell_debug.log"
 
 // #############################################################################
 // #                                 Enums                                     #
@@ -75,6 +76,7 @@ typedef enum e_toktype
 	PIPE,
 	COMMAND,
 	WORD,
+	MINIFILE,
 	DELIMITER,
 	UNSET
 }	t_toktype;
@@ -89,21 +91,22 @@ typedef struct s_token
 	char			*type;
 	char			*str;
 	char			*expmap;
+	int				had_quote;
 	union u_detail
 	{
 		struct s_rdct_tokdetail
 		{
-			int		fdin;
-			int		fdout;
-			char	*rdrctype;
+			char	*rdrcmeta;
+			char	*rdrctarget;
 		}	rdrc;
 		struct s_pipe_tokdetail
 		{
-			int		fdin;
-			int		fdout;
 			int		open_prompt;
 		}	pipe;
-		int			arglen;
+		struct s_minifile_tokdetail
+		{
+			int		fd;
+		}	minifile;
 	}	detail;
 }	t_token;
 
@@ -113,7 +116,7 @@ typedef struct s_token
 //     token->token = REDIRECTION;
 //     token->detail.redirection.fdin = fdin;
 //     token->detail.redirection.fdout = fdout;
-//     token->detail.redirection.rdrctype = rdrctype;
+//     token->detail.redirection.rdrcmeta = rdrcmeta;
 // }
 
 // void set_command_arg_tok_detail(t_token *token, int arglen, int is_command)
@@ -149,8 +152,10 @@ typedef struct s_minishell
 	int			exitcode;
 	int			pid;
 	t_list		*tok_lst;
+	t_list		*exec_lst;
 	int			pipes;
-	t_list		**cmd_sequences;
+	t_list		**cmd_seqs;
+	t_list		**exec_seqs;
 	t_btree		*ast;
 }	t_minishell;
 
@@ -161,7 +166,12 @@ typedef struct s_minishell
 // executer_checks.c
 void		pre_exec_checks(t_minishell *m);
 void		check_semantics(t_list *last, t_list *current);
-void		red_need_next_file(t_minishell *m, t_list *cur, t_token *cont);
+int			check_one(t_minishell *m, char *lty, char *conty);
+int			check_two(t_minishell *m, char *conty, char *end);
+int			check_three(t_minishell *m, t_list *curnext, char *conty);
+int			check_four(t_minishell *m, char *conty, char *end);
+int			check_five(t_minishell *m, t_list *curnext, char *conty);
+int			check_six(t_minishell *m, char *lty, char *conty);
 
 // executer_command_helper.c
 int			is_builtin(char *command);
@@ -192,11 +202,10 @@ void		ft_run_others(t_minishell *m, char *command, char **argv);
 t_token		*init_pipe_details(t_token *pipetok);
 t_token		*init_redirection_details(t_token *redirectiontoken);
 void		init_check_rdrc(t_list *last, char *last_type, char *last_str);
-void		set_rdrctype(t_list *last, t_list *current, t_token *cur_content);
+void		set_rdrcmeta(t_list *last, t_list *current, t_token *cur_content);
 void		pre_exec_prep(t_minishell *m);
 
 // executer_redirections.c
-int			handle_trunc_append(t_minishell *m, t_list **seq, char **file_name, int *fd);
 int			process_additional_words(t_minishell *m, t_list **seq, char **file_name);
 int			open_and_redirect_output(char *file_name, char *redir_type, int *fd);
 
@@ -208,6 +217,7 @@ char		*prepare_executable_and_message(t_minishell *m, char *command);
 void		execute_command(t_minishell *m, char *executable, char **argv);
 
 // executer.c
+void		prexecute(t_minishell *m, t_list **tok_lst, t_list **exec_lst);
 void		execute(t_minishell *m);
 
 // #############################################################################
@@ -216,6 +226,9 @@ void		execute(t_minishell *m);
 
 // expand_token.c
 void		expand_token(t_minishell *m, t_token *token);
+void	prompt_to_token(char *prompt, t_list **tok_lst);
+void	afterbreakup(t_list **tok_lst);
+void	expand_toklst(t_minishell *m, t_list **tok_lst);
 
 // expander.c
 void		expand(t_minishell *m, char **expanded, char **expanded_map, const char *str, char *expmap, size_t start, size_t end);
@@ -223,7 +236,8 @@ void		expand(t_minishell *m, char **expanded, char **expanded_map, const char *s
 // expand_helper.c
 void		ft_strfillcat(char *dest, const char *src, char fill_char);
 void		ft_strfillncat(char *dest, const char *src, size_t n, char fill_char);
-char		*get_var_name(const char *str, const char *expmap, size_t *pos);
+char		*get_var_name_exp(const char *str, const char *expmap, size_t *pos);
+char		*get_var_name(const char *str, size_t *pos);
 
 // #############################################################################
 // #                          Mandatory Functions                              #
@@ -258,7 +272,7 @@ int			main(int argc, char **argv, char **envp);
 void		parse(t_minishell *m);
 
 // pipes.c
-t_list		**split_by_pipe(t_minishell *m);
+void split_by_pipe(t_minishell *m, t_list ***cmd_seq, t_list ***exec_seq);
 
 // putters.c
 
@@ -275,6 +289,8 @@ t_token		*create_token(char *str, char *expmap);
 char		*toktype_to_str(enum e_toktype token);
 void		put_token(void *content);
 void		update_tok_type(t_token *tok, enum e_toktype token);
+void		update_tok_type_next(t_list *current, enum e_toktype token);
+void		update_tok_type_next_word(t_list *current, enum e_toktype token);
 
 // signal.c
 void		handle_child_process(int sig);

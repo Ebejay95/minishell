@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:01:33 by jeberle           #+#    #+#             */
-/*   Updated: 2024/08/08 14:52:56 by chorst           ###   ########.fr       */
+/*   Updated: 2024/08/11 18:41:57 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,17 @@ static void	non_interactive_mode(t_minishell *minishell)
 	return ;
 }
 
+int	is_only_whitespace(const char *str)
+{
+	while (*str)
+	{
+		if (!isspace((unsigned char)*str))
+			return (0);
+		str++;
+	}
+	return 1;
+}
+
 // Function that handles the input from the user or the script
 static int	handle_input(t_minishell *minishell)
 {
@@ -62,13 +73,19 @@ static int	handle_input(t_minishell *minishell)
 	if (minishell->prompt == NULL)
 		return (1);
 	minishell->tok_lst = NULL;
+	minishell->exec_lst = NULL;
 	minishell->ast = ft_btreenew(NULL);
 	if (minishell->prompt)
 	{
 		minishell->leave = 0;
 		lex_prompt(minishell);
-		execute(minishell);
-		if (minishell->modus)
+		pre_exec_prep(minishell);
+		pre_exec_checks(minishell);
+		if (!minishell->leave)
+		{
+			execute(minishell);
+		}
+		if (minishell->modus && *minishell->prompt && !is_only_whitespace(minishell->prompt))
 			add_history(minishell->prompt);
 	}
 	return (0);

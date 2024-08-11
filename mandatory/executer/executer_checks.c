@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 14:04:35 by chorst            #+#    #+#             */
-/*   Updated: 2024/08/08 14:30:55 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/11 20:46:10 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ static void	check_rdrc_norm(char *last_str, t_token *cont, t_minishell *m)
 // #8: Pipe
 static void	check_pipes(t_minishell *m)
 {
-	t_list	*current;
+	t_list	*cur;
 	t_token	*cont;
 	char	*end;
 	char	*last_str;
@@ -47,37 +47,20 @@ static void	check_pipes(t_minishell *m)
 	end = NULL;
 	last_str = NULL;
 	ltype = NULL;
-	current = m->tok_lst;
-	while (current != NULL)
+	cur = m->tok_lst;
+	while (cur != NULL)
 	{
-		cont = (t_token *)current->content;
-		if (!m->leave && !ft_strcmp(ltype, text(8)) && !ft_strcmp(cont->type, text(8)))
+		cont = (t_token *)cur->content;
+		if (check_one(m, ltype, cont->type))
 			pic_err(m, 2, text(2));
-		else if (!m->leave && ft_strcmp(cont->type, text(8)) == 0 && end == NULL)
+		else if (check_two(m, cont->type, end))
 			pic_err(m, 2, text(2));
-		else if (!m->leave && current->next == NULL && !ft_strcmp(cont->type, text(8)))
+		else if (check_three(m, cur->next, cont->type))
 			pic_err(m, 2, text(1));
 		end = cont->type;
 		last_str = cont->str;
 		ltype = cont->type;
-		current = current->next;
-	}
-}
-
-void	red_need_next_file(t_minishell *m, t_list *cur, t_token *cont)
-{
-	t_token	*cont_next;
-	int		lookat;
-
-	lookat = 0;
-	cont_next = NULL;
-	if (!ft_strcmp(cont->str, "<") || !ft_strcmp(cont->str, ">>") || !ft_strcmp(cont->str, ">"))
-		lookat = 1;
-	if (lookat && cur->next)
-	{
-		cont_next = (t_token *)cur->next->content;
-		if (access(cont_next->str, R_OK) != 0)
-			pic_err(m, 2, ft_strjoin(ft_strjoin("bash: ", cont_next->str), ": No such file or directory"));
+		cur = cur->next;
 	}
 }
 
@@ -101,13 +84,13 @@ static void	check_redirections(t_minishell *m)
 	while (cur != NULL)
 	{
 		cont = (t_token *)cur->content;
-		if (!m->leave && !ft_strcmp(cont->type, text(8)) && !ft_strcmp(end, text(7)))
+		if (check_four(m, cont->type, end))
 			pic_err(m, 2, text(2));
-		else if (!m->leave && cur->next == NULL && !ft_strcmp(cont->type, text(7)))
+		else if (check_five(m, cur->next, cont->type))
 			pic_err(m, 2, text(1));
-		else if (!m->leave && !ft_strcmp(end, text(7)) && !ft_strcmp(cont->type, text(7)))
+		else if (check_six(m, end, cont->type))
 			check_rdrc_norm(last_str, cont, m);
-		set_rdrctype(last, cur, cont);
+		set_rdrcmeta(last, cur, cont);
 		end = cont->type;
 		last_str = cont->str;
 		last = cur;
@@ -136,7 +119,10 @@ void	check_semantics(t_list *last, t_list *current)
 		if (!ft_strcmp(token->type, "Word")
 			&& !ft_strcmp(last_token->type, "Redirection")
 			&& !ft_strcmp(last_token->str, "<<"))
+		{
 			update_tok_type(token, DELIMITER);
+			update_tok_type_next_word(current, COMMAND);
+		}
 		if (!ft_strcmp(token->type, "Word")
 			&& !ft_strcmp(last_token->type, "Pipe")
 			&& !ft_strcmp(last_token->str, "|"))

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipes.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 11:08:56 by chorst            #+#    #+#             */
-/*   Updated: 2024/08/05 11:09:38 by chorst           ###   ########.fr       */
+/*   Updated: 2024/08/11 20:11:32 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,16 +52,18 @@ static t_list	**process_tokens(t_minishell *m, t_list *current, int *count)
 }
 
 // Hauptfunktion
-t_list	**split_by_pipe(t_minishell *m)
+void	split_by_pipe(t_minishell *m, t_list ***cmd_seq, t_list ***exec_seq)
 {
-	int		count;
-	t_list	**cmd_seq;
+	int	count;
 
 	count = 0;
-	cmd_seq = process_tokens(m, m->tok_lst, &count);
-	cmd_seq = ft_realloc(cmd_seq, sizeof(t_list *) * (count + 1));
-	if (cmd_seq == NULL)
+	*cmd_seq = process_tokens(m, m->tok_lst, &count);
+	*cmd_seq = ft_realloc(*cmd_seq, sizeof(t_list *) * (count + 1));
+	if (*cmd_seq == NULL)
 		ft_error_exit("realloc");
-	cmd_seq[count] = NULL;
-	return (cmd_seq);
+	*exec_seq = ft_realloc(*exec_seq, sizeof(t_list *) * (count + 1));
+	if (*exec_seq == NULL)
+		ft_error_exit("realloc");
+	(*cmd_seq)[count] = NULL;
+	(*exec_seq)[count] = NULL;
 }

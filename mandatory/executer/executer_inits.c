@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executer_inits.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 14:09:50 by chorst            #+#    #+#             */
-/*   Updated: 2024/08/05 17:32:12 by chorst           ###   ########.fr       */
+/*   Updated: 2024/08/11 16:58:33 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,17 +14,13 @@
 
 t_token	*init_pipe_details(t_token *pipetok)
 {
-	pipetok->detail.pipe.fdin = -1;
-	pipetok->detail.pipe.fdout = -1;
 	pipetok->detail.pipe.open_prompt = 0;
 	return (pipetok);
 }
 
 t_token	*init_redirection_details(t_token *redirectiontoken)
 {
-	redirectiontoken->detail.rdrc.fdin = -1;
-	redirectiontoken->detail.rdrc.fdout = -1;
-	redirectiontoken->detail.rdrc.rdrctype = NULL;
+	redirectiontoken->detail.rdrc.rdrcmeta = NULL;
 	return (redirectiontoken);
 }
 
@@ -35,19 +31,28 @@ void	init_check_rdrc(t_list *last, char *last_type, char *last_str)
 	last_str = NULL;
 }
 
-void	set_rdrctype(t_list *last, t_list *current, t_token *token)
+void	set_rdrcmeta(t_list *last, t_list *current, t_token *token)
 {
 	check_semantics(last, current);
 	if (ft_strcmp(token->type, "Redirection") == 0)
 	{
 		if (ft_strcmp(token->str, "<<") == 0)
-			token->detail.rdrc.rdrctype = ft_strdup("here_doc");
+			token->detail.rdrc.rdrcmeta = ft_strdup("here_doc");
 		if (ft_strcmp(token->str, ">>") == 0)
-			token->detail.rdrc.rdrctype = ft_strdup("append");
+		{
+			token->detail.rdrc.rdrcmeta = ft_strdup("append");
+			update_tok_type_next_word(current, MINIFILE);
+		}
 		if (ft_strcmp(token->str, "<") == 0)
-			token->detail.rdrc.rdrctype = ft_strdup("redirection");
+		{
+			token->detail.rdrc.rdrcmeta = ft_strdup("redirection");
+			update_tok_type_next_word(current, MINIFILE);
+		}
 		if (ft_strcmp(token->str, ">") == 0)
-			token->detail.rdrc.rdrctype = ft_strdup("truncate");
+		{
+			token->detail.rdrc.rdrcmeta = ft_strdup("truncate");
+			update_tok_type_next_word(current, MINIFILE);
+		}
 	}
 }
 

@@ -6,13 +6,13 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 15:29:07 by chorst            #+#    #+#             */
-/*   Updated: 2024/08/07 11:46:40 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/11 20:23:04 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../../include/minishell.h"
 
-void run_command(t_minishell *m, t_list *current)
+void	run_command(t_minishell *m, t_list *current)
 {
 	t_token	*token;
 	char	*command;
@@ -22,11 +22,15 @@ void run_command(t_minishell *m, t_list *current)
 	if (current == NULL)
 		return ;
 	token = (t_token *)current->content;
+	while (token->token != COMMAND)
+	{
+		current = current->next;
+		token = (t_token *)current->content;
+	}
 	command = whitespace_handler(token->str);
 	argv = prepare_argv(current, &argc);
 	if (!argv)
 		return ;
-
 	m->exitcode = 0;
 	if (is_builtin(command))
 		execute_builtin(m, command, argv, argc);

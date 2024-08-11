@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   old_funcitons.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 11:05:17 by chorst            #+#    #+#             */
-/*   Updated: 2024/08/05 16:56:35 by chorst           ###   ########.fr       */
+/*   Updated: 2024/08/11 14:15:45 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -152,8 +152,8 @@
 // 		token = (t_token *)seq->content;
 // 		if (token->token == REDIRECTION)
 // 		{
-// 			if (!ft_strcmp(token->detail.redirection.rdrctype, "truncate")
-// 				|| !ft_strcmp(token->detail.redirection.rdrctype, "append"))
+// 			if (!ft_strcmp(token->detail.redirection.rdrcmeta, "truncate")
+// 				|| !ft_strcmp(token->detail.redirection.rdrcmeta, "append"))
 // 			{
 // 				if (seq->next == NULL)
 // 					break ;
@@ -190,7 +190,7 @@
 // 					fprintf(stderr, "No file name specified for redirection\n");
 // 					return (-1);
 // 				}
-// 				if (ft_strcmp(token->detail.redirection.rdrctype, "truncate"))
+// 				if (ft_strcmp(token->detail.redirection.rdrcmeta, "truncate"))
 // 					fd = open(file_name, (O_WRONLY | O_CREAT | O_TRUNC), 0644);
 // 				else
 // 					fd = open(file_name, (O_WRONLY | O_CREAT | O_APPEND), 0644);
@@ -211,7 +211,7 @@
 // 				free(file_name);
 // 				file_name = NULL;
 // 			}
-// 			else if (!ft_strcmp(token->detail.redirection.rdrctype, "redirection"))
+// 			else if (!ft_strcmp(token->detail.redirection.rdrcmeta, "redirection"))
 // 			{
 // 				seq = seq->next;
 // 				if (seq != NULL)
@@ -239,7 +239,7 @@
 // 					close(fd);
 // 				}
 // 			}
-// 			else if (ft_strcmp(token->detail.redirection.rdrctype, "here_doc") == 0)
+// 			else if (ft_strcmp(token->detail.redirection.rdrcmeta, "here_doc") == 0)
 // 			{
 // 				if (pipe(pipe_fd) == -1)
 // 				{
