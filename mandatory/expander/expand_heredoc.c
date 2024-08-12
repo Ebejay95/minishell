@@ -6,7 +6,7 @@
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/12 16:27:57 by chorst            #+#    #+#             */
-/*   Updated: 2024/08/12 16:35:41 by chorst           ###   ########.fr       */
+/*   Updated: 2024/08/12 16:48:54 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,11 +80,15 @@ char	*expand_hd(t_minishell *m, char *str)
 			i++;
 		}
 		else if (str[i] == '$')
+		{
 			if (!expand_var(m, str, &i, &result))
 				return (NULL);
+		}
 		else if (str[i] != '"')
+		{
 			if (!append_non_special_char(str[i], &result))
 				return (NULL);
+		}
 		i++;
 	}
 	return (result);

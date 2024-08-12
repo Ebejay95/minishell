@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipes.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
+/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 11:08:56 by chorst            #+#    #+#             */
-/*   Updated: 2024/08/11 20:11:32 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/12 16:41:47 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ static t_list	**process_tokens(t_minishell *m, t_list *current, int *count)
 }
 
 // Hauptfunktion
-void	split_by_pipe(t_minishell *m, t_list ***cmd_seq, t_list ***exec_seq)
+void	split_pipes(t_minishell *m, t_list ***cmd_seq, t_list ***exec_seq)
 {
 	int	count;
 

@@ -6,7 +6,7 @@
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:18:56 by jeberle           #+#    #+#             */
-/*   Updated: 2024/08/12 16:33:19 by chorst           ###   ########.fr       */
+/*   Updated: 2024/08/12 16:48:02 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -249,6 +249,23 @@ char		*expand_var(t_minishell *m, char *str, size_t *i, char **result);
 char		*append_non_special_char(char c, char **result);
 char		*expand_hd(t_minishell *m, char *str);
 
+// #############################################################################
+// #                               Handler                                     #
+// #############################################################################
+
+// handle_heredoc.c
+void		handle_heredoc(t_minishell *m, t_list *current);
+
+// handle_infile.c
+void		handle_infile(t_list *current);
+
+// handle_trunc_append.c
+void		handle_trunc_append(t_list *current);
+
+// #############################################################################
+// #                                Lexer                                      #
+// #############################################################################
+
 
 // #############################################################################
 // #                          Mandatory Functions                              #
@@ -283,7 +300,7 @@ int			main(int argc, char **argv, char **envp);
 void		parse(t_minishell *m);
 
 // pipes.c
-void split_by_pipe(t_minishell *m, t_list ***cmd_seq, t_list ***exec_seq);
+void		split_pipes(t_minishell *m, t_list ***cmd_seq, t_list ***exec_seq);
 
 // putters.c
 
