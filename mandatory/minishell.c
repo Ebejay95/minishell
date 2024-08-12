@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
+/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:01:33 by jeberle           #+#    #+#             */
-/*   Updated: 2024/08/11 18:41:57 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/12 16:22:35 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ int	is_only_whitespace(const char *str)
 			return (0);
 		str++;
 	}
-	return 1;
+	return (1);
 }
 
 // Function that handles the input from the user or the script
@@ -85,7 +85,8 @@ static int	handle_input(t_minishell *minishell)
 		{
 			execute(minishell);
 		}
-		if (minishell->modus && *minishell->prompt && !is_only_whitespace(minishell->prompt))
+		if (minishell->modus && *minishell->prompt
+			&& !is_only_whitespace(minishell->prompt))
 			add_history(minishell->prompt);
 	}
 	return (0);

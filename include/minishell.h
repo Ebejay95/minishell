@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
+/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:18:56 by jeberle           #+#    #+#             */
-/*   Updated: 2024/08/11 22:27:11 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/12 16:33:19 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@
 # define RDRCSET "><0123456789"
 
 // mode
-# define DEBUG 1
+# define DEBUG 0
 # define DEBUG_LOG "/tmp/minishell_debug.log"
 
 // #############################################################################
@@ -226,9 +226,9 @@ void		execute(t_minishell *m);
 
 // expand_token.c
 void		expand_token(t_minishell *m, t_token *token);
-void	prompt_to_token(char *prompt, t_list **tok_lst);
-void	afterbreakup(t_list **tok_lst);
-void	expand_toklst(t_minishell *m, t_list **tok_lst);
+void		prompt_to_token(char *prompt, t_list **tok_lst);
+void		afterbreakup(t_list **tok_lst);
+void		expand_toklst(t_minishell *m, t_list **tok_lst);
 
 // expander.c
 void		expand(t_minishell *m, char **expanded, char **expanded_map, const char *str, char *expmap, size_t start, size_t end);
@@ -238,6 +238,17 @@ void		ft_strfillcat(char *dest, const char *src, char fill_char);
 void		ft_strfillncat(char *dest, const char *src, size_t n, char fill_char);
 char		*get_var_name_exp(const char *str, const char *expmap, size_t *pos);
 char		*get_var_name(const char *str, size_t *pos);
+
+// expand_helper2.c
+int			append_str(char **dst, const char *src);
+int			append_char(char **dst, char c);
+
+// expand_heredoc.c
+char		*expand_exit_status(t_minishell *m, char **result);
+char		*expand_var(t_minishell *m, char *str, size_t *i, char **result);
+char		*append_non_special_char(char c, char **result);
+char		*expand_hd(t_minishell *m, char *str);
+
 
 // #############################################################################
 // #                          Mandatory Functions                              #

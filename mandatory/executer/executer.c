@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executer.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
+/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/31 17:01:26 by jeberle           #+#    #+#             */
-/*   Updated: 2024/08/11 22:31:18 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/12 16:38:12 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 void	reset_sequences(t_minishell *m)
 {
 	int	i;
+
 	ft_printf("reset_sequences %i\n", m->exitcode);
 	if (m->exec_seqs)
 	{
@@ -30,44 +31,57 @@ void	reset_sequences(t_minishell *m)
 	ft_lstclear(&(m->exec_lst), free_token);
 }
 
+char	*find_executable_in_paths(char **paths, int pathcount, char *command)
+{
+	int		i;
+	char	*joined;
+	char	*full_path;
+
+	i = 0;
+	while (i < pathcount)
+	{
+		full_path = ft_strjoin(paths[i], "/");
+		if (full_path == NULL)
+			return (NULL);
+		joined = ft_strjoin(full_path, command);
+		free(full_path);
+		if (joined == NULL)
+			return (NULL);
+		if (access(joined, X_OK) == 0)
+			return (joined);
+		free(joined);
+		i++;
+	}
+	return (NULL);
+}
+
 char	*get_executable(t_minishell *m, char *command)
 {
 	char	*pathline;
-	char	*joined;
 	char	**paths;
 	int		pathcount;
-	int		i;
+	char	*result;
 
+	if (ft_strchr(command, '/') && access(command, F_OK) == 0)
+		return (ft_strdup(command));
 	pathline = my_getenv("PATH", m->env_list);
 	if (pathline != NULL)
 	{
 		pathcount = ft_count_words(pathline, ':');
 		paths = ft_split(pathline, ':');
-		i = 0;
-		while (i < pathcount)
-		{
-			joined = ft_strjoin(ft_strjoin(paths[i++], "/"), command);
-			if (joined == NULL)
-				break ;
-			if (access(joined, X_OK) == 0)
-				return (ft_array_l_free(paths, pathcount), joined);
-			free(joined);
-		}
+		if (paths == NULL)
+			return (NULL);
+		result = find_executable_in_paths(paths, pathcount, command);
 		ft_array_l_free(paths, pathcount);
+		return (result);
 	}
 	return (NULL);
 }
 
-//signal(SIGINT, handle_child_process);
-//signal(SIGQUIT, handle_child_process);
-//signal(SIGINT, handle_main_process);
-//signal(SIGQUIT, handle_main_process);
 void	execute_command(t_minishell *m, char *executable, char **argv)
 {
 	if (is_builtin(executable))
-	{
 		execute_builtin(m, executable, argv, ft_array_length(argv));
-	}
 	else
 	{
 		execve(executable, argv, own_env(m->env_list));
@@ -75,97 +89,6 @@ void	execute_command(t_minishell *m, char *executable, char **argv)
 		free(executable);
 		exit(EXIT_FAILURE);
 	}
-}
-
-static int	append_str(char **dst, const char *src)
-{
-	char	*temp;
-
-	temp = ft_realloc(*dst, ft_strlen(*dst) + ft_strlen(src) + 1);
-	if (!temp)
-		return (0);
-	*dst = temp;
-	ft_strcat(*dst, src);
-	return (1);
-}
-
-static int	append_char(char **dst, char c)
-{
-	char	*temp;
-	size_t	len;
-
-	temp = ft_realloc(*dst, ft_strlen(*dst) + 2);
-	if (!temp)
-		return (0);
-	*dst = temp;
-	len = ft_strlen(*dst);
-	(*dst)[len] = c;
-	(*dst)[len + 1] = '\0';
-	return (1);
-}
-
-// here the content of a heredoc is expanded in a different way than the tokenizer expands
-// this way is sufficient for heredocs and less complicated
-char	*expand_hd(t_minishell *m, char *str)
-{
-	char	*result;
-	char	*var_name;
-	char	*var_value;
-	size_t	i;
-	char	*exit_status_str;
-
-	result = ft_strdup("");
-	if (!result)
-		return (NULL);
-	i = 0;
-	while (str[i])
-	{
-		if (str[i] == '$' && str[i + 1] == '?')
-		{
-			exit_status_str = ft_itoa(m->last_exitcode);
-			if (!exit_status_str || !append_str(&result, exit_status_str))
-			{
-				free(exit_status_str);
-				free(result);
-				return (NULL);
-			}
-			free(exit_status_str);
-			i++;
-		}
-		else if (str[i] == '$')
-		{
-			var_name = get_var_name(str, &i);
-			if (var_name)
-			{
-				var_value = my_getenv(var_name, m->env_list);
-				if (var_value && !append_str(&result, var_value))
-				{
-					free(var_name);
-					free(result);
-					return (NULL);
-				}
-				free(var_name);
-			}
-			else
-			{
-				if (!append_char(&result, '$'))
-				{
-					free(result);
-					return (NULL);
-				}
-			}
-		}
-		else if (str[i] != '"')
-		{
-			if (!append_char(&result, str[i]))
-			{
-				free(result);
-				return (NULL);
-			}
-		}
-		i++;
-	}
-	return (result);
 }
 
 void	handle_heredoc(t_minishell *m, t_list *current)
@@ -235,7 +158,7 @@ void	handle_infile(t_list *current)
 	int		fd;
 	size_t	line_len;
 
-	line_len = ft_strlen(line);
+	// line_len = ft_strlen(line); // DAS HIER HAT FUER DEN SEGFAULT GESORGT
 	token = (t_token *)current->content;
 	total_size = 0;
 	filecontent = NULL;
@@ -268,7 +191,7 @@ void	handle_infile(t_list *current)
 		line = get_next_line(fd);
 	}
 	close(fd);
-	token->detail.rdrc.rdrcmeta = filecontent;
+	token->detail.rdrc.rdrcmeta = filename;
 }
 
 void	handle_trunc_append(t_list *current)
@@ -420,6 +343,7 @@ void	run_seg(t_minishell *m, t_list *exec_lst, int input_fd, int output_fd)
 			{
 				if (last_input_fd != input_fd)
 					close(last_input_fd);
+				// printf("token->detail.rdrc.rdrcmeta: %s\n", token->detail.rdrc.rdrcmeta);
 				last_input_fd = open(token->detail.rdrc.rdrcmeta, O_RDONLY);
 				if (last_input_fd == -1)
 				{
@@ -467,9 +391,13 @@ void	run_seg(t_minishell *m, t_list *exec_lst, int input_fd, int output_fd)
 		}
 		else
 		{
+			signal(SIGINT, SIG_IGN);
+			signal(SIGQUIT, SIG_IGN);
 			pid = fork();
 			if (pid == 0)
 			{
+				signal(SIGINT, handle_child_process);
+				signal(SIGQUIT, handle_child_process);
 				if (last_input_fd != input_fd)
 				{
 					dup2(last_input_fd, STDIN_FILENO);
@@ -490,12 +418,12 @@ void	run_seg(t_minishell *m, t_list *exec_lst, int input_fd, int output_fd)
 				exit(1);
 			}
 			else if (pid < 0)
-			{
 				ft_fprintf(2, "Fork failed\n");
-			}
 			else
 			{
 				waitpid(pid, &status, 0);
+				signal(SIGINT, handle_main_process);
+				signal(SIGQUIT, handle_main_process);
 				if (WIFEXITED(status))
 					m->exitcode = WEXITSTATUS(status);
 				else if (WIFSIGNALED(status))
@@ -550,9 +478,14 @@ void	execute(t_minishell *m)
 			{
 				pipe_fd[1] = STDOUT_FILENO;
 			}
+			signal(SIGINT, SIG_IGN);
+			signal(SIGQUIT, SIG_IGN);
 			pids[i] = fork();
+			printf("pids[%i] = %i\n", i, pids[i]);
 			if (pids[i] == 0)
 			{
+				signal(SIGINT, handle_child_process);
+				signal(SIGQUIT, handle_child_process);
 				if (i > 0)
 				{
 					dup2(prev_pipe_read, STDIN_FILENO);
@@ -585,6 +518,8 @@ void	execute(t_minishell *m)
 		while (j < i)
 		{
 			waitpid(pids[j], &status, 0);
+			signal(SIGINT, handle_main_process);
+			signal(SIGQUIT, handle_main_process);
 			if (WIFEXITED(status))
 				m->exitcode = WEXITSTATUS(status);
 			else if (WIFSIGNALED(status))
@@ -602,4 +537,3 @@ void	execute(t_minishell *m)
 	}
 	reset_sequences(m);
 }
-

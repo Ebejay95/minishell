@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
+/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/21 13:23:03 by jeberle           #+#    #+#             */
-/*   Updated: 2024/08/11 21:42:36 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/12 16:21:35 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,11 +16,18 @@ int	expmapcheck(char *expmap, const char *str, int i, int escaped)
 {
 	if (expmap[i + 1] != '\0' && str[i + 1] != '\0' && !escaped)
 	{
-		if (expmap[i] == '0' && expmap[i + 1] == '2' && str[i + 1] == '\"')
+		if (expmap[i] == '0'
+			&& expmap[i + 1] == '2'
+			&& str[i + 1] == '\"')
 			return (2);
-		if (expmap[i + 2] != '\0' && str[i + 2] != '\0' && expmap[i + 1] == '0' && expmap[i + 2] == '2' && str[i + 1] == '\"')
+		if (expmap[i + 2] != '\0'
+			&& str[i + 2] != '\0'
+			&& expmap[i + 1] == '0'
+			&& expmap[i + 2] == '2'
+			&& str[i + 1] == '\"')
 			return (2);
-		else if ((expmap[i] == '0' || expmap[i] == '2') && expmap[i] == expmap[i + 1])
+		else if ((expmap[i] == '0' || expmap[i] == '2')
+			&& expmap[i] == expmap[i + 1])
 			return (1);
 	}
 	return (0);
@@ -119,9 +126,7 @@ void	expand(t_minishell *m, char **expanded, char **expanded_map, const char *st
 			i += 2;
 		}
 		else if (str[i] == '$' && expmapcheck(expmap, str, i, escaped) == 2)
-		{
 			i += 2;
-		}
 		else if (str[i] == '$' && expmapcheck(expmap, str, i, escaped) == 1)
 		{
 			var_start = i;

@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+         #
+#    By: chorst <chorst@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/25 22:43:08 by jonathanebe       #+#    #+#              #
-#    Updated: 2024/08/11 20:37:33 by jeberle          ###   ########.fr        #
+#    Updated: 2024/08/12 16:32:40 by chorst           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -98,6 +98,8 @@ SRCS=	mandatory/ast.c \
 		mandatory/expander/expand_token.c \
 		mandatory/expander/expand.c \
 		mandatory/expander/expand_helper.c \
+		mandatory/expander/expand_helper2.c \
+		mandatory/expander/expand_heredoc.c \
 		mandatory/lexer/lexer.c \
 		mandatory/hierarchy_validation.c \
 		mandatory/init_envlst.c \

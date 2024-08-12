@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   old_funcitons.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
+/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 11:05:17 by chorst            #+#    #+#             */
-/*   Updated: 2024/08/11 14:15:45 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/12 16:34:28 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -263,4 +263,68 @@
 // 		}
 // 	}
 // 	return (0);
+// }
+
+// here the content of a heredoc is expanded in a different way than the tokenizer expands
+// this way is sufficient for heredocs and less complicated
+// char	*expand_hd(t_minishell *m, char *str)
+// {
+// 	char	*result;
+// 	char	*var_name;
+// 	char	*var_value;
+// 	size_t	i;
+// 	char	*exit_status_str;
+
+// 	result = ft_strdup("");
+// 	if (!result)
+// 		return (NULL);
+// 	i = 0;
+// 	while (str[i])
+// 	{
+// 		if (str[i] == '$' && str[i + 1] == '?')
+// 		{
+// 			exit_status_str = ft_itoa(m->last_exitcode);
+// 			if (!exit_status_str || !append_str(&result, exit_status_str))
+// 			{
+// 				free(exit_status_str);
+// 				free(result);
+// 				return (NULL);
+// 			}
+// 			free(exit_status_str);
+// 			i++;
+// 		}
+// 		else if (str[i] == '$')
+// 		{
+// 			var_name = get_var_name(str, &i);
+// 			if (var_name)
+// 			{
+// 				var_value = my_getenv(var_name, m->env_list);
+// 				if (var_value && !append_str(&result, var_value))
+// 				{
+// 					free(var_name);
+// 					free(result);
+// 					return (NULL);
+// 				}
+// 				free(var_name);
+// 			}
+// 			else
+// 			{
+// 				if (!append_char(&result, '$'))
+// 				{
+// 					free(result);
+// 					return (NULL);
+// 				}
+// 			}
+// 		}
+// 		else if (str[i] != '"')
+// 		{
+// 			if (!append_char(&result, str[i]))
+// 			{
+// 				free(result);
+// 				return (NULL);
+// 			}
+// 		}
+// 		i++;
+// 	}
+// 	return (result);
 // }
