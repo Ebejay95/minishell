@@ -41,11 +41,9 @@ static void	check_pipes(t_minishell *m)
 	t_list	*cur;
 	t_token	*cont;
 	char	*end;
-	char	*last_str;
 	char	*ltype;
 
 	end = NULL;
-	last_str = NULL;
 	ltype = NULL;
 	cur = m->tok_lst;
 	while (cur != NULL)
@@ -58,7 +56,6 @@ static void	check_pipes(t_minishell *m)
 		else if (check_three(m, cur->next, cont->type))
 			pic_err(m, 2, text(1));
 		end = cont->type;
-		last_str = cont->str;
 		ltype = cont->type;
 		cur = cur->next;
 	}

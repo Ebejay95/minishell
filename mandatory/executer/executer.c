@@ -3,20 +3,19 @@
 /*                                                        :::      ::::::::   */
 /*   executer.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/31 17:01:26 by jeberle           #+#    #+#             */
-/*   Updated: 2024/08/12 16:47:32 by chorst           ###   ########.fr       */
+/*   Updated: 2024/08/12 20:19:06 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../../include/minishell.h"
 
-void	reset_sequences(t_minishell *m)
+void reset_sequences(t_minishell *m)
 {
-	int	i;
+	int i;
 
-	ft_printf("reset_sequences %i\n", m->exitcode);
 	if (m->exec_seqs)
 	{
 		i = 0;
@@ -25,10 +24,14 @@ void	reset_sequences(t_minishell *m)
 			ft_lstclear(&(m->exec_seqs[i]), free_token);
 			i++;
 		}
+		free(m->exec_seqs);
 		m->exec_seqs = NULL;
 	}
-	//ft_lstclear(&(m->tok_lst), free_token);
-	ft_lstclear(&(m->exec_lst), free_token);
+	if (m->exec_lst)
+	{
+		ft_lstclear(&(m->exec_lst), NULL);
+		m->exec_lst = NULL;
+	}
 }
 
 char	*find_executable_in_paths(char **paths, int pathcount, char *command)
@@ -98,6 +101,177 @@ int	keep_for_exec(t_token *token)
 	return (0);
 }
 
+void	handle_trunc_append(t_list *current)
+{
+	t_token	*next_content;
+	char	*filename;
+	char	*filecontent;
+	t_token	*token;
+	int		fd;
+	char	*line;
+	char	*temp;
+	size_t	total_size;
+	size_t	line_len;
+
+	filecontent = NULL;
+	token = (t_token *)current->content;
+	next_content = NULL;
+	if (current->next)
+		next_content = (t_token *)current->next->content;
+	filename = next_content->str;
+	if (access(filename, F_OK) != -1)
+	{
+		fd = open(filename, O_RDONLY);
+		if (fd != -1)
+		{
+			total_size = 0;
+			line = get_next_line(fd);
+			while (line != NULL)
+			{
+				line_len = ft_strlen(line);
+				temp = ft_realloc(filecontent, total_size + line_len + 1);
+				if (!temp)
+				{
+					ft_fprintf(2, "Error: Memory allocation failed\n");
+					free(filecontent);
+					free(line);
+					close(fd);
+					return ;
+				}
+				filecontent = temp;
+				ft_strcpy(filecontent + total_size, line);
+				total_size += line_len;
+				line = get_next_line(fd);
+			}
+			close(fd);
+		}
+	}
+	else
+	{
+		filecontent = ft_strdup("");
+		fd = open(filename, O_WRONLY | O_CREAT, 0644);
+		if (fd == -1)
+		{
+			ft_fprintf(2, "Error: Cannot create file '%s'\n", filename);
+			free(filecontent);
+			return ;
+		}
+		close(fd);
+	}
+	token->detail.rdrc.rdrcmeta = filecontent;
+	token->detail.rdrc.rdrctarget = filename;
+}
+
+void    handle_heredoc(t_minishell *m, t_list *current)
+{
+    t_token *next_content;
+    t_token *token;
+    char    *heredoc_content;
+    char    *line;
+    char    *delimiter;
+
+    token = (t_token *)current->content;
+    heredoc_content = ft_strdup("");  // Initialisiere mit leerem String
+    if (!heredoc_content)
+        return;
+
+    next_content = NULL;
+    if (current->next)
+        next_content = (t_token *)current->next->content;
+    delimiter = next_content ? next_content->str : "";
+
+    while (1)
+    {
+        line = readline("📄 ");
+        if (!line || ft_strcmp(line, delimiter) == 0)
+        {
+            free(line);
+            break;
+        }
+
+        char *temp = ft_strjoin(heredoc_content, line);
+        if (!temp)
+        {
+            free(line);
+            free(heredoc_content);
+            return;  // Fehlerbehandlung hinzufügen
+        }
+        free(heredoc_content);
+        heredoc_content = temp;
+
+        temp = ft_strjoin(heredoc_content, "\n");
+        if (!temp)
+        {
+            free(line);
+            free(heredoc_content);
+            return;  // Fehlerbehandlung hinzufügen
+        }
+        free(heredoc_content);
+        heredoc_content = temp;
+
+        free(line);
+    }
+
+    if (next_content && !next_content->had_quote)
+    {
+        char *expanded = expand_hd(m, heredoc_content);
+        if (expanded)
+        {
+            free(heredoc_content);
+            heredoc_content = expanded;
+        }
+    }
+
+    token->detail.rdrc.rdrcmeta = heredoc_content;
+}
+
+void	handle_infile(t_list *current)
+{
+	t_token	*next_content;
+	char	*filename;
+	char	*line;
+	char	*temp;
+	size_t	total_size;
+	char	*filecontent;
+	t_token	*token;
+	int		fd;
+	size_t	line_len;
+
+	token = (t_token *)current->content;
+	total_size = 0;
+	filecontent = NULL;
+	next_content = NULL;
+	if (current->next)
+		next_content = (t_token *)current->next->content;
+	filename = next_content->str;
+	fd = open(filename, O_RDONLY);
+	if (fd == -1)
+	{
+		ft_fprintf(2, "Error: Cannot open file '%s'\n", filename);
+		return ;
+	}
+	line = get_next_line(fd);
+	while (line != NULL)
+	{
+		line_len = ft_strlen(line);
+		temp = ft_realloc(filecontent, total_size + line_len + 1);
+		if (!temp)
+		{
+			ft_fprintf(2, "Error: Memory allocation failed\n");
+			free(filecontent);
+			free(line);
+			close(fd);
+			return ;
+		}
+		filecontent = temp;
+		ft_strcpy(filecontent + total_size, line);
+		total_size += line_len;
+		line = get_next_line(fd);
+	}
+	close(fd);
+	token->detail.rdrc.rdrcmeta = filename;
+}
+
 void	prexecute(t_minishell *m, t_list **tok_lst, t_list **exec_lst)
 {
 	t_list	*current;
@@ -147,7 +321,7 @@ void	prexecute(t_minishell *m, t_list **tok_lst, t_list **exec_lst)
 	}
 	if (DEBUG == 1)
 	{
-		ft_printf(R"FOR EXECUTE:\n"D);
+		ft_printf("FOR EXECUTE:\n");
 		ft_lstput(exec_lst, put_token, '\n');
 	}
 }
@@ -164,6 +338,7 @@ void	run_seg(t_minishell *m, t_list *exec_lst, int input_fd, int output_fd)
 	int		status;
 	pid_t	pid;
 	int		flags;
+	int		heredoc_pipe[2];
 
 	args = NULL;
 	last_input_fd = input_fd;
@@ -175,11 +350,23 @@ void	run_seg(t_minishell *m, t_list *exec_lst, int input_fd, int output_fd)
 		token = (t_token *)current->content;
 		if (token->token == REDIRECTION)
 		{
-			if (ft_strcmp(token->str, "<") == 0 || ft_strcmp(token->str, "<<") == 0)
+			if (ft_strcmp(token->str, "<<") == 0)
+			{
+				if (last_input_fd != input_fd)
+					 close(last_input_fd);
+				if (pipe(heredoc_pipe) == -1)
+				{
+					ft_fprintf(2, "Error creating pipe for heredoc\n");
+					return ;
+				}
+				write(heredoc_pipe[1], token->detail.rdrc.rdrcmeta, ft_strlen(token->detail.rdrc.rdrcmeta));
+				close(heredoc_pipe[1]);
+				last_input_fd = heredoc_pipe[0];
+			}
+			else if (ft_strcmp(token->str, "<") == 0)
 			{
 				if (last_input_fd != input_fd)
 					close(last_input_fd);
-				// printf("token->detail.rdrc.rdrcmeta: %s\n", token->detail.rdrc.rdrcmeta);
 				last_input_fd = open(token->detail.rdrc.rdrcmeta, O_RDONLY);
 				if (last_input_fd == -1)
 				{
@@ -216,14 +403,13 @@ void	run_seg(t_minishell *m, t_list *exec_lst, int input_fd, int output_fd)
 	{
 		if (is_builtin(args[0]))
 		{
-			// Handle builtins in the parent process
 			if (last_input_fd != input_fd)
 				dup2(last_input_fd, STDIN_FILENO);
 			if (last_output_fd != output_fd)
 				dup2(last_output_fd, STDOUT_FILENO);
 			execute_builtin(m, args[0], args, arg_count);
 			if (ft_strcmp(args[0], "exit") == 0)
-				exit(m->exitcode); // Exit the shell if the command was 'exit'
+				exit(m->exitcode);
 		}
 		else
 		{
@@ -250,7 +436,7 @@ void	run_seg(t_minishell *m, t_list *exec_lst, int input_fd, int output_fd)
 					execute_command(m, path, args);
 					free(path);
 				}
-				ft_fprintf(2, "Command not found: %s\n", args[0]);
+				ft_fprintf(2, "bash: %s: command not found\n", args[0]);
 				exit(1);
 			}
 			else if (pid < 0)
@@ -271,7 +457,7 @@ void	run_seg(t_minishell *m, t_list *exec_lst, int input_fd, int output_fd)
 		close(last_input_fd);
 	if (last_output_fd != output_fd)
 		close(last_output_fd);
-	free(args);
+	ft_array_l_free(args, arg_count);
 }
 
 void	execute(t_minishell *m)
@@ -317,7 +503,6 @@ void	execute(t_minishell *m)
 			signal(SIGINT, SIG_IGN);
 			signal(SIGQUIT, SIG_IGN);
 			pids[i] = fork();
-			printf("pids[%i] = %i\n", i, pids[i]);
 			if (pids[i] == 0)
 			{
 				signal(SIGINT, handle_child_process);

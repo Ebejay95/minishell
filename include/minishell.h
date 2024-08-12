@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:18:56 by jeberle           #+#    #+#             */
-/*   Updated: 2024/08/12 16:48:02 by chorst           ###   ########.fr       */
+/*   Updated: 2024/08/12 20:06:47 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,9 @@
 # include <unistd.h>
 # include <fcntl.h>
 # include <termios.h>
-#include <sys/stat.h>
+# include <sys/stat.h>
+# include <sys/wait.h>
+
 
 
 // Define Colours
@@ -92,6 +94,7 @@ typedef struct s_token
 	char			*str;
 	char			*expmap;
 	int				had_quote;
+	int				is_freed;
 	union u_detail
 	{
 		struct s_rdct_tokdetail
@@ -201,7 +204,6 @@ void		ft_run_others(t_minishell *m, char *command, char **argv);
 // executer_inits.c
 t_token		*init_pipe_details(t_token *pipetok);
 t_token		*init_redirection_details(t_token *redirectiontoken);
-void		init_check_rdrc(t_list *last, char *last_type, char *last_str);
 void		set_rdrcmeta(t_list *last, t_list *current, t_token *cur_content);
 void		pre_exec_prep(t_minishell *m);
 

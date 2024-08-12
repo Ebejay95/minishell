@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/23 13:04:21 by chorst            #+#    #+#             */
-/*   Updated: 2024/08/08 02:05:40 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/12 19:45:19 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 // Cleanup the minishell struct
 void	cleanup_minishell(t_minishell *minishell)
 {
+	ft_printf("free_tcleanup_minishelloken\n");
 	if (minishell->prompt)
 		free(minishell->prompt);
 	minishell->prompt = NULL;

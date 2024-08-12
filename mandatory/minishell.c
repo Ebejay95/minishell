@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:01:33 by jeberle           #+#    #+#             */
-/*   Updated: 2024/08/12 16:22:35 by chorst           ###   ########.fr       */
+/*   Updated: 2024/08/12 20:16:48 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,8 +46,10 @@ static void	non_interactive_mode(t_minishell *minishell)
 	input = NULL;
 	temp = get_next_line(STDIN_FILENO);
 	if (temp)
+	{
 		input = remove_chars(temp, "\n");
-	free(temp);
+		free(temp);
+	}
 	minishell->prompt = input;
 	return ;
 }
@@ -56,7 +58,7 @@ int	is_only_whitespace(const char *str)
 {
 	while (*str)
 	{
-		if (!isspace((unsigned char)*str))
+		if (!ft_isspace((unsigned char)*str))
 			return (0);
 		str++;
 	}

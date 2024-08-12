@@ -20,7 +20,7 @@ void	ft_error_exit(const char *message)
 
 void	pic_err(t_minishell *m, int code, char *mes)
 {
-	ft_fprintf(2, R"%s\n"D, mes);
+	ft_fprintf(2, "%s\n", mes);
 	m->leave = 1;
 	m->exitcode = code;
 }

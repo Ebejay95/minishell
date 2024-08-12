@@ -44,6 +44,7 @@ void	extract_name_value(char *arg, char **name, char **value)
 {
 	char	*equal_sign;
 	char	*plus_sign;
+	char	*trimmed_value;
 
 	plus_sign = ft_strchr(arg, '+');
 	equal_sign = ft_strchr(arg, '=');
@@ -53,8 +54,9 @@ void	extract_name_value(char *arg, char **name, char **value)
 			*name = ft_strndup(arg, plus_sign - arg);
 		else
 			*name = ft_strndup(arg, equal_sign - arg);
-		*value = equal_sign + 1;
-		*value = ft_strtrim(*value, "\"");
+		trimmed_value = ft_strtrim(equal_sign + 1, "\"");
+		*value = ft_strdup(trimmed_value);
+		free(trimmed_value);
 	}
 	else
 	{

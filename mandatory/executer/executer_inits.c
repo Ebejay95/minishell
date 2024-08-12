@@ -24,13 +24,6 @@ t_token	*init_redirection_details(t_token *redirectiontoken)
 	return (redirectiontoken);
 }
 
-void	init_check_rdrc(t_list *last, char *last_type, char *last_str)
-{
-	last = NULL;
-	last_type = NULL;
-	last_str = NULL;
-}
-
 void	set_rdrcmeta(t_list *last, t_list *current, t_token *token)
 {
 	check_semantics(last, current);

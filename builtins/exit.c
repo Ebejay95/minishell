@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 15:12:06 by chorst            #+#    #+#             */
-/*   Updated: 2024/08/11 22:32:44 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/12 19:10:11 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,5 +25,3 @@ void	ft_exit(char **argv, int *exitcode)
 	}
 	exit(*exitcode);
 }
-
-// exit status der letzten funktion oder command returnen.

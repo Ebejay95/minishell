@@ -1,0 +1,9 @@
+1.		Wenn eine subshell in unserer Minishell ausgefuehrt wird  ./minishell < commands.txt)
+		und dann mit ctrl+C manuell das laufenden skript (commands.txt) unterbrochen wird,
+		erscheint ein Doppelprompt, (SCHOENHEITSFEHLER BEHANDELN?)
+
+2.
+
+3.
+
+

@@ -75,7 +75,7 @@ void	detect_lexing_errors(t_minishell *m)
 		pic_err(m, 2, "unclosed quotes");
 }
 
-void	add_token_to_list(t_list **lst, t_token *token)
+void    add_token_to_list(t_list **lst, t_token *token)
 {
 	t_list	*new_element;
 	t_list	*current;
@@ -84,7 +84,10 @@ void	add_token_to_list(t_list **lst, t_token *token)
 	{
 		new_element = ft_lstnew((void *)token);
 		if (!new_element)
+		{
+			free_token(token);
 			return ;
+		}
 		if (*lst == NULL)
 			*lst = new_element;
 		else
@@ -109,16 +112,21 @@ void	prompt_to_token(char *prompt, t_list **tok_lst)
 	char	*expmap;
 	char	*new_token;
 	char	*new_expmap;
+	int		new_size;
 
 	current_pos = 0;
 	quote_level = 0;
 	escape_next = 0;
 	current_token_size = 10;
 	ptr = prompt;
-	current_token = malloc(current_token_size);
-	expmap = malloc(current_token_size);
+	current_token = ft_calloc(current_token_size, sizeof(char));
+	expmap = ft_calloc(current_token_size, sizeof(char));
 	if (!current_token || !expmap)
+	{
+		free(current_token);
+		free(expmap);
 		ft_error_exit("malloc");
+	}
 	while (*ptr)
 	{
 		if (escape_next)
@@ -233,19 +241,28 @@ void	prompt_to_token(char *prompt, t_list **tok_lst)
 		else
 			expmap[current_pos] = '0';
 		current_pos++;
-		if (current_pos >= current_token_size)
+		if (current_pos >= current_token_size - 1)
 		{
-			current_token_size *= 2;
-			new_token = realloc(current_token, current_token_size);
-			new_expmap = realloc(expmap, current_token_size);
+			new_size = current_token_size * 2;
+			new_token = ft_calloc(new_size, sizeof(char));
+			new_expmap = ft_calloc(new_size, sizeof(char));
 			if (!new_token || !new_expmap)
 			{
 				free(current_token);
 				free(expmap);
-				ft_error_exit("realloc");
+				if (new_token)
+					free(new_token);
+				if (new_expmap)
+					free(new_expmap);
+				ft_error_exit("calloc");
 			}
+			ft_memcpy(new_token, current_token, current_token_size);
+			ft_memcpy(new_expmap, expmap, current_token_size);
+			free(current_token);
+			free(expmap);
 			current_token = new_token;
 			expmap = new_expmap;
+			current_token_size = new_size;
 		}
 		ptr++;
 	}
@@ -279,19 +296,24 @@ void expand_toklst(t_minishell *m, t_list **tok_lst)
 	}
 }
 
+//if (DEBUG == 1)
+//{
+//	ft_printf(Y"TOKENLIST:\n"D);
+//	ft_lstput(&(m->tok_lst), put_token, '\n');
+//}
 void	lex_prompt(t_minishell *m)
 {
 	char	*tmpp;
 
 	tmpp = remove_chars(m->prompt, "\n");
 	m->prompt = tmpp;
+	if (tmpp != m->prompt)
+	{
+		free(m->prompt);
+		m->prompt = tmpp;
+	}
 	detect_lexing_errors(m);
 	prompt_to_token(m->prompt, &(m->tok_lst));
 	expand_toklst(m, &(m->tok_lst));
 	afterbreakup(&(m->tok_lst));
-	if (DEBUG == 1)
-	{
-		ft_printf(Y"TOKENLIST:\n"D);
-		ft_lstput(&(m->tok_lst), put_token, '\n');
-	}
 }

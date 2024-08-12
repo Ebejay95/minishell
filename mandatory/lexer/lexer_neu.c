@@ -287,19 +287,19 @@ void	add_token_to_list(t_list **lst, t_token *token)
 	}
 }
 
-void	lex_prompt(t_minishell *minishell)
-{
-	char	*temp;
-
-	temp = remove_chars(minishell->prompt, "\n");
-	minishell->prompt = temp;
-	detect_unclosed_quotes(minishell);
-	prompt_to_token(minishell);
-	expand_toklst(minishell);
-	afterbreakup(minishell);
-	if (DEBUG == 1)
-	{
-		ft_printf(Y"TOKENLIST:\n"D);
-		ft_lstput(&(minishell->tok_lst), put_token, '\n');
-	}
-}
+//void	lex_prompt(t_minishell *minishell)
+//{
+//	char	*temp;
+//
+//	temp = remove_chars(minishell->prompt, "\n");
+//	minishell->prompt = temp;
+//	detect_unclosed_quotes(minishell);
+//	prompt_to_token(minishell);
+//	expand_toklst(minishell);
+//	afterbreakup(minishell);
+//	//if (DEBUG == 1)
+//	//{
+//	//	ft_printf(Y"TOKENLIST:\n"D);
+//	//	ft_lstput(&(minishell->tok_lst), put_token, '\n');
+//	//}
+//}

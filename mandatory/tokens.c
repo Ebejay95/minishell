@@ -12,29 +12,24 @@
 
 #include "./../include/minishell.h"
 
-t_token	*create_token(char *str, char *expmap)
+t_token *create_token(char *str, char *expmap)
 {
-	t_token	*newtok;
+	t_token *newtok;
 
 	if (!str || !*str || !expmap || !*expmap)
 		return (NULL);
-	newtok = (t_token *)malloc(sizeof(t_token));
+	newtok = (t_token *)ft_calloc(1, sizeof(t_token));
 	if (!newtok)
 		return (NULL);
 	newtok->token = WORD;
 	newtok->type = toktype_to_str(WORD);
-	newtok->str = ft_strdup(str);
-	newtok->had_quote = 0;
-	if(ft_strcontains(str, '\"') || ft_strcontains(str, '\''))
-		newtok->had_quote = 1;
-	if (!newtok->str)
+	if (!newtok->type)
 	{
-		free(newtok->type);
 		free(newtok);
 		return (NULL);
 	}
-	newtok->expmap = ft_strdup(expmap);
-	if (!newtok->expmap)
+	newtok->str = ft_strdup(str);
+	if (!newtok->str)
 	{
 		free(newtok->type);
 		free(newtok);
@@ -42,8 +37,16 @@ t_token	*create_token(char *str, char *expmap)
 	}
 	newtok->detail.rdrc.rdrcmeta = NULL;
 	newtok->detail.rdrc.rdrctarget = NULL;
-	newtok->detail.pipe.open_prompt = 0;
-	newtok->detail.minifile.fd = 0;
+	newtok->had_quote = (ft_strchr(str, '\"') || ft_strchr(str, '\''));
+	newtok->expmap = ft_strdup(expmap);
+	newtok->is_freed = 0;
+	if (!newtok->expmap)
+	{
+		free(newtok->type);
+		free(newtok->str);
+		free(newtok);
+		return (NULL);
+	}
 	return (newtok);
 }
 
