@@ -6,13 +6,40 @@
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/12 16:27:57 by chorst            #+#    #+#             */
-/*   Updated: 2024/08/12 16:48:54 by chorst           ###   ########.fr       */
+/*   Updated: 2024/08/13 18:08:28 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../../include/minishell.h"
 
-char	*expand_exit_status(t_minishell *m, char **result)
+static int	append_str(char **dst, const char *src)
+{
+	char	*temp;
+
+	temp = ft_realloc(*dst, ft_strlen(*dst) + ft_strlen(src) + 1);
+	if (!temp)
+		return (0);
+	*dst = temp;
+	ft_strcat(*dst, src);
+	return (1);
+}
+
+static int	append_char(char **dst, char c)
+{
+	char	*temp;
+	size_t	len;
+
+	temp = ft_realloc(*dst, ft_strlen(*dst) + 2);
+	if (!temp)
+		return (0);
+	*dst = temp;
+	len = ft_strlen(*dst);
+	(*dst)[len] = c;
+	(*dst)[len + 1] = '\0';
+	return (1);
+}
+
+static char	*expand_exit_status(t_minishell *m, char **result)
 {
 	char	*exit_status_str;
 
@@ -52,16 +79,6 @@ char	*expand_var(t_minishell *m, char *str, size_t *i, char **result)
 	return (*result);
 }
 
-char	*append_non_special_char(char c, char **result)
-{
-	if (!append_char(result, c))
-	{
-		free(*result);
-		return (NULL);
-	}
-	return (*result);
-}
-
 char	*expand_hd(t_minishell *m, char *str)
 {
 	char	*result;
@@ -79,16 +96,10 @@ char	*expand_hd(t_minishell *m, char *str)
 				return (NULL);
 			i++;
 		}
-		else if (str[i] == '$')
-		{
-			if (!expand_var(m, str, &i, &result))
-				return (NULL);
-		}
-		else if (str[i] != '"')
-		{
-			if (!append_non_special_char(str[i], &result))
-				return (NULL);
-		}
+		else if (str[i] == '$' && !expand_var(m, str, &i, &result))
+			return (NULL);
+		else if (str[i] != '"' && !append_char(&result, str[i]))
+			return (NULL);
 		i++;
 	}
 	return (result);

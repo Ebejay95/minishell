@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
+/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 15:10:58 by chorst            #+#    #+#             */
-/*   Updated: 2024/08/07 11:14:28 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/13 15:38:13 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "./../include/minishell.h"
+#include "./../../include/minishell.h"
 
 // Function to handle 'cd -' case
 void	cd_oldpwd(t_envlst **envp)

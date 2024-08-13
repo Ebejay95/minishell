@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executer_env.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
+/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 15:27:04 by chorst            #+#    #+#             */
-/*   Updated: 2024/08/11 21:43:25 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/13 18:43:16 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,8 @@ char	**own_env(t_envlst *env_lst)
 			{
 				while (k > 0)
 					free(env[--k]);
-				return (free(env), NULL);
+				free(env);
+				return (NULL);
 			}
 			k++;
 		}

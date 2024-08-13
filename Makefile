@@ -6,7 +6,7 @@
 #    By: chorst <chorst@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/25 22:43:08 by jonathanebe       #+#    #+#              #
-#    Updated: 2024/08/12 16:47:48 by chorst           ###   ########.fr        #
+#    Updated: 2024/08/13 16:26:13 by chorst           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -83,7 +83,15 @@ SYSLIBFLAGS=-lreadline
 #--------------                        SRC                        -------------#
 #------------------------------------------------------------------------------#
 
-SRCS=	mandatory/ast.c \
+SRCS=	mandatory/builtins/cd.c \
+		mandatory/builtins/echo.c \
+		mandatory/builtins/env.c \
+		mandatory/builtins/exit.c \
+		mandatory/builtins/export.c \
+		mandatory/builtins/pwd.c \
+		mandatory/builtins/set.c \
+		mandatory/builtins/unset.c \
+		mandatory/builtins/var_helper.c \
 		mandatory/executer/executer_checks.c \
 		mandatory/executer/executer_checks2.c \
 		mandatory/executer/executer_checks3.c \
@@ -91,40 +99,29 @@ SRCS=	mandatory/ast.c \
 		mandatory/executer/executer_command.c \
 		mandatory/executer/executer_env.c \
 		mandatory/executer/executer_helper.c \
+		mandatory/executer/executer_helper2.c \
 		mandatory/executer/executer_inits.c \
-		mandatory/executer/executer_redirections.c \
-		mandatory/executer/executer_utils.c \
 		mandatory/executer/executer.c \
 		mandatory/expander/expand_token.c \
 		mandatory/expander/expand.c \
 		mandatory/expander/expand_helper.c \
-		mandatory/expander/expand_helper2.c \
 		mandatory/expander/expand_heredoc.c \
 		mandatory/handler/handle_heredoc.c \
 		mandatory/handler/handle_infile.c \
 		mandatory/handler/handle_trunc_append.c \
 		mandatory/lexer/lexer.c \
+		mandatory/ast.c \
 		mandatory/hierarchy_validation.c \
 		mandatory/init_envlst.c \
 		mandatory/minishell.c \
 		mandatory/minishell2.c \
 		mandatory/parser.c \
 		mandatory/pipes.c \
-		mandatory/putters.c \
 		mandatory/remove_chars.c \
 		mandatory/whitespace_handler.c \
 		mandatory/signals.c \
 		mandatory/tokens.c \
 		mandatory/tokens2.c \
-		builtins/cd.c \
-		builtins/echo.c \
-		builtins/env.c \
-		builtins/exit.c \
-		builtins/export.c \
-		builtins/pwd.c \
-		builtins/set.c \
-		builtins/unset.c \
-		builtins/var_helper.c \
 
 BONUS_SRCS= \
 # bonus/minishell_bonus.c \

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand_helper.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
+/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 18:06:01 by chorst            #+#    #+#             */
-/*   Updated: 2024/08/11 15:44:22 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/13 16:27:36 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,24 +29,24 @@ void	ft_strfillcat(char *dest, const char *src, char fill_char)
 	dest_end[src_len] = '\0';
 }
 
-void	ft_strfillncat(char *dest, const char *src, size_t n, char fill_char)
-{
-	char	*dest_end;
-	size_t	src_len;
-	size_t	i;
+// void	ft_strfillncat(char *dest, const char *src, size_t n, char fill_char)
+// {
+// 	char	*dest_end;
+// 	size_t	src_len;
+// 	size_t	i;
 
-	dest_end = dest + strlen(dest);
-	src_len = strlen(src);
-	i = 0;
-	if (src_len > n)
-		src_len = n;
-	while (i < src_len)
-	{
-		dest_end[i] = fill_char;
-		i++;
-	}
-	dest_end[src_len] = '\0';
-}
+// 	dest_end = dest + strlen(dest);
+// 	src_len = strlen(src);
+// 	i = 0;
+// 	if (src_len > n)
+// 		src_len = n;
+// 	while (i < src_len)
+// 	{
+// 		dest_end[i] = fill_char;
+// 		i++;
+// 	}
+// 	dest_end[src_len] = '\0';
+// }
 
 char	*get_var_name_exp(const char *str, const char *expmap, size_t *pos)
 {

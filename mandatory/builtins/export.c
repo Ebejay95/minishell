@@ -6,11 +6,11 @@
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 15:11:12 by chorst            #+#    #+#             */
-/*   Updated: 2024/08/05 16:22:08 by chorst           ###   ########.fr       */
+/*   Updated: 2024/08/13 15:23:31 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "./../include/minishell.h"
+#include "./../../include/minishell.h"
 
 // Recreates the expport behavior from bash
 void	ft_export(int argc, char **argv, t_envlst **envp)

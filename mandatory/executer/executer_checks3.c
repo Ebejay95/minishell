@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executer_checks3.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
+/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 14:58:30 by chorst            #+#    #+#             */
-/*   Updated: 2024/08/11 20:43:37 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/13 15:31:13 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 int	check_six(t_minishell *m, char *end, char *conty)
 {
-	if (!m->leave && !ft_strcmp(end, text(7)) && !ft_strcmp(conty, text(7)))
+	if (!m->leave && !ft_strcmp(end, RDRC) && !ft_strcmp(conty, RDRC))
 		return (1);
 	return (0);
 }

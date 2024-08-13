@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand_token.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
+/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 18:09:22 by chorst            #+#    #+#             */
-/*   Updated: 2024/08/07 16:41:40 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/13 19:12:29 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ void	expand_token(t_minishell *m, t_token *token)
 				return ;
 			}
 			result = temp;
-			strncat(result, &token->str[start], i - start);
+			ft_strncat(result, &token->str[start], i - start);
 		}
 		else
 		{

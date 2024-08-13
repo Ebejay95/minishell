@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
+/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/11 11:49:45 by chorst            #+#    #+#             */
-/*   Updated: 2024/08/08 02:04:33 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/13 15:23:20 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "./../include/minishell.h"
+#include "./../../include/minishell.h"
 
 // Echo builtin
 void	ft_echo(char **args)
