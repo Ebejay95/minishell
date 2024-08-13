@@ -96,7 +96,7 @@ int	resize_argv(char ***argv, int *capacity)
 	char	**new_argv;
 
 	*capacity *= 2;
-	new_argv = (char **)realloc(*argv, (*capacity + 1) * sizeof(char *));
+	new_argv = (char **)ft_realloc(*argv, (*capacity + 1) * sizeof(char *));
 	if (!new_argv)
 		return (cleanup(*argv), 0);
 	*argv = new_argv;

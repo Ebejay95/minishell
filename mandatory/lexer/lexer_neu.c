@@ -170,13 +170,13 @@ static void	prompt_to_token(t_minishell *m)
 		if (current_pos >= current_token_size)
 		{
 			current_token_size *= 2;
-			new_token = realloc(current_token, current_token_size);
-			new_expmap = realloc(expmap, current_token_size);
+			new_token = ft_realloc(current_token, current_token_size);
+			new_expmap = ft_realloc(expmap, current_token_size);
 			if (!new_token || !new_expmap)
 			{
 				free(current_token);
 				free(expmap);
-				ft_error_exit("realloc");
+				ft_error_exit("ft_realloc");
 			}
 			current_token = new_token;
 			expmap = new_expmap;

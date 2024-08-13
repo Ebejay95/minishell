@@ -16,7 +16,7 @@ static t_list	**add_seq_to_cmd_seq(t_list **cmd_seq, t_list *seq, int *count)
 {
 	cmd_seq = ft_realloc(cmd_seq, sizeof(t_list *) * (*count + 1));
 	if (cmd_seq == NULL)
-		ft_error_exit("realloc");
+		ft_error_exit("ft_realloc");
 	cmd_seq[(*count)++] = seq;
 	return (cmd_seq);
 }
@@ -55,15 +55,28 @@ static t_list	**process_tokens(t_minishell *m, t_list *current, int *count)
 void	split_pipes(t_minishell *m, t_list ***cmd_seq, t_list ***exec_seq)
 {
 	int	count;
+	t_list	**new_cmd_seq;
+	t_list	**new_exec_seq;
 
 	count = 0;
 	*cmd_seq = process_tokens(m, m->tok_lst, &count);
-	*cmd_seq = ft_realloc(*cmd_seq, sizeof(t_list *) * (count + 1));
-	if (*cmd_seq == NULL)
-		ft_error_exit("realloc");
-	*exec_seq = ft_realloc(*exec_seq, sizeof(t_list *) * (count + 1));
-	if (*exec_seq == NULL)
-		ft_error_exit("realloc");
-	(*cmd_seq)[count] = NULL;
-	(*exec_seq)[count] = NULL;
+	new_cmd_seq = ft_calloc(count + 1, sizeof(t_list *));
+	if (new_cmd_seq == NULL)
+		ft_error_exit("ft_calloc");
+	ft_memcpy(new_cmd_seq, *cmd_seq, count * sizeof(t_list *));
+	free(*cmd_seq);
+	*cmd_seq = new_cmd_seq;
+	new_exec_seq = ft_calloc(count + 1, sizeof(t_list *));
+	if (new_exec_seq == NULL)
+	{
+		free(*cmd_seq);
+		ft_error_exit("ft_calloc");
+	}
+	if (*exec_seq != NULL)
+	{
+		ft_memcpy(new_exec_seq, *exec_seq, count * sizeof(t_list *));
+		free(*exec_seq);
+	}
+	*exec_seq = new_exec_seq;
+	m->pipes = count - 1;  // Setze die Anzahl der Pipes
 }

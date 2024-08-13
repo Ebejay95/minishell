@@ -46,7 +46,7 @@ void	expand_token(t_minishell *m, t_token *token)
 			start = i;
 			while (i < len && token->expmap[i] == '1')
 				i++;
-			temp = realloc(result, strlen(result) + (i - start) + 1);
+			temp = ft_realloc(result, strlen(result) + (i - start) + 1);
 			if (!temp)
 			{
 				free(result);

@@ -76,6 +76,8 @@ static int	handle_input(t_minishell *minishell)
 		return (1);
 	minishell->tok_lst = NULL;
 	minishell->exec_lst = NULL;
+	minishell->cmd_seqs = NULL;
+	minishell->exec_seqs = NULL;
 	minishell->ast = ft_btreenew(NULL);
 	if (minishell->prompt)
 	{

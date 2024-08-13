@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 11:30:06 by jeberle           #+#    #+#             */
-/*   Updated: 2024/08/11 15:02:17 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/13 18:49:09 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -280,8 +280,8 @@ void	prompt_to_token(char *prompt, t_list **tok_lst)
 
 //free(cur_content->expmap);
 //cur_content->expmap = NULL;
-//ft_printf(R"%s\n"D, cur_content->str);
-//ft_printf(G"%s\n"D, cur_content->expmap);
+// ft_printf(R"%s\n"D, cur_content->str);
+// ft_printf(G"%s\n"D, cur_content->expmap);
 void expand_toklst(t_minishell *m, t_list **tok_lst)
 {
 	t_list	*current;
