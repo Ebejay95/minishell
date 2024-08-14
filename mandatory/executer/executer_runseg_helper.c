@@ -6,7 +6,7 @@
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/14 14:31:50 by chorst            #+#    #+#             */
-/*   Updated: 2024/08/14 14:35:43 by chorst           ###   ########.fr       */
+/*   Updated: 2024/08/14 14:45:30 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ void	execute_external_command(t_minishell *m, char **args, t_fd *fd)
 		run_parent_process(m, pid);
 }
 
-void	process_tokens(t_list *exec_lst, t_fd *fd, char ***args, int *arg_count)
+void	process_tok(t_list *exec_lst, t_fd *fd, char ***args, int *arg_count)
 {
 	t_list	*current;
 	t_token	*token;

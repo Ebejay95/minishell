@@ -3,66 +3,40 @@
 /*                                                        :::      ::::::::   */
 /*   handle_trunc_append.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
+/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/12 16:47:13 by chorst            #+#    #+#             */
-/*   Updated: 2024/08/14 11:55:16 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/14 15:52:38 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../../include/minishell.h"
 
-t_token	*get_next_content(t_list *current)
-{
-	if (current->next)
-		return (t_token *)current->next->content;
-	return NULL;
-}
-
-void	handle_allocation_error(char *filecontent, char *line)
-{
-	ft_fprintf(2, "Error: Memory allocation failed\n");
-	free(filecontent);
-	free(line);
-}
-
-char	*append_line_to_content(char *filecontent, char *temp, const char *line, size_t total_size)
-{
-	if (filecontent)
-	{
-		ft_strlcpy(temp, filecontent, total_size + 1);
-		free(filecontent);
-	}
-	ft_strlcpy(temp + total_size, line, ft_strlen(line) + 1);
-	return temp;
-}
-
 char	*read_file_content(int fd)
 {
-	char	*filecontent;
-	char	*line;
-	char	*temp;
+	t_temps	t;
 	size_t	total_size;
 	size_t	line_len;
 
-	filecontent = NULL;
+	t.filecontent = NULL;
 	total_size = 0;
-
-	while ((line = get_next_line(fd)) != NULL)
+	while (1)
 	{
-		line_len = ft_strlen(line);
-		temp = ft_calloc(total_size + line_len + 1, sizeof(char));
-		if (!temp)
-		{
-			handle_allocation_error(filecontent, line);
-			return NULL;
-		}
-		filecontent = append_line_to_content(filecontent, temp, line, total_size);
+		t.line = get_next_line(fd);
+		if (t.line == NULL)
+			break ;
+		line_len = ft_strlen(t.line);
+		t.temp = ft_calloc(total_size + line_len + 1, sizeof(char));
+		if (!t.temp)
+			return (handle_allocation_error(t.filecontent, t.line), NULL);
+		t.filecontent = add_line(t.filecontent, t.temp, t.line, total_size);
 		total_size += line_len;
-		free(line);
+		free(t.line);
 	}
-
-	return filecontent ? filecontent : ft_strdup("");
+	if (t.filecontent)
+		return (t.filecontent);
+	else
+		return (ft_strdup(""));
 }
 
 char	*read_existing_file(const char *filename)
@@ -72,12 +46,10 @@ char	*read_existing_file(const char *filename)
 
 	fd = open(filename, O_RDONLY);
 	if (fd == -1)
-		return ft_strdup("");
-
+		return (ft_strdup(""));
 	filecontent = read_file_content(fd);
 	close(fd);
-
-	return filecontent;
+	return (filecontent);
 }
 
 char	*create_new_file(const char *filename)
@@ -91,11 +63,10 @@ char	*create_new_file(const char *filename)
 	{
 		ft_fprintf(2, "Error: Cannot create file '%s'\n", filename);
 		free(filecontent);
-		return NULL;
+		return (NULL);
 	}
 	close(fd);
-
-	return filecontent;
+	return (filecontent);
 }
 
 void	handle_trunc_append(t_list *current)
@@ -108,16 +79,12 @@ void	handle_trunc_append(t_list *current)
 	token = (t_token *)current->content;
 	next_content = get_next_content(current);
 	filename = next_content->str;
-
 	if (access(filename, F_OK) != -1)
 		filecontent = read_existing_file(filename);
 	else
 		filecontent = create_new_file(filename);
-
 	if (!filecontent)
 		return ;
-
 	token->detail.rdrc.rdrcmeta = filecontent;
 	token->detail.rdrc.rdrctarget = filename;
 }
-

@@ -6,7 +6,7 @@
 #    By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/25 22:43:08 by jonathanebe       #+#    #+#              #
-#    Updated: 2024/08/14 15:32:01 by jeberle          ###   ########.fr        #
+#    Updated: 2024/08/14 15:54:42 by jeberle          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -95,7 +95,6 @@ SRCS=	mandatory/builtins/cd.c \
 		mandatory/executer/executer_checks.c \
 		mandatory/executer/executer_checks2.c \
 		mandatory/executer/executer_checks3.c \
-		mandatory/executer/executer_command_helper.c \
 		mandatory/executer/executer_command.c \
 		mandatory/executer/executer_env.c \
 		mandatory/executer/executer_helper.c \
@@ -115,6 +114,7 @@ SRCS=	mandatory/builtins/cd.c \
 		mandatory/handler/handle_heredoc.c \
 		mandatory/handler/handle_infile.c \
 		mandatory/handler/handle_trunc_append.c \
+		mandatory/handler/handle_trunc_append2.c \
 		mandatory/handler/handle_escape.c \
 		mandatory/handler/handle_escape2.c \
 		mandatory/handler/handle_exit_status.c \
