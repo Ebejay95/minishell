@@ -6,13 +6,13 @@
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 09:08:08 by chorst            #+#    #+#             */
-/*   Updated: 2024/08/14 13:10:58 by chorst           ###   ########.fr       */
+/*   Updated: 2024/08/14 13:37:44 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../../include/minishell.h"
 
-static int	allocate_exit_buffers(char **temp, char **expmap_temp, size_t res_len, size_t exit_len)
+int	alloc_exit_buf(char **temp, char **expmap_temp, size_t res_len, size_t exit_len)
 {
 	*temp = ft_calloc(res_len + exit_len + 1, sizeof(char));
 	*expmap_temp = ft_calloc(res_len + exit_len + 1, sizeof(char));
@@ -24,38 +24,37 @@ static int	allocate_exit_buffers(char **temp, char **expmap_temp, size_t res_len
 	return (1);
 }
 
-static void	copy_and_append_strings(char *dest, const char *src1, const char *src2, size_t len1, size_t len2)
+void	copy_append_str(char *dest, const char *src1, const char *src2, size_t len1, size_t len2)
 {
 	ft_strlcpy(dest, src1, len1 + 1);
 	ft_strlcat(dest, src2, len1 + len2 + 1);
 }
 
-static void	copy_and_append_expmap(char *dest, const char *src, const char *exit_status_str, size_t res_len)
+void	copy_append_expmap(char *dest, const char *src, const char *exit_status_str, size_t res_len)
 {
 	ft_strlcpy(dest, src, res_len + 1);
 	ft_strfillcat(dest, exit_status_str, res_len > 0 ? src[res_len - 1] : 'E');
 }
 
-static int	add_exit_status(char **res, char **expmap_res, const char *exit_status_str)
+int	add_exit_status(char **res, char **expmap_res, const char *exit_status_str)
 {
-	char	*temp;
-	char	*expmap_temp;
+	t_temps	t;
 	size_t	res_len;
 	size_t	exit_len;
 
 	res_len = ft_strlen(*res);
 	exit_len = ft_strlen(exit_status_str);
-	if (!allocate_exit_buffers(&temp, &expmap_temp, res_len, exit_len))
+	if (!alloc_exit_buf(&t.temp, &t.expmap_temp, res_len, exit_len))
 	{
 		exp_cln(res, expmap_res, NULL, NULL);
 		return (0);
 	}
-	copy_and_append_strings(temp, *res, exit_status_str, res_len, exit_len);
-	copy_and_append_expmap(expmap_temp, *expmap_res, exit_status_str, res_len);
+	copy_append_str(t.temp, *res, exit_status_str, res_len, exit_len);
+	copy_append_expmap(t.expmap_temp, *expmap_res, exit_status_str, res_len);
 	free(*res);
 	free(*expmap_res);
-	*res = temp;
-	*expmap_res = expmap_temp;
+	*res = t.temp;
+	*expmap_res = t.expmap_temp;
 	return (1);
 }
 

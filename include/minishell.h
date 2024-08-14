@@ -6,7 +6,7 @@
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:18:56 by jeberle           #+#    #+#             */
-/*   Updated: 2024/08/14 13:11:57 by chorst           ###   ########.fr       */
+/*   Updated: 2024/08/14 13:37:41 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -150,14 +150,24 @@ typedef struct s_token
 //     token->detail.pipe.fdout = fdout;
 // }
 
-typedef struct s_envlst
+typedef struct		s_temps
+{
+	char			*temp;
+	char			*temp1;
+	char			*temp2;
+	char			*temp3;
+	char			*temp4;
+	char			*expmap_temp;
+}					t_temps;
+
+typedef struct		s_envlst
 {
 	char			*name;
 	char			*value;
 	struct s_envlst	*next;
 }					t_envlst;
 
-typedef struct s_minishell
+typedef struct		s_minishell
 {
 	char			*temp1;
 	char			*temp2;
@@ -244,7 +254,6 @@ void	execute(t_minishell *m);
 
 // expand_helper.c
 void	ft_strfillcat(char *dest, const char *src, char fill_char);
-// void		ft_strfillncat(char *dest, const char *src, size_t n, char fill_char);
 char	*get_var_name_exp(const char *str, const char *expmap, size_t *pos);
 char	*get_var_name(const char *str, size_t *pos);
 
@@ -267,6 +276,7 @@ void	expand(t_minishell *m, char **expanded, char **expanded_map, const char *st
 // #############################################################################
 
 // handle_exit_status.c
+
 int		handle_exit_status(t_minishell *m, char **res, char **expmap_res);
 
 // handle_exist_status2.c

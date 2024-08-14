@@ -6,7 +6,7 @@
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/14 12:46:24 by jeberle           #+#    #+#             */
-/*   Updated: 2024/08/14 13:09:20 by chorst           ###   ########.fr       */
+/*   Updated: 2024/08/14 13:17:54 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,7 @@ void	add_argument(char ***args, int *arg_count, char *arg)
 	char	**temp;
 	int		i;
 
+	i = 0;
 	(*arg_count)++;
 	temp = ft_calloc(*arg_count + 1, sizeof(char *));
 	if (!temp)
@@ -83,8 +84,11 @@ void	add_argument(char ***args, int *arg_count, char *arg)
 	}
 	if (*args)
 	{
-		for (i = 0; i < *arg_count - 1; i++)
+		while (i < *arg_count - 1)
+		{
 			temp[i] = (*args)[i];
+			i++;
+		}
 		free(*args);
 	}
 	*args = temp;

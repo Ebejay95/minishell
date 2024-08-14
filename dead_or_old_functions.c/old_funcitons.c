@@ -6,7 +6,7 @@
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 11:05:17 by chorst            #+#    #+#             */
-/*   Updated: 2024/08/12 16:34:28 by chorst           ###   ########.fr       */
+/*   Updated: 2024/08/14 13:20:12 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -327,4 +327,23 @@
 // 		i++;
 // 	}
 // 	return (result);
+// }
+
+// void	ft_strfillncat(char *dest, const char *src, size_t n, char fill_char)
+// {
+// 	char	*dest_end;
+// 	size_t	src_len;
+// 	size_t	i;
+
+// 	dest_end = dest + strlen(dest);
+// 	src_len = strlen(src);
+// 	i = 0;
+// 	if (src_len > n)
+// 		src_len = n;
+// 	while (i < src_len)
+// 	{
+// 		dest_end[i] = fill_char;
+// 		i++;
+// 	}
+// 	dest_end[src_len] = '\0';
 // }
