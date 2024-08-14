@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init_envlst.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jeberle <jeberle@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 10:00:01 by chorst            #+#    #+#             */
-/*   Updated: 2024/08/06 22:41:54 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/13 23:27:33 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,8 @@ void	init_env_list(char **envp, t_minishell *m)
 	char	*value;
 	int		shlvl;
 
+	name = NULL;
+	value = NULL;
 	while (*envp != NULL)
 	{
 		extract_name_value(*envp, &name, &value);

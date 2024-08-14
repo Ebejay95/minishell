@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   set.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
+/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/26 13:42:23 by jkauker           #+#    #+#             */
-/*   Updated: 2024/08/01 16:37:57 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/13 15:23:38 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "./../include/minishell.h"
+#include "./../../include/minishell.h"
 
 // Function that changes the value of a variable
 void	change_var_value(t_envlst **envp, char **argv)

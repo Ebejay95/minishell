@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executer_command_helper.c                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
+/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 16:08:29 by chorst            #+#    #+#             */
-/*   Updated: 2024/08/11 21:50:44 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/13 15:46:20 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,14 +41,6 @@ void	execute_builtin(t_minishell *m, char *com, char **argv, int argc)
 		ft_unset(&m->env_list, argv);
 }
 
-void	pic_var_or_others(t_minishell *m, char *com, char **argv, int argc)
-{
-	if (!is_var_name(m->env_list, &argv[0]))
-		ft_export(argc, argv, &m->env_list);
-	else
-		ft_run_others(m, com, argv);
-}
-
 void	cleanup(char **argv)
 {
 	int	i;
@@ -65,4 +57,16 @@ int	is_word_token(t_list *node)
 
 	token = (t_token *)node->content;
 	return (token->token == WORD);
+}
+
+int	resize_argv(char ***argv, int *capacity)
+{
+	char	**new_argv;
+
+	*capacity *= 2;
+	new_argv = (char **)realloc(*argv, (*capacity + 1) * sizeof(char *));
+	if (!new_argv)
+		return (cleanup(*argv), 0);
+	*argv = new_argv;
+	return (1);
 }

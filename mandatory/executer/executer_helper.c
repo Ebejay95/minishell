@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executer_helper.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
+/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 11:11:38 by chorst            #+#    #+#             */
-/*   Updated: 2024/08/11 21:50:15 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/13 18:44:16 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,35 +23,6 @@ void	pic_err(t_minishell *m, int code, char *mes)
 	ft_fprintf(2, "%s\n", mes);
 	m->leave = 1;
 	m->exitcode = code;
-}
-
-char	*text(int message)
-{
-	if (message == 1)
-		return ("bash: syntax error near unexpected token `newline'");
-	if (message == 2)
-		return ("bash: syntax error near unexpected token `|'");
-	if (message == 3)
-		return ("bash: syntax error near unexpected token `>'");
-	if (message == 4)
-		return ("bash: syntax error near unexpected token `>>'");
-	if (message == 5)
-		return ("bash: syntax error near unexpected token `<'");
-	if (message == 6)
-		return ("bash: syntax error near unexpected token `<<'");
-	if (message == 7)
-		return ("Redirection");
-	if (message == 8)
-		return ("Pipe");
-	if (message == 9)
-		return ("Word");
-	if (message == 10)
-		return ("No file name specified for redirection\n");
-	if (message == 11)
-		return ("Failed to open file for writing (truncate/append)");
-	if (message == 12)
-		return ("numeric argument required");
-	return (NULL);
 }
 
 char	*get_last_cmd(t_list *ref, t_list *item)
@@ -77,18 +48,35 @@ char	*get_last_cmd(t_list *ref, t_list *item)
 	return (last_cmd);
 }
 
-void	ft_run_others(t_minishell *m, char *command, char **argv)
+int	add_arg(char ***argv, int *capacity, t_list *temp, int *argc)
 {
-	char	*executable;
-	char	*mes;
+	t_token	*token;
 
-	executable = prepare_executable_and_message(m, command);
-	if (!executable)
+	if (*argc >= *capacity)
+		if (!resize_argv(argv, capacity))
+			return (0);
+	token = (t_token *)temp->content;
+	(*argv)[*argc] = ft_strdup(token->str);
+	if (!(*argv)[*argc])
 	{
-		mes = ft_strjoin(ft_strjoin("bash: ", command), ": command not found");
-		pic_err(m, 127, mes);
-		free(mes);
-		return ;
+		cleanup(*argv);
+		return (0);
 	}
-	execute_command(m, executable, argv);
+	(*argc)++;
+	return (1);
+}
+
+int	add_first_arg(char **argv, t_list *current, int *argc)
+{
+	t_token	*token;
+
+	token = (t_token *)current->content;
+	argv[0] = ft_strdup(token->str);
+	if (!argv[0])
+	{
+		free(argv);
+		return (0);
+	}
+	*argc = 1;
+	return (1);
 }

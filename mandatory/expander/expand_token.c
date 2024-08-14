@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 18:09:22 by chorst            #+#    #+#             */
-/*   Updated: 2024/08/07 16:41:40 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/13 21:22:41 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,14 +30,15 @@ void	expand_token(t_minishell *m, t_token *token)
 	if (!token || !token->str || !token->expmap)
 		return ;
 	len = strlen(token->str);
-	result = malloc(sizeof(char));
+	result = ft_calloc(1, sizeof(char));
 	if (!result)
 		return ;
-	result[0] = '\0';
-	expmap_result = malloc(sizeof(char));
+	expmap_result = ft_calloc(1, sizeof(char));
 	if (!expmap_result)
+	{
+		free(result);
 		return ;
-	expmap_result[0] = '\0';
+	}
 	i = 0;
 	while (i < len)
 	{
@@ -46,14 +47,17 @@ void	expand_token(t_minishell *m, t_token *token)
 			start = i;
 			while (i < len && token->expmap[i] == '1')
 				i++;
-			temp = ft_realloc(result, strlen(result) + (i - start) + 1);
+			temp = ft_calloc(strlen(result) + (i - start) + 1, sizeof(char));
 			if (!temp)
 			{
 				free(result);
+				free(expmap_result);
 				return ;
 			}
+			ft_strlcpy(temp, result, strlen(result) + 1);
+			free(result);
 			result = temp;
-			strncat(result, &token->str[start], i - start);
+			ft_strncat(result, &token->str[start], i - start);
 		}
 		else
 		{
@@ -64,28 +68,39 @@ void	expand_token(t_minishell *m, t_token *token)
 			expand(m, &expanded, &expanded_map, &token->str[start], &token->expmap[start], 0, i - start);
 			if (expanded && expanded_map)
 			{
-				temp = ft_realloc(result, ft_strlen(result) + ft_strlen(expanded) + 1);
+				temp = ft_calloc(ft_strlen(result) + ft_strlen(expanded) + 1, sizeof(char));
 				if (!temp)
 				{
 					free(result);
-					free(expanded);
-					return ;
-				}
-				result = temp;
-				ft_strcat(result, expanded);
-				expmap_temp = ft_realloc(expmap_result, ft_strlen(expmap_result) + ft_strlen(expanded_map) + 1);
-				if (!expmap_temp)
-				{
 					free(expmap_result);
+					free(expanded);
 					free(expanded_map);
 					return ;
 				}
+				ft_strlcpy(temp, result, ft_strlen(result) + 1);
+				free(result);
+				result = temp;
+				ft_strcat(result, expanded);
+				expmap_temp = ft_calloc(ft_strlen(expmap_result) + ft_strlen(expanded_map) + 1, sizeof(char));
+				if (!expmap_temp)
+				{
+					free(result);
+					free(expmap_result);
+					free(expanded);
+					free(expanded_map);
+					return ;
+				}
+				ft_strlcpy(expmap_temp, expmap_result, ft_strlen(expmap_result) + 1);
+				free(expmap_result);
 				expmap_result = expmap_temp;
 				ft_strcat(expmap_result, expanded_map);
+				free(expanded);
+				free(expanded_map);
 			}
 		}
 	}
 	free(token->str);
 	token->str = result;
+	free(token->expmap);
 	token->expmap = expmap_result;
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executer_env.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jeberle <jeberle@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 15:27:04 by chorst            #+#    #+#             */
-/*   Updated: 2024/08/11 21:43:25 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/13 23:29:59 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@ char	**own_env(t_envlst *env_lst)
 {
 	size_t		k;
 	char		**env;
+	char		*tmp;
 
 	k = 0;
 	env = (char **)malloc(sizeof(char *) * (count_list(env_lst) + 1));
@@ -25,13 +26,16 @@ char	**own_env(t_envlst *env_lst)
 	{
 		if (env_lst->value != NULL)
 		{
-			env[k] = ft_strjoin(ft_strjoin(env_lst->name, "="), env_lst->value);
+			tmp = ft_strjoin(env_lst->name, "=");
+			env[k] = ft_strjoin(tmp, env_lst->value);
 			if (!env[k])
 			{
 				while (k > 0)
 					free(env[--k]);
-				return (free(env), NULL);
+				free(env);
+				return (NULL);
 			}
+			free(tmp);
 			k++;
 		}
 		env_lst = env_lst->next;

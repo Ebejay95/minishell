@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 11:30:06 by jeberle           #+#    #+#             */
-/*   Updated: 2024/08/13 18:49:09 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/13 21:19:31 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -280,9 +280,9 @@ void	prompt_to_token(char *prompt, t_list **tok_lst)
 
 //free(cur_content->expmap);
 //cur_content->expmap = NULL;
-// ft_printf(R"%s\n"D, cur_content->str);
-// ft_printf(G"%s\n"D, cur_content->expmap);
-void expand_toklst(t_minishell *m, t_list **tok_lst)
+//ft_printf(R"%s\n"D, cur_content->str);
+//ft_printf(G"%s\n"D, cur_content->expmap);
+void	expand_toklst(t_minishell *m, t_list **tok_lst)
 {
 	t_list	*current;
 	t_token	*cur_content;
@@ -296,11 +296,6 @@ void expand_toklst(t_minishell *m, t_list **tok_lst)
 	}
 }
 
-//if (DEBUG == 1)
-//{
-//	ft_printf(Y"TOKENLIST:\n"D);
-//	ft_lstput(&(m->tok_lst), put_token, '\n');
-//}
 void	lex_prompt(t_minishell *m)
 {
 	char	*tmpp;
@@ -315,5 +310,10 @@ void	lex_prompt(t_minishell *m)
 	detect_lexing_errors(m);
 	prompt_to_token(m->prompt, &(m->tok_lst));
 	expand_toklst(m, &(m->tok_lst));
+	if (DEBUG == 1)
+	{
+		ft_printf(Y"TOKENLIST:\n"D);
+		ft_lstput(&(m->tok_lst), put_token, '\n');
+	}
 	afterbreakup(&(m->tok_lst));
 }

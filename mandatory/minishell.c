@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jeberle <jeberle@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:01:33 by jeberle           #+#    #+#             */
-/*   Updated: 2024/08/12 20:16:48 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/13 23:12:11 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,6 @@ static void	interactive_mode(t_minishell *minishell)
 }
 
 // Function that defines the non-interactive mode
-// Hier wird read anstatt readline verwendet
 static void	non_interactive_mode(t_minishell *minishell)
 {
 	char	*input;
@@ -76,11 +75,10 @@ static int	handle_input(t_minishell *minishell)
 		return (1);
 	minishell->tok_lst = NULL;
 	minishell->exec_lst = NULL;
-	minishell->cmd_seqs = NULL;
-	minishell->exec_seqs = NULL;
 	minishell->ast = ft_btreenew(NULL);
 	if (minishell->prompt)
 	{
+
 		minishell->leave = 0;
 		lex_prompt(minishell);
 		pre_exec_prep(minishell);
@@ -96,22 +94,12 @@ static int	handle_input(t_minishell *minishell)
 	return (0);
 }
 
-// if (argc >= 2) set non inteactive mode (we think)
-// ft_printf("verarbeite %s\n", argv[1]);
-// open file argv[1]
-// get file content
-// use as prompt
-// if argv[1] == irgendweinscheisse
-// set exitcode 127, leave by no scuh file or directorz
-// Main function that runs the minishell loop
 int	main(int argc, char **argv, char **envp)
 {
 	t_minishell	minishell;
 
+	minishell.env_list = NULL;
 	init_env_list(envp, &minishell);
-	(void)argc;
-	(void)argv;
-	(void)argc;
 	setup_signals(&minishell);
 	initialize_minishell(&minishell, envp);
 	if (argc >= 2)

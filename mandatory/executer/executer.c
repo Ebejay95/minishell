@@ -6,100 +6,11 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/31 17:01:26 by jeberle           #+#    #+#             */
-/*   Updated: 2024/08/12 20:19:06 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/14 00:16:00 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../../include/minishell.h"
-
-void reset_sequences(t_minishell *m)
-{
-	int i;
-
-	if (m->exec_seqs)
-	{
-		i = 0;
-		while (m->exec_seqs[i])
-		{
-			ft_lstclear(&(m->exec_seqs[i]), free_token);
-			i++;
-		}
-		free(m->exec_seqs);
-		m->exec_seqs = NULL;
-	}
-	if (m->exec_lst)
-	{
-		ft_lstclear(&(m->exec_lst), NULL);
-		m->exec_lst = NULL;
-	}
-}
-
-char	*find_executable_in_paths(char **paths, int pathcount, char *command)
-{
-	int		i;
-	char	*joined;
-	char	*full_path;
-
-	i = 0;
-	while (i < pathcount)
-	{
-		full_path = ft_strjoin(paths[i], "/");
-		if (full_path == NULL)
-			return (NULL);
-		joined = ft_strjoin(full_path, command);
-		free(full_path);
-		if (joined == NULL)
-			return (NULL);
-		if (access(joined, X_OK) == 0)
-			return (joined);
-		free(joined);
-		i++;
-	}
-	return (NULL);
-}
-
-char	*get_executable(t_minishell *m, char *command)
-{
-	char	*pathline;
-	char	**paths;
-	int		pathcount;
-	char	*result;
-
-	if (ft_strchr(command, '/') && access(command, F_OK) == 0)
-		return (ft_strdup(command));
-	pathline = my_getenv("PATH", m->env_list);
-	if (pathline != NULL)
-	{
-		pathcount = ft_count_words(pathline, ':');
-		paths = ft_split(pathline, ':');
-		if (paths == NULL)
-			return (NULL);
-		result = find_executable_in_paths(paths, pathcount, command);
-		ft_array_l_free(paths, pathcount);
-		return (result);
-	}
-	return (NULL);
-}
-
-void	execute_command(t_minishell *m, char *executable, char **argv)
-{
-	if (is_builtin(executable))
-		execute_builtin(m, executable, argv, ft_array_length(argv));
-	else
-	{
-		execve(executable, argv, own_env(m->env_list));
-		perror("execve failed");
-		free(executable);
-		exit(EXIT_FAILURE);
-	}
-}
-
-int	keep_for_exec(t_token *token)
-{
-	if (token->token == WORD || token->token == COMMAND || token->token == PIPE)
-		return (1);
-	return (0);
-}
 
 void	handle_trunc_append(t_list *current)
 {
@@ -129,7 +40,7 @@ void	handle_trunc_append(t_list *current)
 			while (line != NULL)
 			{
 				line_len = ft_strlen(line);
-				temp = ft_realloc(filecontent, total_size + line_len + 1);
+				temp = ft_calloc(total_size + line_len + 1, sizeof(char));
 				if (!temp)
 				{
 					ft_fprintf(2, "Error: Memory allocation failed\n");
@@ -138,9 +49,15 @@ void	handle_trunc_append(t_list *current)
 					close(fd);
 					return ;
 				}
+				if (filecontent)
+				{
+					ft_strlcpy(temp, filecontent, total_size + 1);
+					free(filecontent);
+				}
 				filecontent = temp;
-				ft_strcpy(filecontent + total_size, line);
+				ft_strlcpy(filecontent + total_size, line, line_len + 1);
 				total_size += line_len;
+				free(line);
 				line = get_next_line(fd);
 			}
 			close(fd);
@@ -171,7 +88,7 @@ void    handle_heredoc(t_minishell *m, t_list *current)
     char    *delimiter;
 
     token = (t_token *)current->content;
-    heredoc_content = ft_strdup("");  // Initialisiere mit leerem String
+    heredoc_content = ft_strdup("");
     if (!heredoc_content)
         return;
 
@@ -194,7 +111,7 @@ void    handle_heredoc(t_minishell *m, t_list *current)
         {
             free(line);
             free(heredoc_content);
-            return;  // Fehlerbehandlung hinzufügen
+            return;
         }
         free(heredoc_content);
         heredoc_content = temp;
@@ -204,7 +121,7 @@ void    handle_heredoc(t_minishell *m, t_list *current)
         {
             free(line);
             free(heredoc_content);
-            return;  // Fehlerbehandlung hinzufügen
+            return;
         }
         free(heredoc_content);
         heredoc_content = temp;
@@ -254,7 +171,7 @@ void	handle_infile(t_list *current)
 	while (line != NULL)
 	{
 		line_len = ft_strlen(line);
-		temp = ft_realloc(filecontent, total_size + line_len + 1);
+		temp = ft_calloc(total_size + line_len + 1, sizeof(char));
 		if (!temp)
 		{
 			ft_fprintf(2, "Error: Memory allocation failed\n");
@@ -263,13 +180,20 @@ void	handle_infile(t_list *current)
 			close(fd);
 			return ;
 		}
+		if (filecontent)
+		{
+			ft_strlcpy(temp, filecontent, total_size + 1);
+			free(filecontent);
+		}
 		filecontent = temp;
-		ft_strcpy(filecontent + total_size, line);
+		ft_strlcpy(filecontent + total_size, line, line_len + 1);
 		total_size += line_len;
+		free(line);
 		line = get_next_line(fd);
 	}
 	close(fd);
-	token->detail.rdrc.rdrcmeta = filename;
+	token->detail.rdrc.rdrcmeta = filecontent;
+	token->detail.rdrc.rdrctarget = filename;
 }
 
 void	prexecute(t_minishell *m, t_list **tok_lst, t_list **exec_lst)
@@ -277,11 +201,6 @@ void	prexecute(t_minishell *m, t_list **tok_lst, t_list **exec_lst)
 	t_list	*current;
 	t_token	*token;
 
-	if (DEBUG == 1)
-	{
-		ft_printf(Y"SEMANTIC TOKENIZE:\n"D);
-		ft_lstput(tok_lst, put_token, '\n');
-	}
 	current = *tok_lst;
 	while (current != NULL)
 	{
@@ -319,11 +238,6 @@ void	prexecute(t_minishell *m, t_list **tok_lst, t_list **exec_lst)
 		}
 		current = current->next;
 	}
-	if (DEBUG == 1)
-	{
-		ft_printf("FOR EXECUTE:\n");
-		ft_lstput(exec_lst, put_token, '\n');
-	}
 }
 
 void	run_seg(t_minishell *m, t_list *exec_lst, int input_fd, int output_fd)
@@ -352,15 +266,15 @@ void	run_seg(t_minishell *m, t_list *exec_lst, int input_fd, int output_fd)
 		{
 			if (ft_strcmp(token->str, "<<") == 0)
 			{
-				if (last_input_fd != input_fd)
-					 close(last_input_fd);
 				if (pipe(heredoc_pipe) == -1)
 				{
 					ft_fprintf(2, "Error creating pipe for heredoc\n");
-					return ;
+					return;
 				}
 				write(heredoc_pipe[1], token->detail.rdrc.rdrcmeta, ft_strlen(token->detail.rdrc.rdrcmeta));
 				close(heredoc_pipe[1]);
+				if (last_input_fd != input_fd)
+					close(last_input_fd);
 				last_input_fd = heredoc_pipe[0];
 			}
 			else if (ft_strcmp(token->str, "<") == 0)
@@ -393,7 +307,20 @@ void	run_seg(t_minishell *m, t_list *exec_lst, int input_fd, int output_fd)
 		else if (token->token == COMMAND || token->token == WORD)
 		{
 			arg_count++;
-			args = ft_realloc(args, sizeof(char *) * (arg_count + 1));
+			char **temp = ft_calloc(arg_count + 1, sizeof(char *));
+			if (!temp)
+			{
+				ft_fprintf(2, "Error: Memory allocation failed\n");
+				ft_array_l_free(args, arg_count - 1);
+				return ;
+			}
+			if (args)
+			{
+				for (int i = 0; i < arg_count - 1; i++)
+					temp[i] = args[i];
+				free(args);
+			}
+			args = temp;
 			args[arg_count - 1] = token->str;
 			args[arg_count] = NULL;
 		}
@@ -469,6 +396,11 @@ void	execute(t_minishell *m)
 	pid_t	*pids;
 	int		j;
 
+	if (DEBUG == 1)
+	{
+		ft_printf(Y"execute:\n"D);
+		ft_lstput(&(m->tok_lst), put_token, '\n');
+	}
 	prev_pipe_read = STDIN_FILENO;
 	i = 0;
 	j = 0;
@@ -486,7 +418,19 @@ void	execute(t_minishell *m)
 		}
 		while (m->cmd_seqs[i] != NULL)
 		{
+			if (DEBUG == 1)
+			{
+				ft_printf(Y"PIPE:\n"D);
+				ft_lstput(&(m->cmd_seqs[i]), put_token, '\n');
+			}
 			prexecute(m, &(m->cmd_seqs[i]), &(m->exec_seqs[i]));
+			if (DEBUG == 1)
+			{
+				ft_printf(Y"cmd_seqs:\n"D);
+				ft_lstput(&(m->cmd_seqs[i]), put_token, '\n');
+				ft_printf(Y"exec_seqs:\n"D);
+				ft_lstput(&(m->exec_seqs[i]), put_token, '\n');
+			}
 			if (m->cmd_seqs[i + 1] != NULL)
 			{
 				if (pipe(pipe_fd) == -1)
@@ -554,7 +498,7 @@ void	execute(t_minishell *m)
 		if (DEBUG == 1)
 			ft_printf(G"EXEC without pipe\n"D);
 		prexecute(m, &(m->tok_lst), &(m->exec_lst));
-		run_seg(m, m->exec_lst, STDIN_FILENO, STDOUT_FILENO);
+		run_seg(m, m->tok_lst, STDIN_FILENO, STDOUT_FILENO);
 	}
 	reset_sequences(m);
 }
