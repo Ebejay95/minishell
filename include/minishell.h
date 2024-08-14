@@ -6,7 +6,7 @@
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:18:56 by jeberle           #+#    #+#             */
-/*   Updated: 2024/08/14 13:37:41 by chorst           ###   ########.fr       */
+/*   Updated: 2024/08/14 13:53:43 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -150,7 +150,7 @@ typedef struct s_token
 //     token->detail.pipe.fdout = fdout;
 // }
 
-typedef struct		s_temps
+typedef struct s_temps
 {
 	char			*temp;
 	char			*temp1;
@@ -160,14 +160,31 @@ typedef struct		s_temps
 	char			*expmap_temp;
 }					t_temps;
 
-typedef struct		s_envlst
+typedef struct s_envlst
 {
 	char			*name;
 	char			*value;
 	struct s_envlst	*next;
 }					t_envlst;
 
-typedef struct		s_minishell
+typedef struct s_pipe_info
+{
+	int				pipe_fd[2];
+	int				prv_pipe;
+	int				i;
+	int				total;
+	pid_t			*pids;
+}					t_pipe_info;
+
+typedef struct s_fd
+{
+	int				input;
+	int				output;
+	int				last_input;
+	int				last_output;
+}					t_fd;
+
+typedef struct s_minishell
 {
 	char			*temp1;
 	char			*temp2;
@@ -216,7 +233,6 @@ int		is_word_token(t_list *node);
 int		resize_argv(char ***argv, int *capacity);
 
 // executer_command.c
-void	run_command(t_minishell *m, t_list *current);
 
 // executer_env.c
 char	**own_env(t_envlst *env_lst);
@@ -276,7 +292,6 @@ void	expand(t_minishell *m, char **expanded, char **expanded_map, const char *st
 // #############################################################################
 
 // handle_exit_status.c
-
 int		handle_exit_status(t_minishell *m, char **res, char **expmap_res);
 
 // handle_exist_status2.c
