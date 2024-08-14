@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:18:56 by jeberle           #+#    #+#             */
-/*   Updated: 2024/08/14 13:36:45 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/14 14:25:40 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -150,14 +150,13 @@ typedef struct s_token
 //     token->detail.pipe.fdout = fdout;
 // }
 
-typedef struct s_pipe_info
+typedef struct s_pipe_data
 {
-	int		pipe_fd[2];
-	int		prv_pipe;
-	int		i;
-	int		total;
-	pid_t	*pids;
-}	t_pipe_info;
+	t_list	***cmd_seq;
+	t_list	**s;
+	int		*count;
+	int		*pipes;
+}	t_pipe_data;
 
 typedef struct s_fd
 {
