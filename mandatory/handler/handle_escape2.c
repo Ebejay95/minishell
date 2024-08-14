@@ -6,7 +6,7 @@
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 09:07:00 by chorst            #+#    #+#             */
-/*   Updated: 2024/08/14 12:53:54 by chorst           ###   ########.fr       */
+/*   Updated: 2024/08/14 13:12:09 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,13 +17,13 @@ int	are_inputs_valid(char **result, char **expmap_result, int *escaped)
 	return (result && expmap_result && escaped && *result && *expmap_result);
 }
 
-int	handle_first_escape(int *escaped)
+int	handle_first_esc(int *escaped)
 {
 	*escaped = 1;
 	return (1);
 }
 
-int	handle_second_escape(char **result, char **expmap_result, int *escaped)
+int	handle_second_esc(char **result, char **expmap_result, int *escaped)
 {
 	char	*temp;
 	char	*expmap_temp;
@@ -34,7 +34,7 @@ int	handle_second_escape(char **result, char **expmap_result, int *escaped)
 		exp_cln(result, expmap_result, NULL, NULL);
 		return (-1);
 	}
-	append_escape_character(temp, expmap_temp, *result, *expmap_result);
+	append_esc_character(temp, expmap_temp, *result, *expmap_result);
 	free(*result);
 	free(*expmap_result);
 	*result = temp;

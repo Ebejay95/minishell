@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executer_checks.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 14:04:35 by chorst            #+#    #+#             */
-/*   Updated: 2024/08/13 16:15:55 by chorst           ###   ########.fr       */
+/*   Updated: 2024/08/14 12:28:47 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,4 +114,3 @@ void	pre_exec_checks(t_minishell *m)
 	if (!m->leave)
 		check_redirections(m);
 }
-

@@ -6,7 +6,7 @@
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 09:08:08 by chorst            #+#    #+#             */
-/*   Updated: 2024/08/14 12:47:10 by chorst           ###   ########.fr       */
+/*   Updated: 2024/08/14 13:10:58 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,20 +65,17 @@ int	handle_exit_status(t_minishell *m, char **res, char **expmap_res)
 
 	if (!are_exitinputs_valid(m, res, expmap_res))
 		return (-1);
-
 	exit_status_str = get_exit_status_str(m);
 	if (!exit_status_str)
 	{
 		exp_cln(res, expmap_res, NULL, NULL);
 		return (-1);
 	}
-
 	if (!add_exit_status(res, expmap_res, exit_status_str))
 	{
 		free(exit_status_str);
 		return (-1);
 	}
-
 	free(exit_status_str);
 	return (2);
 }

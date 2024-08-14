@@ -6,13 +6,13 @@
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 09:07:00 by chorst            #+#    #+#             */
-/*   Updated: 2024/08/14 12:53:23 by chorst           ###   ########.fr       */
+/*   Updated: 2024/08/14 13:11:48 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../../include/minishell.h"
 
-int	allocate_new_buffers(char **t, char **et, const char *r, const char *er)
+int	allocate_new_buf(char **t, char **et, const char *r, const char *er)
 {
 	size_t	result_len;
 	size_t	expmap_len;
@@ -48,8 +48,8 @@ int	handle_escape(char **result, char **expmap_result, int *escaped)
 	if (!are_inputs_valid(result, expmap_result, escaped))
 		return (-1);
 	if (*escaped == 0)
-		return (handle_first_escape(escaped));
+		return (handle_first_esc(escaped));
 	else if (*escaped == 1)
-		return (handle_second_escape(result, expmap_result, escaped));
+		return (handle_second_esc(result, expmap_result, escaped));
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:18:56 by jeberle           #+#    #+#             */
-/*   Updated: 2024/08/14 12:56:06 by chorst           ###   ########.fr       */
+/*   Updated: 2024/08/14 13:11:57 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -228,6 +228,12 @@ int		keep_for_exec(t_token *token);
 void	pre_exec_prep(t_minishell *m);
 void	init_semantics(t_list *last, t_list *current);
 
+// executer_prexecute.c
+void	prexecute(t_minishell *m, t_list **tok_lst, t_list **exec_lst);
+
+// executer_runseg.c
+void	run_seg(t_minishell *m, t_list *exec_lst, int input_fd, int output_fd);
+
 // executer.c
 void	prexecute(t_minishell *m, t_list **tok_lst, t_list **exec_lst);
 void	execute(t_minishell *m);
@@ -269,8 +275,8 @@ char	*get_exit_status_str(t_minishell *m);
 
 // handle_escape.c
 int		are_inputs_valid(char **result, char **expmap_result, int *escaped);
-int		handle_first_escape(int *escaped);
-int		handle_second_escape(char **result, char **expmap_result, int *escaped);
+int		handle_first_esc(int *escaped);
+int		handle_second_esc(char **result, char **expmap_result, int *escaped);
 int		allocate_new_buf(char **t, char **et, const char *r, const char *er);
 void	append_esc_character(char *t, char *e, const char *r, const char *er);
 int		handle_escape(char **result, char **expmap_result, int *escaped);
