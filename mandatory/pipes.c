@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipes.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
+/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 11:08:56 by chorst            #+#    #+#             */
-/*   Updated: 2024/08/14 14:31:09 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/14 14:47:13 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ void	process_pipetoken(t_pipe_data *d, t_token *t)
 		if (*(d->s) == NULL || (t->token == COMMAND && (*(d->s))->content != NULL))
 		{
 			if (*(d->s) != NULL)
-				add_seq_to_cmd_seq(data);
+				add_seq_to_cmd_seq(d);
 			*(d->s) = NULL;
 		}
 		add_token_to_list(d->s, t);

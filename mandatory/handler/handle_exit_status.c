@@ -6,17 +6,17 @@
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 09:08:08 by chorst            #+#    #+#             */
-/*   Updated: 2024/08/14 13:37:44 by chorst           ###   ########.fr       */
+/*   Updated: 2024/08/14 15:36:44 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../../include/minishell.h"
 
-int	alloc_exit_buf(char **temp, char **expmap_temp, size_t res_len, size_t exit_len)
+int	alloc_exit_buf(char **temp, char **temp2, size_t res_len, size_t exit_len)
 {
 	*temp = ft_calloc(res_len + exit_len + 1, sizeof(char));
-	*expmap_temp = ft_calloc(res_len + exit_len + 1, sizeof(char));
-	if (!*temp || !*expmap_temp)
+	*temp2 = ft_calloc(res_len + exit_len + 1, sizeof(char));
+	if (!*temp || !*temp2)
 	{
 		free(*temp);
 		return (0);
@@ -24,37 +24,49 @@ int	alloc_exit_buf(char **temp, char **expmap_temp, size_t res_len, size_t exit_
 	return (1);
 }
 
-void	copy_append_str(char *dest, const char *src1, const char *src2, size_t len1, size_t len2)
+void	add_str(char *dst, const char *src1, const char *src2, size_t len_total)
 {
-	ft_strlcpy(dest, src1, len1 + 1);
-	ft_strlcat(dest, src2, len1 + len2 + 1);
+	size_t	len1;
+
+	len1 = ft_strlen(src1);
+	ft_strlcpy(dst, src1, len1 + 1);
+	ft_strlcat(dst, src2, len_total + 1);
 }
 
-void	copy_append_expmap(char *dest, const char *src, const char *exit_status_str, size_t res_len)
+int	add_expmap(char *dst, const char *src, const char *exit_str, char def_char)
 {
-	ft_strlcpy(dest, src, res_len + 1);
-	ft_strfillcat(dest, exit_status_str, res_len > 0 ? src[res_len - 1] : 'E');
+	size_t	res_len;
+	char	fill_char;
+
+	res_len = ft_strlen(src);
+	ft_strlcpy(dst, src, res_len + 1);
+	if (res_len > 0)
+		fill_char = src[res_len - 1];
+	else
+		fill_char = def_char;
+	ft_strfillcat(dst, exit_str, fill_char);
+	return (0);
 }
 
-int	add_exit_status(char **res, char **expmap_res, const char *exit_status_str)
+int	add_exit_status(char **res, char **expmap_res, const char *exit)
 {
 	t_temps	t;
 	size_t	res_len;
 	size_t	exit_len;
 
 	res_len = ft_strlen(*res);
-	exit_len = ft_strlen(exit_status_str);
-	if (!alloc_exit_buf(&t.temp, &t.expmap_temp, res_len, exit_len))
+	exit_len = ft_strlen(exit);
+	if (!alloc_exit_buf(&t.temp, &t.expmap, res_len, exit_len))
 	{
 		exp_cln(res, expmap_res, NULL, NULL);
 		return (0);
 	}
-	copy_append_str(t.temp, *res, exit_status_str, res_len, exit_len);
-	copy_append_expmap(t.expmap_temp, *expmap_res, exit_status_str, res_len);
+	add_str(t.temp, *res, exit, exit_len);
+	add_expmap(t.expmap, *expmap_res, exit, res_len);
 	free(*res);
 	free(*expmap_res);
 	*res = t.temp;
-	*expmap_res = t.expmap_temp;
+	*expmap_res = t.expmap;
 	return (1);
 }
 

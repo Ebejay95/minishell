@@ -6,7 +6,7 @@
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/14 12:46:24 by jeberle           #+#    #+#             */
-/*   Updated: 2024/08/14 14:35:39 by chorst           ###   ########.fr       */
+/*   Updated: 2024/08/14 14:45:39 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ void	run_seg(t_minishell *m, t_list *exec_lst, int input_fd, int output_fd)
 	args = NULL;
 	arg_count = 0;
 	init_fd(&fd, input_fd, output_fd);
-	process_tokens(exec_lst, &fd, &args, &arg_count);
+	process_tok(exec_lst, &fd, &args, &arg_count);
 	if (args && args[0])
 		run(m, args, arg_count, &fd);
 	cleanup_fds(&fd);

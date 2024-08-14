@@ -6,11 +6,7 @@
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:18:56 by jeberle           #+#    #+#             */
-<<<<<<< HEAD
-/*   Updated: 2024/08/14 14:37:51 by chorst           ###   ########.fr       */
-=======
-/*   Updated: 2024/08/14 14:25:40 by jeberle          ###   ########.fr       */
->>>>>>> 57731b28f9be545d6318899c92de2cd72c30c7a9
+/*   Updated: 2024/08/14 15:51:07 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -161,7 +157,10 @@ typedef struct s_temps
 	char			*temp2;
 	char			*temp3;
 	char			*temp4;
-	char			*expmap_temp;
+	char			*expmap;
+	char			*filecontent;
+	char			*line;
+
 }					t_temps;
 
 typedef struct s_pipe_data
@@ -171,14 +170,6 @@ typedef struct s_pipe_data
 	int		*count;
 	int		*pipes;
 }	t_pipe_data;
-
-typedef struct s_fd
-{
-	int	input;
-	int	output;
-	int	last_input;
-	int	last_output;
-} t_fd;
 
 typedef struct s_envlst
 {
@@ -291,14 +282,12 @@ int		check_five(t_minishell *m, t_list *curnext, char *conty);
 // executer_checks3.c
 int		check_six(t_minishell *m, char *end, char *conty);
 
-// executer_command_helper.c
+// executer_command.c
 int		is_builtin(char *command);
 void	execute_builtin(t_minishell *m, char *com, char **argv, int argc);
 void	cleanup(char **argv);
 int		is_word_token(t_list *node);
 int		resize_argv(char ***argv, int *capacity);
-
-// executer_command.c
 
 // executer_env.c
 char	**own_env(t_envlst *env_lst);
@@ -336,7 +325,7 @@ void	run_redirection(t_token *token, t_fd *fd);
 void	add_argument(char ***args, int *arg_count, char *arg);
 void	exec_builtin_cmd(t_minishell *m, char **args, int arg_count, t_fd *fd);
 void	execute_external_command(t_minishell *m, char **args, t_fd *fd);
-void	process_tokens(t_list *exec_lst, t_fd *fd, char ***args, int *arg_count);
+void	process_tok(t_list *exec_lst, t_fd *fd, char ***args, int *arg_count);
 
 // executer_runseg.c
 void	run_heredoc(t_token *t, t_fd *fd);
@@ -410,6 +399,11 @@ void	handle_infile(t_list *current);
 // handle_trunc_append.c
 void	handle_trunc_append(t_list *current);
 t_token	*get_next_content(t_list *current);
+
+// handle_trunc_append2.c
+t_token	*get_next_content(t_list *current);
+void	handle_allocation_error(char *filecontent, char *line);
+char	*add_line(char *cont, char *tmp, const char *line, size_t total_size);
 
 // #############################################################################
 // #                                Lexer                                      #
