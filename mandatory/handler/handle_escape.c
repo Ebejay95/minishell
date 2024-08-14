@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handle_escape.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
+/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 09:07:00 by chorst            #+#    #+#             */
-/*   Updated: 2024/08/14 12:08:08 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/14 12:53:23 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ int	allocate_new_buffers(char **t, char **et, const char *r, const char *er)
 	return (1);
 }
 
-void	append_escape_character(char *t, char *e, const char *r, const char *er)
+void	append_esc_character(char *t, char *e, const char *r, const char *er)
 {
 	size_t	result_len;
 	size_t	expmap_len;

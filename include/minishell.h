@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
+/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:18:56 by jeberle           #+#    #+#             */
-/*   Updated: 2024/08/14 12:21:15 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/14 12:56:06 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -186,75 +186,75 @@ typedef struct s_minishell
 // #############################################################################
 
 // executer_checks.c
-void		pre_exec_checks(t_minishell *m);
+void	pre_exec_checks(t_minishell *m);
 
 // executer_checks2.c
-int			check_one(t_minishell *m, char *lty, char *conty);
-int			check_two(t_minishell *m, char *conty, char *end);
-int			check_three(t_minishell *m, t_list *curnext, char *conty);
-int			check_four(t_minishell *m, char *conty, char *end);
-int			check_five(t_minishell *m, t_list *curnext, char *conty);
+int		check_one(t_minishell *m, char *lty, char *conty);
+int		check_two(t_minishell *m, char *conty, char *end);
+int		check_three(t_minishell *m, t_list *curnext, char *conty);
+int		check_four(t_minishell *m, char *conty, char *end);
+int		check_five(t_minishell *m, t_list *curnext, char *conty);
 
 // executer_checks3.c
-int			check_six(t_minishell *m, char *end, char *conty);
+int		check_six(t_minishell *m, char *end, char *conty);
 
 // executer_command_helper.c
-int			is_builtin(char *command);
-void		execute_builtin(t_minishell *m, char *com, char **argv, int argc);
-void		cleanup(char **argv);
-int			is_word_token(t_list *node);
-int			resize_argv(char ***argv, int *capacity);
+int		is_builtin(char *command);
+void	execute_builtin(t_minishell *m, char *com, char **argv, int argc);
+void	cleanup(char **argv);
+int		is_word_token(t_list *node);
+int		resize_argv(char ***argv, int *capacity);
 
 // executer_command.c
-void		run_command(t_minishell *m, t_list *current);
+void	run_command(t_minishell *m, t_list *current);
 
 // executer_env.c
-char		**own_env(t_envlst *env_lst);
+char	**own_env(t_envlst *env_lst);
 
 // executer_helper.c
-void		ft_error_exit(const char *message);
-void		pic_err(t_minishell *m, int code, char *mes);
-char		*get_last_cmd(t_list *ref, t_list *item);
-int			add_arg(char ***argv, int *capacity, t_list *temp, int *argc);
-int			add_first_arg(char **argv, t_list *current, int *argc);
+void	ft_error_exit(const char *message);
+void	pic_err(t_minishell *m, int code, char *mes);
+char	*get_last_cmd(t_list *ref, t_list *item);
+int		add_arg(char ***argv, int *capacity, t_list *temp, int *argc);
+int		add_first_arg(char **argv, t_list *current, int *argc);
 
 // executer_helper2.c
-void		reset_sequences(t_minishell *m);
-char		*get_executable(t_minishell *m, char *command);
-void		execute_command(t_minishell *m, char *executable, char **argv);
-int			keep_for_exec(t_token *token);
+void	reset_sequences(t_minishell *m);
+char	*get_executable(t_minishell *m, char *command);
+void	execute_command(t_minishell *m, char *executable, char **argv);
+int		keep_for_exec(t_token *token);
 
 // executer_inits.c
-void		pre_exec_prep(t_minishell *m);
-void		init_semantics(t_list *last, t_list *current);
+void	pre_exec_prep(t_minishell *m);
+void	init_semantics(t_list *last, t_list *current);
 
 // executer.c
-void		prexecute(t_minishell *m, t_list **tok_lst, t_list **exec_lst);
-void		execute(t_minishell *m);
+void	prexecute(t_minishell *m, t_list **tok_lst, t_list **exec_lst);
+void	execute(t_minishell *m);
 
 // #############################################################################
 // #                                Expander                                   #
 // #############################################################################
 
 // expand_helper.c
-void		ft_strfillcat(char *dest, const char *src, char fill_char);
+void	ft_strfillcat(char *dest, const char *src, char fill_char);
 // void		ft_strfillncat(char *dest, const char *src, size_t n, char fill_char);
-char		*get_var_name_exp(const char *str, const char *expmap, size_t *pos);
-char		*get_var_name(const char *str, size_t *pos);
+char	*get_var_name_exp(const char *str, const char *expmap, size_t *pos);
+char	*get_var_name(const char *str, size_t *pos);
 
 // expand_heredoc.c
-char		*expand_var(t_minishell *m, char *str, size_t *i, char **result);
-char		*expand_hd(t_minishell *m, char *str);
+char	*expand_var(t_minishell *m, char *str, size_t *i, char **result);
+char	*expand_hd(t_minishell *m, char *str);
 
 // expand_token.c
-void		expand_token(t_minishell *m, t_token *token);
-void		prompt_to_token(char *prompt, t_list **tok_lst);
-void		afterbreakup(t_list **tok_lst);
-void		expand_toklst(t_minishell *m, t_list **tok_lst);
+void	expand_token(t_minishell *m, t_token *token);
+void	prompt_to_token(char *prompt, t_list **tok_lst);
+void	afterbreakup(t_list **tok_lst);
+void	expand_toklst(t_minishell *m, t_list **tok_lst);
 
 // expand.c
-void		exp_cln(char **res, char **exp_res, char **var_name, char **exit_status);
-void		expand(t_minishell *m, char **expanded, char **expanded_map, const char *str, char *expmap, size_t start, size_t end);
+void	exp_cln(char **res, char **exp_res, char **var_name, char **exit_stats);
+void	expand(t_minishell *m, char **expanded, char **expanded_map, const char *str, char *expmap, size_t start, size_t end);
 
 // #############################################################################
 // #                               Handler                                     #
@@ -262,31 +262,28 @@ void		expand(t_minishell *m, char **expanded, char **expanded_map, const char *s
 
 // handle_exit_status.c
 int		handle_exit_status(t_minishell *m, char **res, char **expmap_res);
+
+// handle_exist_status2.c
 int		are_exitinputs_valid(t_minishell *m, char **res, char **expmap_res);
 char	*get_exit_status_str(t_minishell *m);
-int		append_exit_status(char **res, char **expmap_res, const char *exit_status_str);
-int		allocate_exit_buffers(char **temp, char **expmap_temp, size_t res_len, size_t exit_len);
-void	copy_and_append_strings(char *dest, const char *src1, const char *src2, size_t len1, size_t len2);
-void	copy_and_append_expmap(char *dest, const char *src, const char *exit_status_str, size_t res_len);
-int		handle_exit_status(t_minishell *m, char **res, char **expmap_res);
 
 // handle_escape.c
 int		are_inputs_valid(char **result, char **expmap_result, int *escaped);
 int		handle_first_escape(int *escaped);
 int		handle_second_escape(char **result, char **expmap_result, int *escaped);
-int		allocate_new_buffers(char **t, char **et, const char *r, const char *er);
-void	append_escape_character(char *t, char *e, const char *r, const char *er);
+int		allocate_new_buf(char **t, char **et, const char *r, const char *er);
+void	append_esc_character(char *t, char *e, const char *r, const char *er);
 int		handle_escape(char **result, char **expmap_result, int *escaped);
 
 // handle_heredoc.c
-void		handle_heredoc(t_minishell *m, t_list *current);
+void	handle_heredoc(t_minishell *m, t_list *current);
 
 // handle_infile.c
-void		handle_infile(t_list *current);
+void	handle_infile(t_list *current);
 
 // handle_trunc_append.c
-void		handle_trunc_append(t_list *current);
-t_token		*get_next_content(t_list *current);
+void	handle_trunc_append(t_list *current);
+t_token	*get_next_content(t_list *current);
 
 // #############################################################################
 // #                                Lexer                                      #
@@ -298,103 +295,103 @@ t_token		*get_next_content(t_list *current);
 // #############################################################################
 
 // ast.c
-void		ast_add(t_btree **ast, t_btree *cur, char *branch, t_token *tok);
+void	ast_add(t_btree **ast, t_btree *cur, char *branch, t_token *tok);
 
 // hierarchy_validation.c
-int			vd_null_add(t_btree *ast, t_token *newtok);
-int			check_child_rel(t_token *current, t_token *new);
-int			check_next_rel(t_token *current, t_token *new);
-int			vd_tree_add(t_btree *current, char *branch, t_token *newtok);
+int		vd_null_add(t_btree *ast, t_token *newtok);
+int		check_child_rel(t_token *current, t_token *new);
+int		check_next_rel(t_token *current, t_token *new);
+int		vd_tree_add(t_btree *current, char *branch, t_token *newtok);
 
 // init_envlst.c
-void		init_env_list(char **envp, t_minishell *m);
-void		extract_name_value(char *arg, char **name, char **value);
-void		add_env_node(t_envlst **env_list, char *name, char *value);
+void	init_env_list(char **envp, t_minishell *m);
+void	extract_name_value(char *arg, char **name, char **value);
+void	add_env_node(t_envlst **env_list, char *name, char *value);
 
 // lexer.c
-void		lex_prompt(t_minishell *m);
-void		add_token_to_list(t_list **lst, t_token *token);
+void	lex_prompt(t_minishell *m);
+void	add_token_to_list(t_list **lst, t_token *token);
 
 // minishell_helper.c
-void		cleanup_minishell(t_minishell *minishell);
-void		initialize_minishell(t_minishell *minishell, char **envp);
+void	cleanup_minishell(t_minishell *minishell);
+void	initialize_minishell(t_minishell *minishell, char **envp);
 
 // minishell.c
-int			main(int argc, char **argv, char **envp);
+int		main(int argc, char **argv, char **envp);
 
 // parser.c
-void		parse(t_minishell *m);
+void	parse(t_minishell *m);
 
 // pipes.c
-void		split_pipes(t_minishell *m, t_list ***cmd_seq, t_list ***exec_seq);
+void	split_pipes(t_minishell *m, t_list ***cmd_seq, t_list ***exec_seq);
 
 // remove_chars.c
-char		*remove_chars(const char *str, const char *chrs_to_rmv);
-int			count_relevant_chars(const char *str, const char *chrs_to_rmv);
-void		remove_helper(const char *s, const char *chrs_to_rmv, char *new_s);
+char	*remove_chars(const char *str, const char *chrs_to_rmv);
+int		count_relevant_chars(const char *str, const char *chrs_to_rmv);
+void	remove_helper(const char *s, const char *chrs_to_rmv, char *new_s);
 
 // whitespace_handler.c
-char		*whitespace_handler(const char *str);
+char	*whitespace_handler(const char *str);
 
 // tokens.c
-t_token		*create_token(char *str, char *expmap);
-char		*toktype_to_str(enum e_toktype token);
-void		put_token(void *content);
-void		update_tok_type(t_token *tok, enum e_toktype token);
-void		update_tok_type_next(t_list *current, enum e_toktype token);
-void		update_tok_type_next_word(t_list *current, enum e_toktype token);
-void		free_token(void *n);
+t_token	*create_token(char *str, char *expmap);
+char	*toktype_to_str(enum e_toktype token);
+void	put_token(void *content);
+void	update_tok_type(t_token *tok, enum e_toktype token);
+void	update_tok_type_next(t_list *current, enum e_toktype token);
+void	update_tok_type_next_word(t_list *current, enum e_toktype token);
+void	free_token(void *n);
 // signal.c
-void		handle_child_process(int sig);
-void		handle_main_process(int sig);
-void		setup_signals(t_minishell *minishell);
-void		reset_signals(void);
-void		handle_heredoc_signal(int sig);
+void	handle_child_process(int sig);
+void	handle_main_process(int sig);
+void	setup_signals(t_minishell *minishell);
+void	reset_signals(void);
+void	handle_heredoc_signal(int sig);
 
 // #############################################################################
 // #                               Builtins                                    #
 // #############################################################################
 
 // cd.c
-void		ft_cd(int argc, char **argv, t_envlst **envp);
-void		cd_home(t_envlst **envp);
-void		cd_oldpwd(t_envlst **envp);
+void	ft_cd(int argc, char **argv, t_envlst **envp);
+void	cd_home(t_envlst **envp);
+void	cd_oldpwd(t_envlst **envp);
 
 // echo.c
-void		ft_echo(char **args);
-int			handle_options(char **args, bool *newline, int start_index);
-void		print_output(char **args, int start_index, bool newline);
+void	ft_echo(char **args);
+int		handle_options(char **args, bool *newline, int start_index);
+void	print_output(char **args, int start_index, bool newline);
 
 // env.c
-void		ft_env(t_envlst *env_list); // works
+void	ft_env(t_envlst *env_list); // works
 
 // exit.c
-void		ft_exit(char **argv, int *exitcode);
+void	ft_exit(char **argv, int *exitcode);
 
 // export.c
-void		ft_export(int argc, char **argv, t_envlst **envp);
-void		my_export(t_envlst **envp, char **argv);
-void		change_env(t_envlst **env_lst, char *key, char *value, int free_it);
-void		sort_envp(char **envp);
-char		**copy_envp(t_envlst *envp);
+void	ft_export(int argc, char **argv, t_envlst **envp);
+void	my_export(t_envlst **envp, char **argv);
+void	change_env(t_envlst **env_lst, char *key, char *value, int free_it);
+void	sort_envp(char **envp);
+char	**copy_envp(t_envlst *envp);
 
 // pwd.c
-void		ft_pwd(char **args);
+void	ft_pwd(char **args);
 
 // set.c
-void		change_var_value(t_envlst **envp, char **argv);
-void		upgrade_var_value(t_envlst **envp, char *argv);
-void		update_var_value(t_envlst **envp, char *argv);
+void	change_var_value(t_envlst **envp, char **argv);
+void	upgrade_var_value(t_envlst **envp, char *argv);
+void	update_var_value(t_envlst **envp, char *argv);
 
 // unset.c
-void		ft_unset(t_envlst **envp, char **argv);
-void		free_envlst_node(t_envlst *node);
+void	ft_unset(t_envlst **envp, char **argv);
+void	free_envlst_node(t_envlst *node);
 
 // var_helper.c
-int			count_list(t_envlst *envp);
-void		print_env_variable(const char *env_var);
-int			is_var_name(t_envlst *envp, char **argv);
-char		*my_getenv(const char *name, t_envlst *envp);
-char		*ft_strndup(const char *s, size_t n);
+int		count_list(t_envlst *envp);
+void	print_env_variable(const char *env_var);
+int		is_var_name(t_envlst *envp, char **argv);
+char	*my_getenv(const char *name, t_envlst *envp);
+char	*ft_strndup(const char *s, size_t n);
 
 #endif

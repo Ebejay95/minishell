@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handle_escape2.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
+/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 09:07:00 by chorst            #+#    #+#             */
-/*   Updated: 2024/08/14 12:12:26 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/14 12:53:54 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ int	handle_second_escape(char **result, char **expmap_result, int *escaped)
 	char	*expmap_temp;
 
 	*escaped = 0;
-	if (!allocate_new_buffers(&temp, &expmap_temp, *result, *expmap_result))
+	if (!allocate_new_buf(&temp, &expmap_temp, *result, *expmap_result))
 	{
 		exp_cln(result, expmap_result, NULL, NULL);
 		return (-1);

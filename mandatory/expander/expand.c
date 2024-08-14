@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
+/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/21 13:23:03 by jeberle           #+#    #+#             */
-/*   Updated: 2024/08/14 12:13:12 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/14 12:56:25 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ int	expmapcheck(char *expmap, const char *str, int i, int escaped)
 	return (0);
 }
 
-void	exp_cln(char **res, char **exp_res, char **var_name, char **exit_status)
+void	exp_cln(char **res, char **exp_res, char **var_name, char **exit_stats)
 {
 	if (res && *res)
 	{
@@ -50,10 +50,10 @@ void	exp_cln(char **res, char **exp_res, char **var_name, char **exit_status)
 		free(*var_name);
 		*var_name = NULL;
 	}
-	if (exit_status && *exit_status)
+	if (exit_stats && *exit_stats)
 	{
-		free(*exit_status);
-		*exit_status = NULL;
+		free(*exit_stats);
+		*exit_stats = NULL;
 	}
 }
 

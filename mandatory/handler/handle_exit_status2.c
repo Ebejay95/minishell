@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handle_exit_status2.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
+/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 09:08:08 by chorst            #+#    #+#             */
-/*   Updated: 2024/08/14 12:20:05 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/14 12:50:16 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,5 +19,5 @@ int	are_exitinputs_valid(t_minishell *m, char **res, char **expmap_res)
 
 char	*get_exit_status_str(t_minishell *m)
 {
-	return ft_itoa(m->last_exitcode);
+	return (ft_itoa(m->last_exitcode));
 }
