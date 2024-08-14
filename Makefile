@@ -6,7 +6,7 @@
 #    By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/25 22:43:08 by jonathanebe       #+#    #+#              #
-#    Updated: 2024/08/14 12:16:05 by jeberle          ###   ########.fr        #
+#    Updated: 2024/08/14 12:49:58 by jeberle          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -101,6 +101,8 @@ SRCS=	mandatory/builtins/cd.c \
 		mandatory/executer/executer_helper.c \
 		mandatory/executer/executer_helper2.c \
 		mandatory/executer/executer_inits.c \
+		mandatory/executer/executer_prexecute.c \
+		mandatory/executer/executer_runseg.c \
 		mandatory/executer/executer.c \
 		mandatory/expander/expand_token.c \
 		mandatory/expander/expand.c \

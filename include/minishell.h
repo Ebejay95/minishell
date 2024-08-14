@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:18:56 by jeberle           #+#    #+#             */
-/*   Updated: 2024/08/14 12:21:15 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/14 12:52:14 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -227,6 +227,12 @@ int			keep_for_exec(t_token *token);
 // executer_inits.c
 void		pre_exec_prep(t_minishell *m);
 void		init_semantics(t_list *last, t_list *current);
+
+// executer_prexecute.c
+void		prexecute(t_minishell *m, t_list **tok_lst, t_list **exec_lst);
+
+// executer_runseg.c
+void		run_seg(t_minishell *m, t_list *exec_lst, int input_fd, int output_fd);
 
 // executer.c
 void		prexecute(t_minishell *m, t_list **tok_lst, t_list **exec_lst);

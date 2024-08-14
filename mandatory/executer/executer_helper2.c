@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executer_helper2.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 09:16:46 by chorst            #+#    #+#             */
-/*   Updated: 2024/08/14 08:44:43 by chorst           ###   ########.fr       */
+/*   Updated: 2024/08/14 12:32:24 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,6 @@ void	reset_sequences(t_minishell *m)
 	}
 }
 
-
 char	*get_executable(t_minishell *m, char *command)
 {
 	char	*pathline;
@@ -95,7 +94,6 @@ void	execute_command(t_minishell *m, char *executable, char **argv)
 		perror("execve failed");
 		free(executable);
 		exit(EXIT_FAILURE);
-		/// own freen
 	}
 }
 
