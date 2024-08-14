@@ -6,7 +6,7 @@
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:18:56 by jeberle           #+#    #+#             */
-/*   Updated: 2024/08/14 13:53:43 by chorst           ###   ########.fr       */
+/*   Updated: 2024/08/14 14:37:51 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -209,6 +209,52 @@ typedef struct s_minishell
 }	t_minishell;
 
 // #############################################################################
+// #                               Builtins                                    #
+// #############################################################################
+
+// cd.c
+void	ft_cd(int argc, char **argv, t_envlst **envp);
+void	cd_home(t_envlst **envp);
+void	cd_oldpwd(t_envlst **envp);
+
+// echo.c
+void	ft_echo(char **args);
+int		handle_options(char **args, bool *newline, int start_index);
+void	print_output(char **args, int start_index, bool newline);
+
+// env.c
+void	ft_env(t_envlst *env_list); // works
+
+// exit.c
+void	ft_exit(char **argv, int *exitcode);
+
+// export.c
+void	ft_export(int argc, char **argv, t_envlst **envp);
+void	my_export(t_envlst **envp, char **argv);
+void	change_env(t_envlst **env_lst, char *key, char *value, int free_it);
+void	sort_envp(char **envp);
+char	**copy_envp(t_envlst *envp);
+
+// pwd.c
+void	ft_pwd(char **args);
+
+// set.c
+void	change_var_value(t_envlst **envp, char **argv);
+void	upgrade_var_value(t_envlst **envp, char *argv);
+void	update_var_value(t_envlst **envp, char *argv);
+
+// unset.c
+void	ft_unset(t_envlst **envp, char **argv);
+void	free_envlst_node(t_envlst *node);
+
+// var_helper.c
+int		count_list(t_envlst *envp);
+void	print_env_variable(const char *env_var);
+int		is_var_name(t_envlst *envp, char **argv);
+char	*my_getenv(const char *name, t_envlst *envp);
+char	*ft_strndup(const char *s, size_t n);
+
+// #############################################################################
 // #                                Executer                                   #
 // #############################################################################
 
@@ -253,15 +299,44 @@ int		keep_for_exec(t_token *token);
 // executer_inits.c
 void	pre_exec_prep(t_minishell *m);
 void	init_semantics(t_list *last, t_list *current);
+void	init_fd(t_fd *fd, int input_fd, int output_fd);
+
+// executer_pipes.c
+void	execute_with_pipes(t_minishell *m);
 
 // executer_prexecute.c
 void	prexecute(t_minishell *m, t_list **tok_lst, t_list **exec_lst);
 
+// executer_redirection.c
+void	run_in_redirection(t_token *token, t_fd *fd);
+void	run_out_redirection(t_token *token, t_fd *fd);
+void	run_redirection(t_token *token, t_fd *fd);
+
+// executer_runseg_helper.c
+void	add_argument(char ***args, int *arg_count, char *arg);
+void	exec_builtin_cmd(t_minishell *m, char **args, int arg_count, t_fd *fd);
+void	execute_external_command(t_minishell *m, char **args, t_fd *fd);
+void	process_tokens(t_list *exec_lst, t_fd *fd, char ***args, int *arg_count);
+
 // executer_runseg.c
+void	run_heredoc(t_token *t, t_fd *fd);
+void	run_command(t_minishell *m, char **args);
+void	run(t_minishell *m, char **args, int arg_count, t_fd *fd);
+void	cleanup_fds(t_fd *fd);
 void	run_seg(t_minishell *m, t_list *exec_lst, int input_fd, int output_fd);
 
+
+// executer_signals.c
+void	run_child_process(t_minishell *m, t_pipe_info *pi);
+void	handle_parent_process(t_pipe_info *pi);
+void	wait_for_children(t_minishell *m, t_pipe_info *pi);
+void	setup_child_process(t_fd *fd);
+void	run_parent_process(t_minishell *m, pid_t pid);
+
 // executer.c
-void	prexecute(t_minishell *m, t_list **tok_lst, t_list **exec_lst);
+void	debug_print(t_minishell *m, int i);
+int		allocate_pids(t_pipe_info *pi, int pipes);
+int		fork_and_execute(t_minishell *m, t_pipe_info *pi);
 void	execute(t_minishell *m);
 
 // #############################################################################
@@ -379,50 +454,5 @@ void	setup_signals(t_minishell *minishell);
 void	reset_signals(void);
 void	handle_heredoc_signal(int sig);
 
-// #############################################################################
-// #                               Builtins                                    #
-// #############################################################################
-
-// cd.c
-void	ft_cd(int argc, char **argv, t_envlst **envp);
-void	cd_home(t_envlst **envp);
-void	cd_oldpwd(t_envlst **envp);
-
-// echo.c
-void	ft_echo(char **args);
-int		handle_options(char **args, bool *newline, int start_index);
-void	print_output(char **args, int start_index, bool newline);
-
-// env.c
-void	ft_env(t_envlst *env_list); // works
-
-// exit.c
-void	ft_exit(char **argv, int *exitcode);
-
-// export.c
-void	ft_export(int argc, char **argv, t_envlst **envp);
-void	my_export(t_envlst **envp, char **argv);
-void	change_env(t_envlst **env_lst, char *key, char *value, int free_it);
-void	sort_envp(char **envp);
-char	**copy_envp(t_envlst *envp);
-
-// pwd.c
-void	ft_pwd(char **args);
-
-// set.c
-void	change_var_value(t_envlst **envp, char **argv);
-void	upgrade_var_value(t_envlst **envp, char *argv);
-void	update_var_value(t_envlst **envp, char *argv);
-
-// unset.c
-void	ft_unset(t_envlst **envp, char **argv);
-void	free_envlst_node(t_envlst *node);
-
-// var_helper.c
-int		count_list(t_envlst *envp);
-void	print_env_variable(const char *env_var);
-int		is_var_name(t_envlst *envp, char **argv);
-char	*my_getenv(const char *name, t_envlst *envp);
-char	*ft_strndup(const char *s, size_t n);
 
 #endif

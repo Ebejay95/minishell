@@ -6,7 +6,7 @@
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 14:09:50 by chorst            #+#    #+#             */
-/*   Updated: 2024/08/13 16:15:59 by chorst           ###   ########.fr       */
+/*   Updated: 2024/08/14 14:27:37 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,4 +66,12 @@ void	pre_exec_prep(t_minishell *m)
 			init_redirection_details(cur_content);
 		current = current->next;
 	}
+}
+
+void	init_fd(t_fd *fd, int input_fd, int output_fd)
+{
+	fd->input = input_fd;
+	fd->output = output_fd;
+	fd->last_input = input_fd;
+	fd->last_output = output_fd;
 }

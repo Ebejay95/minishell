@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   executer_prexecute.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
+/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/14 12:40:28 by jeberle           #+#    #+#             */
-/*   Updated: 2024/08/14 12:43:57 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/14 14:25:00 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../../include/minishell.h"
 
-void	prex_ins(t_minishell *m, t_list **tok_lst, t_list **exec_lst)
+static void	prex_ins(t_minishell *m, t_list **tok_lst, t_list **exec_lst)
 {
 	t_list	*current;
 	t_token	*token;
@@ -35,7 +35,7 @@ void	prex_ins(t_minishell *m, t_list **tok_lst, t_list **exec_lst)
 	}
 }
 
-void	prex_mains(t_list **tok_lst, t_list **exec_lst)
+static void	prex_mains(t_list **tok_lst, t_list **exec_lst)
 {
 	t_list	*current;
 	t_token	*token;
@@ -52,7 +52,7 @@ void	prex_mains(t_list **tok_lst, t_list **exec_lst)
 	}
 }
 
-void	prex_outs(t_list **tok_lst, t_list **exec_lst)
+static void	prex_outs(t_list **tok_lst, t_list **exec_lst)
 {
 	t_list	*current;
 	t_token	*token;
