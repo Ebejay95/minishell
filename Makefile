@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: chorst <chorst@student.42.fr>              +#+  +:+       +#+         #
+#    By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/25 22:43:08 by jonathanebe       #+#    #+#              #
-#    Updated: 2024/08/14 14:34:44 by chorst           ###   ########.fr        #
+#    Updated: 2024/08/14 15:32:01 by jeberle          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -119,6 +119,10 @@ SRCS=	mandatory/builtins/cd.c \
 		mandatory/handler/handle_escape2.c \
 		mandatory/handler/handle_exit_status.c \
 		mandatory/handler/handle_exit_status2.c \
+		mandatory/handler/handle_variable.c \
+		mandatory/lexer/lexer_helper.c \
+		mandatory/lexer/prompt_to_token.c \
+		mandatory/lexer/prompt_to_token2.c \
 		mandatory/lexer/lexer.c \
 		mandatory/ast.c \
 		mandatory/hierarchy_validation.c \

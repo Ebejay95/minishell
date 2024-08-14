@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/21 13:23:03 by jeberle           #+#    #+#             */
-/*   Updated: 2024/08/14 12:56:25 by chorst           ###   ########.fr       */
+/*   Updated: 2024/08/14 15:28:21 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,62 +55,6 @@ void	exp_cln(char **res, char **exp_res, char **var_name, char **exit_stats)
 		free(*exit_stats);
 		*exit_stats = NULL;
 	}
-}
-
-static int	handle_variable(t_minishell *m, char **res, char **exp_res, const char *str, char *expmap, size_t *i)
-{
-	size_t	var_start;
-	char	*var_name;
-	char	*var_value;
-	char	*temp;
-	char	*exp_tmp;
-
-	var_start = *i;
-	var_name = get_var_name_exp(str, expmap, i);
-	if (!var_name)
-	{
-		temp = ft_calloc(ft_strlen(*res) + 2, sizeof(char));
-		exp_tmp = ft_calloc(ft_strlen(*exp_res) + 2, sizeof(char));
-		if (!temp || !exp_tmp)
-		{
-			exp_cln(res, exp_res, &var_name, NULL);
-			return (-1);
-		}
-		ft_strlcpy(temp, *res, ft_strlen(*res) + 1);
-		ft_strlcpy(exp_tmp, *exp_res, ft_strlen(*exp_res) + 1);
-		free(*res);
-		free(*exp_res);
-		*res = temp;
-		*exp_res = exp_tmp;
-		ft_strncat(*res, &str[var_start], 1);
-		ft_strncat(*exp_res, &expmap[var_start], 1);
-		*i = var_start + 1;
-		return (0);
-	}
-	var_value = my_getenv(var_name, m->env_list);
-	if (var_value)
-	{
-		temp = ft_calloc(ft_strlen(*res) + ft_strlen(var_value) + 1, sizeof(char));
-		exp_tmp = ft_calloc(ft_strlen(*exp_res) + ft_strlen(var_value) + 1, sizeof(char));
-		if (!temp || !exp_tmp)
-		{
-			exp_cln(res, exp_res, &var_name, NULL);
-			return (-1);
-		}
-		ft_strlcpy(temp, *res, ft_strlen(*res) + 1);
-		ft_strlcpy(exp_tmp, *exp_res, ft_strlen(*exp_res) + 1);
-		free(*res);
-		free(*exp_res);
-		*res = temp;
-		*exp_res = exp_tmp;
-		ft_strcat(*res, var_value);
-		if (ft_strcontains(expmap, '2'))
-			ft_strfillcat(*exp_res, var_value, 'X');
-		else
-			ft_strfillcat(*exp_res, var_value, 'E');
-	}
-	free(var_name);
-	return (0);
 }
 
 void	expand(t_minishell *m, char **expanded, char **expanded_map, const char *str, char *expmap, size_t start, size_t end)

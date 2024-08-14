@@ -6,48 +6,59 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 11:30:06 by jeberle           #+#    #+#             */
-/*   Updated: 2024/08/14 13:39:05 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/14 15:00:39 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../../include/minishell.h"
 
+void	breakup(t_list **current, t_token *cur, int *i)
+{
+	char	*work;
+	char	**words;
+	int		wordcount;
+	t_token	*new_token;
+	t_list	*new_node;
+
+	work = whitespace_handler(cur->str);
+	wordcount = ft_count_words(work, ' ');
+	words = ft_split(work, ' ');
+	free(cur->str);
+	cur->str = words[0];
+	while (*i < wordcount)
+	{
+		new_token = create_token(words[*i], cur->expmap);
+		update_tok_type(new_token, WORD);
+		new_node = ft_lstnew(new_token);
+		new_node->next = (*current)->next;
+		(*current)->next = new_node;
+		*current = new_node;
+		(*i)++;
+	}
+	free(words);
+	free(work);
+}
+
 void	afterbreakup(t_list **tok_lst)
 {
 	t_list	*current;
-	t_list	*new_node;
 	t_token	*cur;
-	t_token	*new_token;
-	int		wordcount;
 	int		i;
-	char	*work;
-	char	**words;
 
+	i = 1;
 	current = *tok_lst;
 	while (current != NULL)
 	{
 		cur = (t_token *)current->content;
-		if (!ft_strcontains(cur->expmap, 'X') && ft_strcontains(cur->expmap, 'E'))
+		if (!ft_strcontains(cur->expmap, 'X'))
 		{
-			work = whitespace_handler(cur->str);
-			wordcount = ft_count_words(work, ' ');
-			words = ft_split(work, ' ');
-			free(cur->str);
-			cur->str = words[0];
-			i = 1;
-			while (i < wordcount)
-			{
-				new_token = create_token(words[i], cur->expmap);
-				update_tok_type(new_token, WORD);
-				new_node = ft_lstnew(new_token);
-				new_node->next = current->next;
-				current->next = new_node;
-				current = new_node;
-				i++;
-			}
-			free(words);
+			if (ft_strcontains(cur->expmap, 'E'))
+				breakup(&current, cur, &i);
+			else
+				current = current->next;
 		}
-		current = current->next;
+		else
+			current = current->next;
 	}
 }
 
@@ -75,7 +86,7 @@ void	detect_lexing_errors(t_minishell *m)
 		pic_err(m, 2, "unclosed quotes");
 }
 
-void    add_token_to_list(t_list **lst, t_token *token)
+void	add_token_to_list(t_list **lst, t_token *token)
 {
 	t_list	*new_element;
 	t_list	*current;
@@ -97,198 +108,6 @@ void    add_token_to_list(t_list **lst, t_token *token)
 				current = current->next;
 			current->next = new_element;
 		}
-	}
-}
-
-void	prompt_to_token(char *prompt, t_list **tok_lst)
-{
-	int		current_pos;
-	int		quote_level;
-	int		escape_next;
-	int		current_token_size;
-	t_token	*token;
-	char	*ptr;
-	char	*current_token;
-	char	*expmap;
-	char	*new_token;
-	char	*new_expmap;
-	int		new_size;
-
-	current_pos = 0;
-	quote_level = 0;
-	escape_next = 0;
-	current_token_size = 10;
-	ptr = prompt;
-	current_token = ft_calloc(current_token_size, sizeof(char));
-	expmap = ft_calloc(current_token_size, sizeof(char));
-	if (!current_token || !expmap)
-	{
-		free(current_token);
-		free(expmap);
-		ft_error_exit("malloc");
-	}
-	while (*ptr)
-	{
-		if (escape_next)
-		{
-			current_token[current_pos] = *ptr;
-			if (quote_level == 2)
-				expmap[current_pos] = '2';
-			else
-				expmap[current_pos] = '0';
-			current_pos++;
-			escape_next = 0;
-			ptr++;
-			continue ;
-		}
-		if (*ptr == '\'' && quote_level == 0)
-		{
-			quote_level = 1;
-			current_token[current_pos] = *ptr;
-			expmap[current_pos] = 'S';
-			current_pos++;
-			ptr++;
-			continue ;
-		}
-		if (*ptr == '\'' && quote_level == 1)
-		{
-			quote_level = 0;
-			current_token[current_pos] = *ptr;
-			expmap[current_pos] = 'S';
-			current_pos++;
-			ptr++;
-			continue ;
-		}
-		if (*ptr == '"' && quote_level != 1)
-		{
-			current_token[current_pos] = *ptr;
-			expmap[current_pos] = '0';
-			current_pos++;
-			if (quote_level == 2)
-				quote_level = 0;
-			else
-				quote_level = 2;
-			ptr++;
-			continue ;
-		}
-		if (ft_isspace(*ptr) && quote_level == 0)
-		{
-			if (current_pos > 0)
-			{
-				current_token[current_pos] = '\0';
-				expmap[current_pos] = '\0';
-				token = create_token(current_token, expmap);
-				update_tok_type(token, WORD);
-				add_token_to_list(tok_lst, token);
-				current_pos = 0;
-			}
-			ptr++;
-			continue ;
-		}
-		if (*ptr == '|' && quote_level == 0)
-		{
-			if (current_pos > 0)
-			{
-				current_token[current_pos] = '\0';
-				expmap[current_pos] = '\0';
-				token = create_token(current_token, expmap);
-				update_tok_type(token, WORD);
-				add_token_to_list(tok_lst, token);
-				current_pos = 0;
-			}
-			token = create_token("|", "0");
-			update_tok_type(token, PIPE);
-			add_token_to_list(tok_lst, token);
-			ptr++;
-			continue ;
-		}
-		if ((*ptr == '>' || *ptr == '<') && quote_level == 0)
-		{
-			if (current_pos > 0)
-			{
-				current_token[current_pos] = '\0';
-				expmap[current_pos] = '\0';
-				token = create_token(current_token, expmap);
-				update_tok_type(token, WORD);
-				add_token_to_list(tok_lst, token);
-				current_pos = 0;
-			}
-			if (*(ptr + 1) == *ptr)
-			{
-				if (*ptr == '>')
-					token = create_token(">>", "00");
-				else
-					token = create_token("<<", "00");
-				ptr++;
-			}
-			else
-			{
-				if (*ptr == '>')
-					token = create_token(">", "0");
-				else
-					token = create_token("<", "0");
-			}
-			update_tok_type(token, REDIRECTION);
-			add_token_to_list(tok_lst, token);
-			ptr++;
-			continue ;
-		}
-		current_token[current_pos] = *ptr;
-		if (quote_level == 1)
-			expmap[current_pos] = '1';
-		else if (quote_level == 2)
-			expmap[current_pos] = '2';
-		else
-			expmap[current_pos] = '0';
-		current_pos++;
-		if (current_pos >= current_token_size - 1)
-		{
-			new_size = current_token_size * 2;
-			new_token = ft_calloc(new_size, sizeof(char));
-			new_expmap = ft_calloc(new_size, sizeof(char));
-			if (!new_token || !new_expmap)
-			{
-				free(current_token);
-				free(expmap);
-				if (new_token)
-					free(new_token);
-				if (new_expmap)
-					free(new_expmap);
-				ft_error_exit("calloc");
-			}
-			ft_memcpy(new_token, current_token, current_token_size);
-			ft_memcpy(new_expmap, expmap, current_token_size);
-			free(current_token);
-			free(expmap);
-			current_token = new_token;
-			expmap = new_expmap;
-			current_token_size = new_size;
-		}
-		ptr++;
-	}
-	if (current_pos > 0)
-	{
-		current_token[current_pos] = '\0';
-		expmap[current_pos] = '\0';
-		token = create_token(current_token, expmap);
-		update_tok_type(token, WORD);
-		add_token_to_list(tok_lst, token);
-	}
-	free(current_token);
-	free(expmap);
-}
-
-void	expand_toklst(t_minishell *m, t_list **tok_lst)
-{
-	t_list	*current;
-	t_token	*cur_content;
-
-	current = *tok_lst;
-	while (current != NULL)
-	{
-		cur_content = (t_token *)current->content;
-		expand_token(m, cur_content);
-		current = current->next;
 	}
 }
 

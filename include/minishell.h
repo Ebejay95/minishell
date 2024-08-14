@@ -3,14 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:18:56 by jeberle           #+#    #+#             */
-<<<<<<< HEAD
-/*   Updated: 2024/08/14 14:37:51 by chorst           ###   ########.fr       */
-=======
-/*   Updated: 2024/08/14 14:25:40 by jeberle          ###   ########.fr       */
->>>>>>> 57731b28f9be545d6318899c92de2cd72c30c7a9
+/*   Updated: 2024/08/14 15:38:15 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -154,15 +150,36 @@ typedef struct s_token
 //     token->detail.pipe.fdout = fdout;
 // }
 
+typedef struct s_var_data
+{
+	char		**result;
+	char		**expmap_result;
+	const char	*str;
+	char		*expmap;
+	size_t		*i;
+	size_t		var_start;
+	char		*var_name;
+	char		*var_value;
+}	t_var_data;
+typedef struct s_token_data
+{
+	char	*current_token;
+	char	*expmap;
+	int		current_pos;
+	int		current_token_size;
+	int		quote_level;
+	int		escape_next;
+}	t_token_data;
+
 typedef struct s_temps
 {
-	char			*temp;
-	char			*temp1;
-	char			*temp2;
-	char			*temp3;
-	char			*temp4;
-	char			*expmap_temp;
-}					t_temps;
+	char	*temp;
+	char	*temp1;
+	char	*temp2;
+	char	*temp3;
+	char	*temp4;
+	char	*expmap_temp;
+}	t_temps;
 
 typedef struct s_pipe_data
 {
@@ -195,14 +212,6 @@ typedef struct s_pipe_info
 	int				total;
 	pid_t			*pids;
 }					t_pipe_info;
-
-typedef struct s_fd
-{
-	int				input;
-	int				output;
-	int				last_input;
-	int				last_output;
-}					t_fd;
 
 typedef struct s_minishell
 {
@@ -411,6 +420,9 @@ void	handle_infile(t_list *current);
 void	handle_trunc_append(t_list *current);
 t_token	*get_next_content(t_list *current);
 
+// handle_variable.c
+int		handle_variable(t_minishell *m, char **result, char **expmap_result, const char *str, char *expmap, size_t *i);
+
 // #############################################################################
 // #                                Lexer                                      #
 // #############################################################################
@@ -437,6 +449,16 @@ void	add_env_node(t_envlst **env_list, char *name, char *value);
 // lexer.c
 void	lex_prompt(t_minishell *m);
 void	add_token_to_list(t_list **lst, t_token *token);
+void	initialize_token_data(t_token_data *data);
+void	lex_escape(t_token_data *data, char c);
+void	lex_quote(t_token_data *data, char c);
+void	lex_space(t_token_data *data, t_list **tok_lst);
+void	lex_pipe(t_token_data *data, t_list **tok_lst);
+void	lex_redirection(t_token_data *data, t_list **tok_lst, char **ptr);
+void	lex_regular_char(t_token_data *data, char c);
+void	resize_token_buffers(t_token_data *data);
+void	process_character(t_token_data *data, char **ptr, t_list **tok_lst);
+void	prompt_to_token(char *prompt, t_list **tok_lst);
 
 // minishell_helper.c
 void	cleanup_minishell(t_minishell *minishell);
