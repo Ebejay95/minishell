@@ -6,45 +6,87 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 11:12:44 by jeberle           #+#    #+#             */
-/*   Updated: 2024/08/11 17:57:39 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/14 14:00:45 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../include/minishell.h"
 
-t_token *create_token(char *str, char *expmap)
+int	validate_input(const char *str, const char *expmap)
 {
-	t_token *newtok;
+	return (str && *str && expmap && *expmap);
+}
 
-	if (!str || !*str || !expmap || !*expmap)
-		return (NULL);
+t_token	*allocate_token(void)
+{
+	t_token	*newtok;
+
 	newtok = (t_token *)ft_calloc(1, sizeof(t_token));
 	if (!newtok)
 		return (NULL);
 	newtok->token = WORD;
+	newtok->is_freed = 0;
+	return (newtok);
+}
+
+int	set_token_type(t_token *newtok)
+{
 	newtok->type = toktype_to_str(WORD);
 	if (!newtok->type)
-	{
-		free(newtok);
-		return (NULL);
-	}
+		return (0);
+	return (1);
+}
+
+int	set_token_str(t_token *newtok, const char *str)
+{
 	newtok->str = ft_strdup(str);
 	if (!newtok->str)
-	{
-		free(newtok->type);
-		free(newtok);
-		return (NULL);
-	}
+		return (0);
+	return (1);
+}
+
+void	set_token_details(t_token *newtok, const char *str)
+{
 	newtok->detail.rdrc.rdrcmeta = NULL;
 	newtok->detail.rdrc.rdrctarget = NULL;
 	newtok->had_quote = (ft_strchr(str, '\"') || ft_strchr(str, '\''));
+}
+
+int	set_token_expmap(t_token *newtok, const char *expmap)
+{
 	newtok->expmap = ft_strdup(expmap);
-	newtok->is_freed = 0;
 	if (!newtok->expmap)
-	{
+		return (0);
+	return (1);
+}
+
+void	free_token_resources(t_token *newtok)
+{
+	if (newtok->type)
 		free(newtok->type);
+	if (newtok->str)
 		free(newtok->str);
-		free(newtok);
+	free(newtok);
+}
+
+t_token	*create_token(char *str, char *expmap)
+{
+	t_token	*newtok;
+
+	if (!validate_input(str, expmap))
+		return (NULL);
+	newtok = allocate_token();
+	if (!newtok)
+		return (NULL);
+	if (!set_token_type(newtok) || !set_token_str(newtok, str))
+	{
+		free_token_resources(newtok);
+		return (NULL);
+	}
+	set_token_details(newtok, str);
+	if (!set_token_expmap(newtok, expmap))
+	{
+		free_token_resources(newtok);
 		return (NULL);
 	}
 	return (newtok);
@@ -78,7 +120,9 @@ void	put_token_details(t_token *token)
 	}
 	else if (ft_strcmp(token->type, "Redirection") == 0)
 	{
-		ft_printf(" ( rdrcmeta: %s rdrctarget: %s)", token->detail.rdrc.rdrcmeta, token->detail.rdrc.rdrctarget);
+		ft_printf(" ( rdrcmeta: %s rdrctarget: %s)",
+			token->detail.rdrc.rdrcmeta,
+			token->detail.rdrc.rdrctarget);
 	}
 	else if (ft_strcmp(token->type, "File") == 0)
 	{

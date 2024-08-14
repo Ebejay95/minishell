@@ -6,49 +6,48 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 20:46:49 by jeberle           #+#    #+#             */
-/*   Updated: 2024/08/12 20:08:03 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/14 14:03:21 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../include/minishell.h"
 
-void    free_token(void *n)
+void	free_token(void *n)
 {
-    t_token    *token;
+	t_token	*token;
 
-    if (!n)
-        return;
+	if (!n)
+		return ;
+	token = (t_token *)n;
+	if (token->is_freed)
+		return ;
 
-    token = (t_token *)n;
-    if (token->is_freed)
-        return;
-
-    if (token->str)
-    {
-        free(token->str);
-        token->str = NULL;
-    }
-    if (token->type)
-    {
-        free(token->type);
-        token->type = NULL;
-    }
-    if (token->detail.rdrc.rdrcmeta)
-    {
-        free(token->detail.rdrc.rdrcmeta);
-        token->detail.rdrc.rdrcmeta = NULL;
-    }
-    if (token->detail.rdrc.rdrctarget)
-    {
-        free(token->detail.rdrc.rdrctarget);
-        token->detail.rdrc.rdrctarget = NULL;
-    }
-    if (token->expmap)
-    {
-        free(token->expmap);
-        token->expmap = NULL;
-    }
-    token->is_freed = 1;
+	if (token->str)
+	{
+		free(token->str);
+		token->str = NULL;
+	}
+	if (token->type)
+	{
+		free(token->type);
+		token->type = NULL;
+	}
+	if (token->detail.rdrc.rdrcmeta)
+	{
+		free(token->detail.rdrc.rdrcmeta);
+		token->detail.rdrc.rdrcmeta = NULL;
+	}
+	if (token->detail.rdrc.rdrctarget)
+	{
+		free(token->detail.rdrc.rdrctarget);
+		token->detail.rdrc.rdrctarget = NULL;
+	}
+	if (token->expmap)
+	{
+		free(token->expmap);
+		token->expmap = NULL;
+	}
+	token->is_freed = 1;
 }
 
 void	update_tok_type(t_token *tok, enum e_toktype token)
