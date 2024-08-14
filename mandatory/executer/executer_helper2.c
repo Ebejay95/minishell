@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executer_helper2.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeberle <jeberle@student.42heilbronn.de    +#+  +:+       +#+        */
+/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 09:16:46 by chorst            #+#    #+#             */
-/*   Updated: 2024/08/13 23:30:52 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/14 08:44:43 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,7 @@ char	*get_executable(t_minishell *m, char *command)
 
 void	execute_command(t_minishell *m, char *executable, char **argv)
 {
-	char **own;
+	char	**own;
 
 	own = own_env(m->env_list);
 	if (is_builtin(executable))

@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:18:56 by jeberle           #+#    #+#             */
-/*   Updated: 2024/08/13 22:34:50 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/14 08:34:53 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,7 @@
 # define NO_FILE_NAME "No file name specified for redirection\n"
 # define OPEN_FILE_ERROR "Failed to open file for writing (truncate/append)"
 # define NUMERIC_ARG_REQUIRED "numeric argument required"
+# define MEM_ERR "Memory allocation failed\n"
 
 // Sets
 # define ALPH_UP "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -158,6 +159,10 @@ typedef struct s_envlst
 
 typedef struct s_minishell
 {
+	char			*temp1;
+	char			*temp2;
+	char			*temp3;
+	char			*temp4;
 	char			**envp;
 	t_envlst		*env_list;
 	char			*prompt;
@@ -323,6 +328,8 @@ void		free_token(void *n);
 void		handle_child_process(int sig);
 void		handle_main_process(int sig);
 void		setup_signals(t_minishell *minishell);
+void		reset_signals(void);
+void		handle_heredoc_signal(int sig);
 
 // #############################################################################
 // #                               Builtins                                    #

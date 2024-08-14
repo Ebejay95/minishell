@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
+/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/21 13:23:03 by jeberle           #+#    #+#             */
-/*   Updated: 2024/08/13 21:40:33 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/14 08:50:15 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,10 +73,7 @@ static int	handle_escape(char **res, char **exp_res, int *escaped)
 		temp = ft_calloc(ft_strlen(*res) + 2, sizeof(char));
 		exp_tmp = ft_calloc(ft_strlen(*exp_res) + 2, sizeof(char));
 		if (!temp || !exp_tmp)
-		{
-			exp_cln(res, exp_res, NULL, NULL);
-			return (-1);
-		}
+			return (exp_cln(res, exp_res, NULL, NULL), -1);
 		ft_strlcpy(temp, *res, ft_strlen(*res) + 1);
 		ft_strlcpy(exp_tmp, *exp_res, ft_strlen(*exp_res) + 1);
 		free(*res);
@@ -103,12 +100,10 @@ static int	handle_exit_status(t_minishell *m, char **res, char **exp_res)
 		return (-1);
 	}
 	temp = ft_calloc(ft_strlen(*res) + ft_strlen(exit) + 1, sizeof(char));
-	exp_temp = ft_calloc(ft_strlen(*exp_res) + ft_strlen(exit) + 1, sizeof(char));
+	exp_temp = ft_calloc(ft_strlen(*exp_res) + ft_strlen(exit) + 1,
+			sizeof(char));
 	if (!temp || !exp_temp)
-	{
-		exp_cln(res, exp_res, NULL, &exit);
-		return (-1);
-	}
+		return (exp_cln(res, exp_res, NULL, &exit), -1);
 	ft_strlcpy(temp, *res, ft_strlen(*res) + 1);
 	ft_strlcpy(exp_temp, *exp_res, ft_strlen(*exp_res) + 1);
 	free(*res);

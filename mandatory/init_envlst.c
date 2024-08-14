@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 10:00:01 by chorst            #+#    #+#             */
-/*   Updated: 2024/08/13 23:27:33 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/14 09:04:02 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,27 +17,27 @@ void	init_env_list(char **envp, t_minishell *m)
 {
 	char	*name;
 	char	*value;
-	int		shlvl;
+	char	*new_shell_level;
 
-	name = NULL;
-	value = NULL;
 	while (*envp != NULL)
 	{
 		extract_name_value(*envp, &name, &value);
+		new_shell_level = NULL;
 		if (ft_strcmp(name, "SHLVL") == 0)
-		{
-			shlvl = ft_atoi(value);
-			value = ft_itoa(shlvl + 1);
-		}
-		if (ft_strcmp(name, "OLDPWD") != 0)
-			add_env_node(&m->env_list, name, value);
+			new_shell_level = ft_itoa(ft_atoi(value) + 1);
 		else
 		{
-			free(name);
-			free(value);
+			new_shell_level = value;
+			value = NULL;
 		}
+		if (ft_strcmp(name, "OLDPWD") != 0)
+			add_env_node(&m->env_list, name, new_shell_level);
+		else
+			free(name);
 		envp++;
 	}
+	if (new_shell_level != NULL && new_shell_level != value)
+		free(new_shell_level);
 	add_env_node(&m->env_list, "OLDPWD", NULL);
 }
 
@@ -53,16 +53,16 @@ void	extract_name_value(char *arg, char **name, char **value)
 	if (equal_sign)
 	{
 		if (plus_sign && plus_sign < equal_sign)
-			*name = ft_strndup(arg, plus_sign - arg);
+			*name = ft_strndup(arg, plus_sign - arg); // allokierung
 		else
 			*name = ft_strndup(arg, equal_sign - arg);
-		trimmed_value = ft_strtrim(equal_sign + 1, "\"");
-		*value = ft_strdup(trimmed_value);
+		trimmed_value = ft_strtrim(equal_sign + 1, "\""); // allokierung
+		*value = ft_strdup(trimmed_value); // allokierung
 		free(trimmed_value);
 	}
 	else
 	{
-		*name = ft_strdup(arg);
+		*name = ft_strdup(arg); // allokierung
 		*value = NULL;
 	}
 }
@@ -75,24 +75,17 @@ void	add_env_node(t_envlst **env_list, char *name, char *value)
 
 	new_node = malloc(sizeof(t_envlst));
 	if (new_node == NULL)
-	{
-		ft_printf("Memory allocation failed\n");
-		return ;
-	}
+		return ((void)ft_printf(MEM_ERR));
 	new_node->name = name;
 	new_node->value = value;
 	new_node->next = NULL;
 	if (*env_list == NULL)
-	{
 		*env_list = new_node;
-	}
 	else
 	{
 		temp = *env_list;
 		while (temp->next != NULL)
-		{
 			temp = temp->next;
-		}
 		temp->next = new_node;
 	}
 }

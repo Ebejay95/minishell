@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executer.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
+/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/31 17:01:26 by jeberle           #+#    #+#             */
-/*   Updated: 2024/08/14 00:16:00 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/14 09:25:53 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,67 +79,71 @@ void	handle_trunc_append(t_list *current)
 	token->detail.rdrc.rdrctarget = filename;
 }
 
-void    handle_heredoc(t_minishell *m, t_list *current)
+void	handle_heredoc(t_minishell *m, t_list *current)
 {
-    t_token *next_content;
-    t_token *token;
-    char    *heredoc_content;
-    char    *line;
-    char    *delimiter;
+	t_token	*next_content;
+	t_token	*token;
+	char	*heredoc_content;
+	char	*line;
+	char	*delimiter;
+	char	*temp;
+	char	*expanded;
 
-    token = (t_token *)current->content;
-    heredoc_content = ft_strdup("");
-    if (!heredoc_content)
-        return;
+	token = (t_token *)current->content;
+	heredoc_content = ft_strdup("");
+	if (!heredoc_content)
+		return ;
 
-    next_content = NULL;
-    if (current->next)
-        next_content = (t_token *)current->next->content;
-    delimiter = next_content ? next_content->str : "";
+	next_content = NULL;
+	if (current->next)
+		next_content = (t_token *)current->next->content;
+	delimiter = next_content ? next_content->str : "";
 
-    while (1)
-    {
-        line = readline("📄 ");
-        if (!line || ft_strcmp(line, delimiter) == 0)
-        {
-            free(line);
-            break;
-        }
+	while (1)
+	{
+		signal(SIGINT, handle_heredoc_signal);
+		line = readline("📄 ");
+		signal(SIGINT, handle_main_process);
+		if (!line || ft_strcmp(line, delimiter) == 0)
+		{
+			free(line);
+			break ;
+		}
 
-        char *temp = ft_strjoin(heredoc_content, line);
-        if (!temp)
-        {
-            free(line);
-            free(heredoc_content);
-            return;
-        }
-        free(heredoc_content);
-        heredoc_content = temp;
+		temp = ft_strjoin(heredoc_content, line);
+		if (!temp)
+		{
+			free(line);
+			free(heredoc_content);
+			return ;
+		}
+		free(heredoc_content);
+		heredoc_content = temp;
 
-        temp = ft_strjoin(heredoc_content, "\n");
-        if (!temp)
-        {
-            free(line);
-            free(heredoc_content);
-            return;
-        }
-        free(heredoc_content);
-        heredoc_content = temp;
+		temp = ft_strjoin(heredoc_content, "\n");
+		if (!temp)
+		{
+			free(line);
+			free(heredoc_content);
+			return ;
+		}
+		free(heredoc_content);
+		heredoc_content = temp;
 
-        free(line);
-    }
+		free(line);
+	}
 
-    if (next_content && !next_content->had_quote)
-    {
-        char *expanded = expand_hd(m, heredoc_content);
-        if (expanded)
-        {
-            free(heredoc_content);
-            heredoc_content = expanded;
-        }
-    }
+	if (next_content && !next_content->had_quote)
+	{
+		expanded = expand_hd(m, heredoc_content);
+		if (expanded)
+		{
+			free(heredoc_content);
+			heredoc_content = expanded;
+		}
+	}
 
-    token->detail.rdrc.rdrcmeta = heredoc_content;
+	token->detail.rdrc.rdrcmeta = heredoc_content;
 }
 
 void	handle_infile(t_list *current)

@@ -6,7 +6,7 @@
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/05 13:17:22 by chorst            #+#    #+#             */
-/*   Updated: 2024/08/12 16:13:08 by chorst           ###   ########.fr       */
+/*   Updated: 2024/08/14 09:27:06 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,5 +60,24 @@ void	setup_signals(t_minishell *minishell)
 		sa.sa_handler = handle_child_process;
 		sigaction(SIGINT, &sa, NULL);
 		sigaction(SIGQUIT, &sa, NULL);
+	}
+}
+
+void	reset_signals(void)
+{
+	struct termios	tty;
+
+	tcgetattr(STDIN_FILENO, &tty);
+	tty.c_lflag |= ECHOCTL;
+	tcsetattr(STDIN_FILENO, TCSANOW, &tty);
+}
+
+void	handle_heredoc_signal(int sig)
+{
+	if (sig == SIGINT)
+	{
+		write(STDOUT_FILENO, "\n", 1);
+		rl_replace_line("", 0);
+		close(STDIN_FILENO);
 	}
 }
