@@ -3,59 +3,53 @@
 /*                                                        :::      ::::::::   */
 /*   handle_escape.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 09:07:00 by chorst            #+#    #+#             */
-/*   Updated: 2024/08/13 09:47:23 by chorst           ###   ########.fr       */
+/*   Updated: 2024/08/14 12:08:08 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../../include/minishell.h"
 
-int	handle_escape(char **result, char **expmap_result, int *escaped)
+int	allocate_new_buffers(char **t, char **et, const char *r, const char *er)
 {
-	char	*temp;
-	char	*expmap_temp;
 	size_t	result_len;
 	size_t	expmap_len;
 
-	if (!result || !expmap_result || !escaped || !*result || !*expmap_result)
+	result_len = ft_strlen(r);
+	expmap_len = ft_strlen(er);
+	*t = ft_calloc(result_len + 2, sizeof(char));
+	*et = ft_calloc(expmap_len + 2, sizeof(char));
+	if (!*t || !*et)
+	{
+		free(*t);
+		free(*et);
+		return (0);
+	}
+	return (1);
+}
+
+void	append_escape_character(char *t, char *e, const char *r, const char *er)
+{
+	size_t	result_len;
+	size_t	expmap_len;
+
+	result_len = ft_strlen(r);
+	expmap_len = ft_strlen(er);
+	ft_strlcpy(t, r, result_len + 1);
+	ft_strlcpy(e, er, expmap_len + 1);
+	t[result_len] = '\\';
+	e[expmap_len] = '0';
+}
+
+int	handle_escape(char **result, char **expmap_result, int *escaped)
+{
+	if (!are_inputs_valid(result, expmap_result, escaped))
 		return (-1);
-
 	if (*escaped == 0)
-	{
-		*escaped = 1;
-		return (1);
-	}
+		return (handle_first_escape(escaped));
 	else if (*escaped == 1)
-	{
-		*escaped = 0;
-		result_len = ft_strlen(*result);
-		expmap_len = ft_strlen(*expmap_result);
-
-		temp = ft_calloc(result_len + 2, sizeof(char));
-		expmap_temp = ft_calloc(expmap_len + 2, sizeof(char));
-
-		if (!temp || !expmap_temp)
-		{
-			free(temp);
-			free(expmap_temp);
-			exp_cln(result, expmap_result, NULL, NULL);
-			return (-1);
-		}
-
-		ft_strlcpy(temp, *result, result_len + 1);
-		ft_strlcpy(expmap_temp, *expmap_result, expmap_len + 1);
-
-		temp[result_len] = '\\';
-		expmap_temp[expmap_len] = '0';
-
-		free(*result);
-		free(*expmap_result);
-		*result = temp;
-		*expmap_result = expmap_temp;
-
-		return (1);
-	}
+		return (handle_second_escape(result, expmap_result, escaped));
 	return (0);
 }

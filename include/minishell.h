@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeberle <jeberle@student.42heilbronn.de    +#+  +:+       +#+        */
+/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:18:56 by jeberle           #+#    #+#             */
-/*   Updated: 2024/08/14 08:34:53 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/14 12:21:15 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -172,6 +172,7 @@ typedef struct s_minishell
 	int				last_exitcode;
 	int				exitcode;
 	int				pid;
+	int				in_heredoc;
 	t_list			*tok_lst;
 	t_list			*exec_lst;
 	int				pipes;
@@ -259,6 +260,24 @@ void		expand(t_minishell *m, char **expanded, char **expanded_map, const char *s
 // #                               Handler                                     #
 // #############################################################################
 
+// handle_exit_status.c
+int		handle_exit_status(t_minishell *m, char **res, char **expmap_res);
+int		are_exitinputs_valid(t_minishell *m, char **res, char **expmap_res);
+char	*get_exit_status_str(t_minishell *m);
+int		append_exit_status(char **res, char **expmap_res, const char *exit_status_str);
+int		allocate_exit_buffers(char **temp, char **expmap_temp, size_t res_len, size_t exit_len);
+void	copy_and_append_strings(char *dest, const char *src1, const char *src2, size_t len1, size_t len2);
+void	copy_and_append_expmap(char *dest, const char *src, const char *exit_status_str, size_t res_len);
+int		handle_exit_status(t_minishell *m, char **res, char **expmap_res);
+
+// handle_escape.c
+int		are_inputs_valid(char **result, char **expmap_result, int *escaped);
+int		handle_first_escape(int *escaped);
+int		handle_second_escape(char **result, char **expmap_result, int *escaped);
+int		allocate_new_buffers(char **t, char **et, const char *r, const char *er);
+void	append_escape_character(char *t, char *e, const char *r, const char *er);
+int		handle_escape(char **result, char **expmap_result, int *escaped);
+
 // handle_heredoc.c
 void		handle_heredoc(t_minishell *m, t_list *current);
 
@@ -267,6 +286,7 @@ void		handle_infile(t_list *current);
 
 // handle_trunc_append.c
 void		handle_trunc_append(t_list *current);
+t_token		*get_next_content(t_list *current);
 
 // #############################################################################
 // #                                Lexer                                      #
