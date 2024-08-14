@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:18:56 by jeberle           #+#    #+#             */
-/*   Updated: 2024/08/14 12:52:14 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/14 13:36:45 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -150,6 +150,23 @@ typedef struct s_token
 //     token->detail.pipe.fdout = fdout;
 // }
 
+typedef struct s_pipe_info
+{
+	int		pipe_fd[2];
+	int		prv_pipe;
+	int		i;
+	int		total;
+	pid_t	*pids;
+}	t_pipe_info;
+
+typedef struct s_fd
+{
+	int	input;
+	int	output;
+	int	last_input;
+	int	last_output;
+} t_fd;
+
 typedef struct s_envlst
 {
 	char			*name;
@@ -204,9 +221,6 @@ void		execute_builtin(t_minishell *m, char *com, char **argv, int argc);
 void		cleanup(char **argv);
 int			is_word_token(t_list *node);
 int			resize_argv(char ***argv, int *capacity);
-
-// executer_command.c
-void		run_command(t_minishell *m, t_list *current);
 
 // executer_env.c
 char		**own_env(t_envlst *env_lst);
