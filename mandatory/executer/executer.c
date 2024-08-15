@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/31 17:01:26 by jeberle           #+#    #+#             */
-/*   Updated: 2024/08/15 21:00:44 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/15 23:36:04 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,4 +78,5 @@ void	execute(t_minishell *m)
 			run_seg(m, m->tok_lst, STDIN_FILENO, STDOUT_FILENO);
 	}
 	reset_sequences(m);
+	// exit code... TODO!!!!
 }

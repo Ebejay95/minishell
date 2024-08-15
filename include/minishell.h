@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:18:56 by jeberle           #+#    #+#             */
-/*   Updated: 2024/08/15 21:05:42 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/16 00:08:42 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -214,6 +214,65 @@ typedef struct s_minishell
 	t_btree			*ast;
 }	t_minishell;
 
+typedef struct s_exp {
+	char		*result;
+	char		*expmap_result;
+	char		*str;
+	char		*expmap;
+	size_t		start;
+	size_t		end;
+	t_minishell	*m;
+	t_token		*token;
+}	t_exp;
+
+typedef struct s_expand_ctx
+{
+	t_minishell	*m;
+	char		**result;
+	char		**expmap_result;
+	const char	*str;
+	char		*expmap;
+	size_t		*i;
+	size_t		var_start;
+}	t_expand_ctx;
+
+typedef struct s_exp_p
+{
+	t_minishell	*m;
+	char		**expanded;
+	char		**expanded_map;
+	const char	*str;
+	char		*expmap;
+	size_t		start;
+	size_t		end;
+}	t_exp_p;
+
+typedef struct s_memory_info {
+	char	*temp;
+	char	*expmap_temp;
+	size_t	result_len;
+	size_t	expmap_len;
+	size_t	value_len;
+}	t_memory_info;
+
+typedef struct s_exp_data {
+	char	*expanded;
+	char	*expanded_map;
+	char	*temp;
+	char	*expmap_temp;
+}	t_exp_data;
+
+typedef struct s_expand_data
+{
+	char			**res;
+	char			**exp_res;
+	const char		*str;
+	char			*expmap;
+	size_t			*i;
+	int				*escaped;
+	t_exp_p			*params;
+}	t_expand_data;
+
 // #############################################################################
 // #                               Builtins                                    #
 // #############################################################################
@@ -350,6 +409,34 @@ void	execute(t_minishell *m);
 void	ft_strfillcat(char *dest, const char *src, char fill_char);
 char	*get_var_name_exp(const char *str, const char *expmap, size_t *pos);
 char	*get_var_name(const char *str, size_t *pos);
+int		handle_no_var_name(t_expand_ctx *ctx);
+int		allocate_memory(t_memory_info *m);
+void	copy_and_concatenate(t_expand_ctx *ctx, t_memory_info *m, char *v);
+void	update_expmap(t_expand_ctx *ctx, char *expmap_temp, char *var_value);
+void	update_and_free(t_expand_ctx *ctx, t_memory_info *mem_info);
+int		handle_var_value(t_expand_ctx *ctx, char *var_value);
+int		handle_variable(t_expand_ctx *ctx);
+void	init_exp(t_exp *exp);
+void	handle_unexpanded_part(t_exp *exp);
+void	init_exp_data(t_exp_data *data);
+void	setup_expand_params(t_exp *exp, t_exp_p *params, t_exp_data *data);
+int		allocate_temp_memory(t_exp *e, t_exp_data *d);
+int		allocate_expmap_temp_memory(t_exp *exp, t_exp_data *data);
+void	update_result(t_exp *exp, t_exp_data *data);
+void	update_expmap_result(t_exp *exp, t_exp_data *data);
+void	cleanup_expansion_data(t_exp_data *data);
+void	handle_expanded_part(t_exp *exp);
+void	process_token(t_exp *e);
+void	expand_token(t_minishell *m, t_token *token);
+int		expmapcheck(char *expmap, const char *str, int i, int escaped);
+void	expcn(char **res, char **exp_res, char **var_name, char **exit_stats);
+int		initialize_expansion(t_expand_data *d);
+int		handle_dollar_sign(t_expand_data *data, t_expand_ctx *ctx);
+int		handle_escape_character(t_expand_data *d);
+int		append_regular_character(t_expand_data *data);
+int		process_character(t_expand_data *data, t_expand_ctx *ctx);
+void	finalize_expansion(t_expand_data *data);
+void	expand(t_exp_p *p, t_expand_ctx *ctx);
 
 // expand_heredoc.c
 char	*expand_var(t_minishell *m, char *str, size_t *i, char **result);
@@ -362,8 +449,8 @@ void	afterbreakup(t_list **tok_lst);
 void	expand_toklst(t_minishell *m, t_list **tok_lst);
 
 // expand.c
-void	exp_cln(char **res, char **exp_res, char **var_name, char **exit_stats);
-void	expand(t_minishell *m, char **expanded, char **expanded_map, const char *str, char *expmap, size_t start, size_t end);
+void	expcn(char **res, char **exp_res, char **var_name, char **exit_stats);
+void	expand(t_exp_p *params, t_expand_ctx *ctx);
 
 // #############################################################################
 // #                               Handler                                     #
@@ -395,7 +482,7 @@ void	handle_trunc_append(t_list *current);
 t_token	*get_next_content(t_list *current);
 
 // handle_variable.c
-int		handle_variable(t_minishell *m, char **result, char **expmap_result, const char *str, char *expmap, size_t *i);
+int		handle_variable(t_expand_ctx *ctx);
 
 // handle_trunc_append2.c
 t_token	*get_next_content(t_list *current);

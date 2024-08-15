@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handle_exit_status.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 09:08:08 by chorst            #+#    #+#             */
-/*   Updated: 2024/08/14 15:36:44 by chorst           ###   ########.fr       */
+/*   Updated: 2024/08/16 00:03:33 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ int	add_exit_status(char **res, char **expmap_res, const char *exit)
 	exit_len = ft_strlen(exit);
 	if (!alloc_exit_buf(&t.temp, &t.expmap, res_len, exit_len))
 	{
-		exp_cln(res, expmap_res, NULL, NULL);
+		expcn(res, expmap_res, NULL, NULL);
 		return (0);
 	}
 	add_str(t.temp, *res, exit, exit_len);
@@ -79,7 +79,7 @@ int	handle_exit_status(t_minishell *m, char **res, char **expmap_res)
 	exit_status_str = get_exit_status_str(m);
 	if (!exit_status_str)
 	{
-		exp_cln(res, expmap_res, NULL, NULL);
+		expcn(res, expmap_res, NULL, NULL);
 		return (-1);
 	}
 	if (!add_exit_status(res, expmap_res, exit_status_str))

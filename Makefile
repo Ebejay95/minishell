@@ -6,7 +6,7 @@
 #    By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/25 22:43:08 by jonathanebe       #+#    #+#              #
-#    Updated: 2024/08/15 20:53:33 by jeberle          ###   ########.fr        #
+#    Updated: 2024/08/16 00:16:25 by jeberle          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -110,6 +110,10 @@ SRCS=	mandatory/builtins/cd.c \
 		mandatory/expander/expand_token.c \
 		mandatory/expander/expand.c \
 		mandatory/expander/expand_helper.c \
+		mandatory/expander/expand_helper2.c \
+		mandatory/expander/expand_helper3.c \
+		mandatory/expander/expand_helper4.c \
+		mandatory/expander/expand_helper5.c \
 		mandatory/expander/expand_heredoc.c \
 		mandatory/handler/handle_heredoc.c \
 		mandatory/handler/handle_infile.c \
@@ -120,6 +124,7 @@ SRCS=	mandatory/builtins/cd.c \
 		mandatory/handler/handle_exit_status.c \
 		mandatory/handler/handle_exit_status2.c \
 		mandatory/handler/handle_variable.c \
+		mandatory/handler/handle_variable2.c \
 		mandatory/lexer/lexer_helper.c \
 		mandatory/lexer/lexer.c \
 		mandatory/lexer/prompt_to_token.c \

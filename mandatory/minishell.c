@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:01:33 by jeberle           #+#    #+#             */
-/*   Updated: 2024/08/15 21:06:12 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/15 21:36:26 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,7 +96,7 @@ static int	handle_input(t_minishell *minishell)
 	return (0);
 }
 
-int g_global = 0;
+int	g_global = 0;
 
 int	main(int argc, char **argv, char **envp)
 {
@@ -112,7 +112,7 @@ int	main(int argc, char **argv, char **envp)
 	{
 		if (access(argv[1], F_OK) == -1)
 		{
-			ft_printf("🍕🚀🌈🦄🍺: %s: No such file or directory\n", argv[1]);
+			ft_printf("bash: %s: No such file or directory\n", argv[1]);
 			minishell.last_exitcode = 127;
 			minishell.leave = 1;
 		}
