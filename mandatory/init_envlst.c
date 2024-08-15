@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init_envlst.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeberle <jeberle@student.42heilbronn.de    +#+  +:+       +#+        */
+/*   By: jonathaneberle <jonathaneberle@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 10:00:01 by chorst            #+#    #+#             */
-/*   Updated: 2024/08/14 09:04:02 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/15 15:22:53 by jonathanebe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,8 +36,6 @@ void	init_env_list(char **envp, t_minishell *m)
 			free(name);
 		envp++;
 	}
-	if (new_shell_level != NULL && new_shell_level != value)
-		free(new_shell_level);
 	add_env_node(&m->env_list, "OLDPWD", NULL);
 }
 

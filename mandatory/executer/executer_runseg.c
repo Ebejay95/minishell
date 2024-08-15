@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executer_runseg.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jonathaneberle <jonathaneberle@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/14 12:46:24 by jeberle           #+#    #+#             */
-/*   Updated: 2024/08/14 14:45:39 by chorst           ###   ########.fr       */
+/*   Updated: 2024/08/15 15:25:57 by jonathanebe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,6 @@ void	run_command(t_minishell *m, char **args)
 		free(path);
 	}
 	ft_fprintf(2, "bash: %s: command not found\n", args[0]);
-	exit(1);
 }
 
 void	run(t_minishell *m, char **args, int arg_count, t_fd *fd)

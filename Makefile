@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: chorst <chorst@student.42.fr>              +#+  +:+       +#+         #
+#    By: jonathaneberle <jonathaneberle@student.    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/25 22:43:08 by jonathanebe       #+#    #+#              #
-#    Updated: 2024/08/14 15:51:57 by chorst           ###   ########.fr        #
+#    Updated: 2024/08/15 14:34:17 by jonathanebe      ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -47,7 +47,7 @@ NAME_BONUS=minishell_bonus
 
 CC=cc
 CFLAGS=-Wall -Wextra -Werror -I/usr/local/opt/readline/include
-LDFLAGS=
+LDFLAGS=-L/usr/local/opt/readline/lib -lreadline
 
 ifeq ($(DEBUG), 1)
 	CFLAGS += -fsanitize=address -g
@@ -119,6 +119,8 @@ SRCS=	mandatory/builtins/cd.c \
 		mandatory/handler/handle_escape2.c \
 		mandatory/handler/handle_exit_status.c \
 		mandatory/handler/handle_exit_status2.c \
+		mandatory/handler/handle_variable.c \
+		mandatory/lexer/lexer_helper.c \
 		mandatory/lexer/lexer.c \
 		mandatory/ast.c \
 		mandatory/hierarchy_validation.c \
