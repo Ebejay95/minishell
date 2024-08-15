@@ -6,7 +6,7 @@
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:18:56 by jeberle           #+#    #+#             */
-/*   Updated: 2024/08/14 15:51:07 by chorst           ###   ########.fr       */
+/*   Updated: 2024/08/15 09:45:44 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,29 +126,6 @@ typedef struct s_token
 		}	minifile;
 	}	detail;
 }	t_token;
-
-// void set_tok_io_param(t_token *tok, int fdin, int fdout, const char *rdrctyp)
-// {
-//     if (token == NULL) return;
-//     token->token = REDIRECTION;
-//     token->detail.redirection.fdin = fdin;
-//     token->detail.redirection.fdout = fdout;
-//     token->detail.redirection.rdrcmeta = rdrcmeta;
-// }
-
-// void set_command_arg_tok_detail(t_token *token, int arglen, int is_command)
-// {
-//     if (token == NULL) return;
-//     token->token = is_command ? COMMAND : ARGUMENT;
-//     token->detail.arglen = arglen;
-// }
-
-// void set_pipe_token_details(t_token *token, int fdin, int fdout) {
-//     if (token == NULL) return;
-//     token->token = PIPE;
-//     token->detail.pipe.fdin = fdin;
-//     token->detail.pipe.fdout = fdout;
-// }
 
 typedef struct s_temps
 {
@@ -334,7 +311,6 @@ void	run(t_minishell *m, char **args, int arg_count, t_fd *fd);
 void	cleanup_fds(t_fd *fd);
 void	run_seg(t_minishell *m, t_list *exec_lst, int input_fd, int output_fd);
 
-
 // executer_signals.c
 void	run_child_process(t_minishell *m, t_pipe_info *pi);
 void	handle_parent_process(t_pipe_info *pi);
@@ -409,7 +385,6 @@ char	*add_line(char *cont, char *tmp, const char *line, size_t total_size);
 // #                                Lexer                                      #
 // #############################################################################
 
-
 // #############################################################################
 // #                          Mandatory Functions                              #
 // #############################################################################
@@ -467,6 +442,5 @@ void	handle_main_process(int sig);
 void	setup_signals(t_minishell *minishell);
 void	reset_signals(void);
 void	handle_heredoc_signal(int sig);
-
 
 #endif
