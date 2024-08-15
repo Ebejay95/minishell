@@ -3,37 +3,45 @@
 /*                                                        :::      ::::::::   */
 /*   minishell2.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeberle <jeberle@student.42heilbronn.de    +#+  +:+       +#+        */
+/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/23 13:04:21 by chorst            #+#    #+#             */
-/*   Updated: 2024/08/13 23:25:15 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/15 19:26:14 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../include/minishell.h"
 
-static void	ft_envlstclear(t_minishell *minishell)
+static void ft_envlstclear(t_minishell *minishell)
 {
-	t_envlst	*buffer;
+	t_envlst    *current;
+	t_envlst    *next;
 
-	if (minishell->env_list == NULL)
-		return ;
-	while (minishell->env_list != NULL)
+	if (minishell == NULL || minishell->env_list == NULL)
+		return;
+	current = minishell->env_list;
+	while (current != NULL)
 	{
-		buffer = (minishell->env_list)->next;
-		if (minishell->env_list->name)
-			free(minishell->env_list->name);
-		if (minishell->env_list->value)
-			free(minishell->env_list->value);
-		minishell->env_list = buffer;
+		next = current->next;
+		if (current->name)
+		{
+			free(current->name);
+			current->name = NULL;
+		}
+		if (current->value)
+		{
+			free(current->value);
+			current->value = NULL;
+		}
+		current = next;
 	}
+	minishell->env_list = NULL;
 }
 
 // Cleanup the minishell struct
 void	cleanup_minishell(t_minishell *minishell)
 {
-	ft_printf("free_tcleanup_minishelloken\n");
-	if (minishell->prompt)
+	if (minishell->prompt && global == 0)
 		free(minishell->prompt);
 	minishell->prompt = NULL;
 	ft_envlstclear(minishell);

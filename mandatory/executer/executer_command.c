@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executer_command.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 15:29:07 by chorst            #+#    #+#             */
-/*   Updated: 2024/08/14 14:41:08 by chorst           ###   ########.fr       */
+/*   Updated: 2024/08/15 19:40:43 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,11 +62,19 @@ int	is_word_token(t_list *node)
 int	resize_argv(char ***argv, int *capacity)
 {
 	char	**new_argv;
+	int		i;
 
 	*capacity *= 2;
-	new_argv = (char **)realloc(*argv, (*capacity + 1) * sizeof(char *));
+	new_argv = (char **)ft_calloc(*capacity + 1, sizeof(char *));
 	if (!new_argv)
 		return (cleanup(*argv), 0);
+	i = 0;
+	while ((*argv)[i] != NULL)
+	{
+		new_argv[i] = (*argv)[i];
+		i++;
+	}
+	free(*argv);
 	*argv = new_argv;
 	return (1);
 }

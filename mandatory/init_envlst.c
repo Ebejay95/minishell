@@ -3,16 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   init_envlst.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jonathaneberle <jonathaneberle@student.    +#+  +:+       +#+        */
+/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 10:00:01 by chorst            #+#    #+#             */
-/*   Updated: 2024/08/15 15:22:53 by jonathanebe      ###   ########.fr       */
+/*   Updated: 2024/08/15 19:38:48 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../include/minishell.h"
 
-// Function that initializes the environment list
 void	init_env_list(char **envp, t_minishell *m)
 {
 	char	*name;
@@ -21,25 +20,26 @@ void	init_env_list(char **envp, t_minishell *m)
 
 	while (*envp != NULL)
 	{
+		name = NULL;
+		value = NULL;
 		extract_name_value(*envp, &name, &value);
 		new_shell_level = NULL;
 		if (ft_strcmp(name, "SHLVL") == 0)
-			new_shell_level = ft_itoa(ft_atoi(value) + 1);
-		else
 		{
-			new_shell_level = value;
-			value = NULL;
+			new_shell_level = ft_itoa(ft_atoi(value) + 1);
+			free(value);
 		}
+		else
+			new_shell_level = value;
 		if (ft_strcmp(name, "OLDPWD") != 0)
 			add_env_node(&m->env_list, name, new_shell_level);
 		else
-			free(name);
+			ft_multifree(name, new_shell_level, NULL, NULL);
 		envp++;
 	}
-	add_env_node(&m->env_list, "OLDPWD", NULL);
+	add_env_node(&m->env_list, ft_strdup("OLDPWD"), NULL);
 }
 
-// Function that extracts the name and value of an environment variable
 void	extract_name_value(char *arg, char **name, char **value)
 {
 	char	*equal_sign;
@@ -51,21 +51,19 @@ void	extract_name_value(char *arg, char **name, char **value)
 	if (equal_sign)
 	{
 		if (plus_sign && plus_sign < equal_sign)
-			*name = ft_strndup(arg, plus_sign - arg); // allokierung
+			*name = ft_strndup(arg, plus_sign - arg);
 		else
 			*name = ft_strndup(arg, equal_sign - arg);
-		trimmed_value = ft_strtrim(equal_sign + 1, "\""); // allokierung
-		*value = ft_strdup(trimmed_value); // allokierung
-		free(trimmed_value);
+		trimmed_value = ft_strtrim(equal_sign + 1, "\"");
+		*value = trimmed_value;
 	}
 	else
 	{
-		*name = ft_strdup(arg); // allokierung
+		*name = ft_strdup(arg);
 		*value = NULL;
 	}
 }
 
-// Function that adds a node to the environment list
 void	add_env_node(t_envlst **env_list, char *name, char *value)
 {
 	t_envlst	*new_node;
@@ -73,7 +71,11 @@ void	add_env_node(t_envlst **env_list, char *name, char *value)
 
 	new_node = malloc(sizeof(t_envlst));
 	if (new_node == NULL)
+	{
+		free(name);
+		free(value);
 		return ((void)ft_printf(MEM_ERR));
+	}
 	new_node->name = name;
 	new_node->value = value;
 	new_node->next = NULL;
@@ -88,7 +90,6 @@ void	add_env_node(t_envlst **env_list, char *name, char *value)
 	}
 }
 
-// Function that finds an environment variable in the list
 t_envlst	*find_env_var(t_envlst *head, const char *name)
 {
 	t_envlst	*current;

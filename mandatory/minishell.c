@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeberle <jeberle@student.42heilbronn.de    +#+  +:+       +#+        */
+/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:01:33 by jeberle           #+#    #+#             */
-/*   Updated: 2024/08/13 23:12:11 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/15 19:15:47 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,8 +31,11 @@ static void	interactive_mode(t_minishell *minishell)
 	close(tty_fd);
 	if (minishell->modus == 1)
 		minishell->prompt = readline("🍕🚀🌈🦄🍺 ");
-	if (!minishell->prompt)
+	if (!minishell->prompt && global == 0)
+	{
 		exit(0);
+	}
+	global = 0;
 }
 
 // Function that defines the non-interactive mode
@@ -94,10 +97,14 @@ static int	handle_input(t_minishell *minishell)
 	return (0);
 }
 
+int global = 0;
+
 int	main(int argc, char **argv, char **envp)
 {
 	t_minishell	minishell;
+	int			global;
 
+	global = 0;
 	minishell.env_list = NULL;
 	init_env_list(envp, &minishell);
 	setup_signals(&minishell);

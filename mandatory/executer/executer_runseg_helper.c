@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executer_runseg_helper.c                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jonathaneberle <jonathaneberle@student.    +#+  +:+       +#+        */
+/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/14 14:31:50 by chorst            #+#    #+#             */
-/*   Updated: 2024/08/15 15:26:37 by jonathanebe      ###   ########.fr       */
+/*   Updated: 2024/08/15 18:53:20 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,10 @@ void	exec_builtin_cmd(t_minishell *m, char **args, int arg_count, t_fd *fd)
 		dup2(fd->last_output, STDOUT_FILENO);
 	execute_builtin(m, args[0], args, arg_count);
 	if (ft_strcmp(args[0], "exit") == 0)
+	{
+		write(1, "exec\n", 5);
 		exit(m->exitcode);
+	}
 }
 
 void	execute_external_command(t_minishell *m, char **args, t_fd *fd)
@@ -60,7 +63,7 @@ void	execute_external_command(t_minishell *m, char **args, t_fd *fd)
 	if (!tmp)
 	{
 		ft_fprintf(2, "bash: %s: Command not found\n", args[0]);
-		exit(1);
+		return ;
 	}
 	signal(SIGINT, SIG_IGN);
 	signal(SIGQUIT, SIG_IGN);

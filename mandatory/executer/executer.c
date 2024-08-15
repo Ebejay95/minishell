@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executer.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/31 17:01:26 by jeberle           #+#    #+#             */
-/*   Updated: 2024/08/14 14:03:15 by chorst           ###   ########.fr       */
+/*   Updated: 2024/08/15 19:02:26 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,7 @@ int	fork_and_execute(t_minishell *m, t_pipe_info *pi)
 	if (pi->pids[pi->i] == 0)
 	{
 		run_child_process(m, pi);
+		write(1, "fork\n", 5);
 		exit(1);
 	}
 	else if (pi->pids[pi->i] < 0)
@@ -73,7 +74,8 @@ void	execute(t_minishell *m)
 	{
 		debug_print(m, 0);
 		prexecute(m, &(m->tok_lst), &(m->exec_lst));
-		run_seg(m, m->tok_lst, STDIN_FILENO, STDOUT_FILENO);
+		if (global == 0)
+			run_seg(m, m->tok_lst, STDIN_FILENO, STDOUT_FILENO);
 	}
 	reset_sequences(m);
 }

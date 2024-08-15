@@ -3,32 +3,39 @@
 /*                                                        :::      ::::::::   */
 /*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 15:10:58 by chorst            #+#    #+#             */
-/*   Updated: 2024/08/13 15:38:13 by chorst           ###   ########.fr       */
+/*   Updated: 2024/08/15 17:43:52 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../../include/minishell.h"
 
 // Function to handle 'cd -' case
-void	cd_oldpwd(t_envlst **envp)
+void    cd_oldpwd(t_envlst **envp)
 {
 	char	*oldpwd;
 	char	*current_pwd;
 
-	oldpwd = my_getenv("OLDPWD", *envp);
-	if (!oldpwd)
-		return ((void)printf("🍕🚀🌈🦄🍺: cd: OLDPWD not set\n"));
-	if (chdir(oldpwd) == -1)
-		return ((void)printf("🍕🚀🌈🦄🍺: cd: %s: No such file or directory\n",
-				oldpwd));
-	printf("%s\n", oldpwd);
 	current_pwd = getcwd(NULL, 0);
 	if (!current_pwd)
 		return (perror("getcwd"));
-	change_env(&(*envp), "OLDPWD", oldpwd, 0);
+	oldpwd = my_getenv("OLDPWD", *envp);
+	if (!oldpwd)
+		return (free(current_pwd), (void)printf(ERR_OLDPWD));
+	if (chdir(oldpwd) == -1)
+	{
+		free(current_pwd);
+		printf("🍕🚀🌈🦄🍺: cd: %s: No such file or directory\n", oldpwd);
+		return ;
+	}
+	printf("%s\n", oldpwd);
+	change_env(&(*envp), "OLDPWD", current_pwd, 0);
+	free(current_pwd);
+	current_pwd = getcwd(NULL, 0);
+	if (!current_pwd)
+		return (perror("getcwd"));
 	change_env(&(*envp), "PWD", current_pwd, 0);
 	free(current_pwd);
 }

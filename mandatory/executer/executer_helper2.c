@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 09:16:46 by chorst            #+#    #+#             */
-/*   Updated: 2024/08/14 12:32:24 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/15 18:53:32 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,6 +93,7 @@ void	execute_command(t_minishell *m, char *executable, char **argv)
 		execve(executable, argv, own);
 		perror("execve failed");
 		free(executable);
+		write(1, "cmds\n", 5);
 		exit(EXIT_FAILURE);
 	}
 }
