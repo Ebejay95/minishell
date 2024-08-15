@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:01:33 by jeberle           #+#    #+#             */
-/*   Updated: 2024/08/15 19:15:47 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/15 19:45:15 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,6 @@ static int	handle_input(t_minishell *minishell)
 	minishell->ast = ft_btreenew(NULL);
 	if (minishell->prompt)
 	{
-
 		minishell->leave = 0;
 		lex_prompt(minishell);
 		pre_exec_prep(minishell);

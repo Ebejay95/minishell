@@ -6,7 +6,7 @@
 #    By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/25 22:43:08 by jonathanebe       #+#    #+#              #
-#    Updated: 2024/08/15 17:31:59 by jeberle          ###   ########.fr        #
+#    Updated: 2024/08/15 19:46:39 by jeberle          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -122,6 +122,10 @@ SRCS=	mandatory/builtins/cd.c \
 		mandatory/handler/handle_variable.c \
 		mandatory/lexer/lexer_helper.c \
 		mandatory/lexer/lexer.c \
+		mandatory/tokens/tokens.c \
+		mandatory/tokens/tokens2.c \
+		mandatory/tokens/tokens3.c \
+		mandatory/tokens/tokens4.c \
 		mandatory/ast.c \
 		mandatory/hierarchy_validation.c \
 		mandatory/init_envlst.c \
@@ -132,8 +136,6 @@ SRCS=	mandatory/builtins/cd.c \
 		mandatory/remove_chars.c \
 		mandatory/whitespace_handler.c \
 		mandatory/signals.c \
-		mandatory/tokens.c \
-		mandatory/tokens2.c \
 
 BONUS_SRCS= \
 # bonus/minishell_bonus.c \

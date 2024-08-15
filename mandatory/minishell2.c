@@ -6,19 +6,19 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/23 13:04:21 by chorst            #+#    #+#             */
-/*   Updated: 2024/08/15 19:26:14 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/15 19:48:43 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../include/minishell.h"
 
-static void ft_envlstclear(t_minishell *minishell)
+static void	ft_envlstclear(t_minishell *minishell)
 {
-	t_envlst    *current;
-	t_envlst    *next;
+	t_envlst	*current;
+	t_envlst	*next;
 
 	if (minishell == NULL || minishell->env_list == NULL)
-		return;
+		return ;
 	current = minishell->env_list;
 	while (current != NULL)
 	{

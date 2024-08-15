@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:18:56 by jeberle           #+#    #+#             */
-/*   Updated: 2024/08/15 18:40:55 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/15 19:45:53 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,29 +134,6 @@ typedef struct s_token
 	}	detail;
 }	t_token;
 
-// void set_tok_io_param(t_token *tok, int fdin, int fdout, const char *rdrctyp)
-// {
-//     if (token == NULL) return;
-//     token->token = REDIRECTION;
-//     token->detail.redirection.fdin = fdin;
-//     token->detail.redirection.fdout = fdout;
-//     token->detail.redirection.rdrcmeta = rdrcmeta;
-// }
-
-// void set_command_arg_tok_detail(t_token *token, int arglen, int is_command)
-// {
-//     if (token == NULL) return;
-//     token->token = is_command ? COMMAND : ARGUMENT;
-//     token->detail.arglen = arglen;
-// }
-
-// void set_pipe_token_details(t_token *token, int fdin, int fdout) {
-//     if (token == NULL) return;
-//     token->token = PIPE;
-//     token->detail.pipe.fdin = fdin;
-//     token->detail.pipe.fdout = fdout;
-// }
-
 typedef struct s_var_data
 {
 	char		**result;
@@ -196,7 +173,7 @@ typedef struct s_fd
 	int	output;
 	int	last_input;
 	int	last_output;
-} t_fd;
+}	t_fd;
 
 typedef struct s_pipe_data
 {
@@ -361,7 +338,6 @@ void	run(t_minishell *m, char **args, int arg_count, t_fd *fd);
 void	cleanup_fds(t_fd *fd);
 void	run_seg(t_minishell *m, t_list *exec_lst, int input_fd, int output_fd);
 
-
 // executer_signals.c
 void	run_child_process(t_minishell *m, t_pipe_info *pi);
 void	handle_parent_process(t_pipe_info *pi);
@@ -439,6 +415,34 @@ char	*add_line(char *cont, char *tmp, const char *line, size_t total_size);
 // #                                Lexer                                      #
 // #############################################################################
 
+// #############################################################################
+// #                                Tokens                                     #
+// #############################################################################
+
+// tokens.c
+int		validate_input(const char *str, const char *expmap);
+t_token	*allocate_token(void);
+int		set_token_type(t_token *newtok);
+int		set_token_str(t_token *newtok, const char *str);
+void	set_token_details(t_token *newtok, const char *str);
+
+// tokens2.c
+void	free_if_not_null(void **ptr);
+void	free_token(void *n);
+void	update_tok_type(t_token *tok, enum e_toktype token);
+void	update_tok_type_next_word(t_list *current, enum e_toktype token);
+void	update_tok_type_next(t_list *current, enum e_toktype token);
+
+// tokens3.c
+int		set_token_expmap(t_token *newtok, const char *expmap);
+void	free_token_resources(t_token *newtok);
+t_token	*create_token(char *str, char *expmap);
+char	*toktype_to_str(enum e_toktype token);
+void	put_token_details(t_token *token);
+
+// tokens4.c
+void	put_token(void *content);
+t_token	tok_lst_get(void *n);
 
 // #############################################################################
 // #                          Mandatory Functions                              #
@@ -493,20 +497,11 @@ void	remove_helper(const char *s, const char *chrs_to_rmv, char *new_s);
 // whitespace_handler.c
 char	*whitespace_handler(const char *str);
 
-// tokens.c
-t_token	*create_token(char *str, char *expmap);
-char	*toktype_to_str(enum e_toktype token);
-void	put_token(void *content);
-void	update_tok_type(t_token *tok, enum e_toktype token);
-void	update_tok_type_next(t_list *current, enum e_toktype token);
-void	update_tok_type_next_word(t_list *current, enum e_toktype token);
-void	free_token(void *n);
 // signal.c
 void	handle_child_process(int sig);
 void	handle_main_process(int sig);
 void	setup_signals(t_minishell *minishell);
 void	reset_signals(void);
 void	handle_heredoc_signal(int sig);
-
 
 #endif

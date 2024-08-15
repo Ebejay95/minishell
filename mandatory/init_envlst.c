@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 10:00:01 by chorst            #+#    #+#             */
-/*   Updated: 2024/08/15 19:38:48 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/15 19:46:01 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,8 @@ void	extract_name_value(char *arg, char **name, char **value)
 		else
 			*name = ft_strndup(arg, equal_sign - arg);
 		trimmed_value = ft_strtrim(equal_sign + 1, "\"");
-		*value = trimmed_value;
+		*value = ft_strdup(trimmed_value);
+		free(trimmed_value);
 	}
 	else
 	{
