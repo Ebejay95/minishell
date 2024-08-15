@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/05 13:17:22 by chorst            #+#    #+#             */
-/*   Updated: 2024/08/15 18:35:32 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/15 21:00:44 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ void	reset_signals(void)
 
 void	handle_heredoc_signal(int sig)
 {
-	global = 1;
+	g_global = 1;
 	if (sig == SIGINT)
 	{
 		write(STDOUT_FILENO, "\n", 1);

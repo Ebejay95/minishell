@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:18:56 by jeberle           #+#    #+#             */
-/*   Updated: 2024/08/15 19:45:53 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/15 21:05:42 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,10 +84,10 @@
 # define DEBUG_LOG "/tmp/minishell_debug.log"
 
 // #############################################################################
-// #                        the one and only global                            #
+// #                        the one and only g_global                          #
 // #############################################################################
 
-extern int global;
+extern int	g_global;
 
 // #############################################################################
 // #                                 Enums                                     #
@@ -107,6 +107,18 @@ typedef enum e_toktype
 // #############################################################################
 // #                               Structures                                  #
 // #############################################################################
+
+typedef struct s_tokenizer_state
+{
+	char	*ptr;
+	char	*current_token;
+	char	*expmap;
+	int		current_pos;
+	int		quote_level;
+	int		escape_next;
+	int		current_token_size;
+	t_list	**tok_lst;
+}	t_tokenizer_state;
 
 typedef struct s_token
 {
@@ -133,27 +145,6 @@ typedef struct s_token
 		}	minifile;
 	}	detail;
 }	t_token;
-
-typedef struct s_var_data
-{
-	char		**result;
-	char		**expmap_result;
-	const char	*str;
-	char		*expmap;
-	size_t		*i;
-	size_t		var_start;
-	char		*var_name;
-	char		*var_value;
-}	t_var_data;
-typedef struct s_token_data
-{
-	char	*current_token;
-	char	*expmap;
-	int		current_pos;
-	int		current_token_size;
-	int		quote_level;
-	int		escape_next;
-}	t_token_data;
 
 typedef struct s_temps
 {
@@ -463,18 +454,32 @@ void	extract_name_value(char *arg, char **name, char **value);
 void	add_env_node(t_envlst **env_list, char *name, char *value);
 
 // lexer.c
-void	lex_prompt(t_minishell *m);
+void	add_new_abtoken(t_list **current, char *word, char *expmap);
+void	process_abtoken(t_list **current, t_token *cur);
+int		should_process_token(t_token *t);
+void	afterbreakup(t_list **tok_lst);
+void	detect_lexing_errors(t_minishell *m);
 void	add_token_to_list(t_list **lst, t_token *token);
-void	initialize_token_data(t_token_data *data);
-void	lex_escape(t_token_data *data, char c);
-void	lex_quote(t_token_data *data, char c);
-void	lex_space(t_token_data *data, t_list **tok_lst);
-void	lex_pipe(t_token_data *data, t_list **tok_lst);
-void	lex_redirection(t_token_data *data, t_list **tok_lst, char **ptr);
-void	lex_regular_char(t_token_data *data, char c);
-void	resize_token_buffers(t_token_data *data);
-void	process_character(t_token_data *data, char **ptr, t_list **tok_lst);
+void	handle_escape_char(t_tokenizer_state *state);
+void	handle_backslash(t_tokenizer_state *state);
+void	handle_single_quote(t_tokenizer_state *state);
+void	handle_double_quote(t_tokenizer_state *state);
+void	handle_space(t_tokenizer_state *state);
+void	handle_pipe(t_tokenizer_state *state);
+void	handle_current_token(t_tokenizer_state *state);
+void	create_rdrct_token(t_tokenizer_state *state, char *rdrct, char *expmap);
+void	handle_double_redirection(t_tokenizer_state *state);
+void	handle_single_redirection(t_tokenizer_state *state);
+void	handle_redirection(t_tokenizer_state *state);
+void	handle_regular_char(t_tokenizer_state *state);
+void	resize_token_buffers(t_tokenizer_state *state);
+void	init_tokenizer_state(t_tokenizer_state *state, char *p, t_list **lst);
+void	process_char(t_tokenizer_state *s);
+void	finalize_token(t_tokenizer_state *state);
+void	cleanup_tokenizer_state(t_tokenizer_state *state);
 void	prompt_to_token(char *prompt, t_list **tok_lst);
+void	expand_toklst(t_minishell *m, t_list **tok_lst);
+void	lex_prompt(t_minishell *m);
 
 // minishell_helper.c
 void	cleanup_minishell(t_minishell *minishell);

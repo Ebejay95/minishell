@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/23 13:04:21 by chorst            #+#    #+#             */
-/*   Updated: 2024/08/15 19:48:43 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/15 21:00:44 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ static void	ft_envlstclear(t_minishell *minishell)
 // Cleanup the minishell struct
 void	cleanup_minishell(t_minishell *minishell)
 {
-	if (minishell->prompt && global == 0)
+	if (minishell->prompt && g_global == 0)
 		free(minishell->prompt);
 	minishell->prompt = NULL;
 	ft_envlstclear(minishell);

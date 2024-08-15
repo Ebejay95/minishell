@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/31 17:01:26 by jeberle           #+#    #+#             */
-/*   Updated: 2024/08/15 19:02:26 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/15 21:00:44 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,7 @@ void	execute(t_minishell *m)
 	{
 		debug_print(m, 0);
 		prexecute(m, &(m->tok_lst), &(m->exec_lst));
-		if (global == 0)
+		if (g_global == 0)
 			run_seg(m, m->tok_lst, STDIN_FILENO, STDOUT_FILENO);
 	}
 	reset_sequences(m);

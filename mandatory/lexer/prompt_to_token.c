@@ -6,88 +6,86 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/14 14:50:42 by jeberle           #+#    #+#             */
-/*   Updated: 2024/08/14 15:21:50 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/15 20:46:46 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../../include/minishell.h"
 
-void	initialize_token_data(t_token_data *data)
+void	init_tokenizer_state(t_tokenizer_state *state, char *p, t_list **lst)
 {
-	data->current_pos = 0;
-	data->quote_level = 0;
-	data->escape_next = 0;
-	data->current_token_size = 10;
-	data->current_token = ft_calloc(data->current_token_size, sizeof(char));
-	data->expmap = ft_calloc(data->current_token_size, sizeof(char));
-	if (!data->current_token || !data->expmap)
+	*state = (t_tokenizer_state){
+		.ptr = p,
+		.current_pos = 0,
+		.quote_level = 0,
+		.escape_next = 0,
+		.current_token_size = 10,
+		.tok_lst = lst
+	};
+	state->current_token = ft_calloc(state->current_token_size, sizeof(char));
+	state->expmap = ft_calloc(state->current_token_size, sizeof(char));
+	if (!state->current_token || !state->expmap)
 	{
-		free(data->current_token);
-		free(data->expmap);
+		free(state->current_token);
+		free(state->expmap);
 		ft_error_exit("malloc");
 	}
 }
 
-void	lex_escape(t_token_data *data, char c)
+void	process_char(t_tokenizer_state *s)
 {
-	data->current_token[data->current_pos] = c;
-	if (data->quote_level == 2)
-		data->expmap[data->current_pos] = '2';
+	if (s->escape_next)
+	{
+		handle_escape_char(s);
+		s->escape_next = 0;
+	}
+	else if (*s->ptr == '\\')
+		handle_backslash(s);
+	else if (*s->ptr == '\'' && s->quote_level != 2)
+		handle_single_quote(s);
+	else if (*s->ptr == '"' && s->quote_level != 1)
+		handle_double_quote(s);
+	else if (ft_isspace(*s->ptr) && s->quote_level == 0)
+		handle_space(s);
+	else if (*s->ptr == '|' && s->quote_level == 0)
+		handle_pipe(s);
+	else if ((*s->ptr == '>' || *s->ptr == '<') && s->quote_level == 0)
+		handle_redirection(s);
 	else
-		data->expmap[data->current_pos] = '0';
-	data->current_pos++;
-	data->escape_next = 0;
+		handle_regular_char(s);
 }
 
-void	lex_quote(t_token_data *data, char c)
-{
-	if (c == '\'' && data->quote_level == 0)
-	{
-		data->quote_level = 1;
-		data->current_token[data->current_pos] = c;
-		data->expmap[data->current_pos] = 'S';
-		data->current_pos++;
-	}
-	else if (c == '\'' && data->quote_level == 1)
-	{
-		data->quote_level = 0;
-		data->current_token[data->current_pos] = c;
-		data->expmap[data->current_pos] = 'S';
-		data->current_pos++;
-	}
-	else if (c == '"' && data->quote_level != 1)
-	{
-		data->current_token[data->current_pos] = c;
-		data->expmap[data->current_pos] = '0';
-		data->current_pos++;
-		if (data->quote_level == 2)
-			data->quote_level = 0;
-		else
-			data->quote_level = 2;
-	}
-}
-
-void	lex_space(t_token_data *data, t_list **tok_lst)
+void	finalize_token(t_tokenizer_state *state)
 {
 	t_token	*token;
 
-	if (data->current_pos > 0)
+	if (state->current_pos > 0)
 	{
-		data->current_token[data->current_pos] = '\0';
-		data->expmap[data->current_pos] = '\0';
-		token = create_token(data->current_token, data->expmap);
+		state->current_token[state->current_pos] = '\0';
+		state->expmap[state->current_pos] = '\0';
+		token = create_token(state->current_token, state->expmap);
 		update_tok_type(token, WORD);
-		add_token_to_list(tok_lst, token);
-		data->current_pos = 0;
+		add_token_to_list(state->tok_lst, token);
 	}
 }
 
-void	lex_pipe(t_token_data *data, t_list **tok_lst)
+void	cleanup_tokenizer_state(t_tokenizer_state *state)
 {
-	t_token	*token;
+	free(state->current_token);
+	free(state->expmap);
+}
 
-	lex_space(data, tok_lst);
-	token = create_token("|", "0");
-	update_tok_type(token, PIPE);
-	add_token_to_list(tok_lst, token);
+void	prompt_to_token(char *prompt, t_list **tok_lst)
+{
+	t_tokenizer_state	state;
+
+	init_tokenizer_state(&state, prompt, tok_lst);
+	while (*state.ptr)
+	{
+		process_char(&state);
+		if (state.current_pos >= state.current_token_size - 1)
+			resize_token_buffers(&state);
+	}
+	finalize_token(&state);
+	cleanup_tokenizer_state(&state);
 }

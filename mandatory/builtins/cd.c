@@ -6,14 +6,14 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 15:10:58 by chorst            #+#    #+#             */
-/*   Updated: 2024/08/15 17:43:52 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/15 19:58:01 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../../include/minishell.h"
 
 // Function to handle 'cd -' case
-void    cd_oldpwd(t_envlst **envp)
+void	cd_oldpwd(t_envlst **envp)
 {
 	char	*oldpwd;
 	char	*current_pwd;

@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/14 14:00:34 by chorst            #+#    #+#             */
-/*   Updated: 2024/08/15 19:01:36 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/15 21:00:44 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ static int	process_pipecommand(t_minishell *m, t_pipe_info *pi)
 {
 	debug_print(m, pi->i);
 	prexecute(m, &(m->cmd_seqs[pi->i]), &(m->exec_seqs[pi->i]));
-	if (global == 0)
+	if (g_global == 0)
 	{
 		setup_pipes(pi);
 		signal(SIGINT, SIG_IGN);

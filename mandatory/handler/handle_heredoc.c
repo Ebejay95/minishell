@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/12 16:43:15 by chorst            #+#    #+#             */
-/*   Updated: 2024/08/15 18:34:08 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/15 21:00:15 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 char	*read_heredoc_line(void)
 {
 	char	*line;
-
+	// checke ob pipes da sind mach if else ande esignal function
 	signal(SIGINT, handle_heredoc_signal);
 	line = readline("📄 ");
 	signal(SIGINT, handle_main_process);
