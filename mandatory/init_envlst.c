@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init_envlst.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeberle <jeberle@student.42heilbronn.de    +#+  +:+       +#+        */
+/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 10:00:01 by chorst            #+#    #+#             */
-/*   Updated: 2024/08/14 09:04:02 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/15 09:48:45 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,16 +53,16 @@ void	extract_name_value(char *arg, char **name, char **value)
 	if (equal_sign)
 	{
 		if (plus_sign && plus_sign < equal_sign)
-			*name = ft_strndup(arg, plus_sign - arg); // allokierung
+			*name = ft_strndup(arg, plus_sign - arg);
 		else
 			*name = ft_strndup(arg, equal_sign - arg);
-		trimmed_value = ft_strtrim(equal_sign + 1, "\""); // allokierung
-		*value = ft_strdup(trimmed_value); // allokierung
+		trimmed_value = ft_strtrim(equal_sign + 1, "\"");
+		*value = ft_strdup(trimmed_value);
 		free(trimmed_value);
 	}
 	else
 	{
-		*name = ft_strdup(arg); // allokierung
+		*name = ft_strdup(arg);
 		*value = NULL;
 	}
 }

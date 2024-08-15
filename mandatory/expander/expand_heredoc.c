@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand_heredoc.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/12 16:27:57 by chorst            #+#    #+#             */
-/*   Updated: 2024/08/13 18:08:28 by chorst           ###   ########.fr       */
+/*   Updated: 2024/08/14 15:25:45 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,20 +20,15 @@ static int	append_str(char **dst, const char *src)
 
 	if (!dst || !*dst || !src)
 		return (0);
-
 	dst_len = ft_strlen(*dst);
 	src_len = ft_strlen(src);
-
 	temp = ft_calloc(dst_len + src_len + 1, sizeof(char));
 	if (!temp)
 		return (0);
-
 	ft_strlcpy(temp, *dst, dst_len + 1);
 	ft_strlcat(temp, src, dst_len + src_len + 1);
-
 	free(*dst);
 	*dst = temp;
-
 	return (1);
 }
 
@@ -44,19 +39,14 @@ static int	append_char(char **dst, char c)
 
 	if (!dst || !*dst)
 		return (0);
-
 	len = ft_strlen(*dst);
-
 	temp = ft_calloc(len + 2, sizeof(char));
 	if (!temp)
 		return (0);
-
 	ft_strlcpy(temp, *dst, len + 1);
 	temp[len] = c;
-
 	free(*dst);
 	*dst = temp;
-
 	return (1);
 }
 

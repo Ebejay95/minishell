@@ -6,7 +6,7 @@
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:18:56 by jeberle           #+#    #+#             */
-/*   Updated: 2024/08/15 09:45:44 by chorst           ###   ########.fr       */
+/*   Updated: 2024/08/15 10:21:03 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,18 +127,46 @@ typedef struct s_token
 	}	detail;
 }	t_token;
 
+typedef struct s_var_data
+{
+	char		**result;
+	char		**expmap_result;
+	const char	*str;
+	char		*expmap;
+	size_t		*i;
+	size_t		var_start;
+	char		*var_name;
+	char		*var_value;
+}	t_var_data;
+typedef struct s_token_data
+{
+	char	*current_token;
+	char	*expmap;
+	int		current_pos;
+	int		current_token_size;
+	int		quote_level;
+	int		escape_next;
+}	t_token_data;
+
 typedef struct s_temps
 {
-	char			*temp;
-	char			*temp1;
-	char			*temp2;
-	char			*temp3;
-	char			*temp4;
-	char			*expmap;
-	char			*filecontent;
-	char			*line;
+	char	*temp;
+	char	*temp1;
+	char	*temp2;
+	char	*temp3;
+	char	*temp4;
+	char	*expmap;
+	char	*filecontent;
+	char	*line;
+}	t_temps;
 
-}					t_temps;
+typedef struct s_fd
+{
+	int	input;
+	int	output;
+	int	last_input;
+	int	last_output;
+}	t_fd;
 
 typedef struct s_pipe_data
 {
@@ -163,14 +191,6 @@ typedef struct s_pipe_info
 	int				total;
 	pid_t			*pids;
 }					t_pipe_info;
-
-typedef struct s_fd
-{
-	int				input;
-	int				output;
-	int				last_input;
-	int				last_output;
-}					t_fd;
 
 typedef struct s_minishell
 {
@@ -376,6 +396,9 @@ void	handle_infile(t_list *current);
 void	handle_trunc_append(t_list *current);
 t_token	*get_next_content(t_list *current);
 
+// handle_variable.c
+int		handle_variable(t_minishell *m, char **result, char **expmap_result, const char *str, char *expmap, size_t *i);
+
 // handle_trunc_append2.c
 t_token	*get_next_content(t_list *current);
 void	handle_allocation_error(char *filecontent, char *line);
@@ -384,6 +407,35 @@ char	*add_line(char *cont, char *tmp, const char *line, size_t total_size);
 // #############################################################################
 // #                                Lexer                                      #
 // #############################################################################
+
+// #############################################################################
+// #                                Tokens                                     #
+// #############################################################################
+
+// tokens.c
+int		validate_input(const char *str, const char *expmap);
+t_token	*allocate_token(void);
+int		set_token_type(t_token *newtok);
+int		set_token_str(t_token *newtok, const char *str);
+void	set_token_details(t_token *newtok, const char *str);
+
+// tokens2.c
+void	free_if_not_null(void **ptr);
+void	free_token(void *n);
+void	update_tok_type(t_token *tok, enum e_toktype token);
+void	update_tok_type_next_word(t_list *current, enum e_toktype token);
+void	update_tok_type_next(t_list *current, enum e_toktype token);
+
+// tokens3.c
+int		set_token_expmap(t_token *newtok, const char *expmap);
+void	free_token_resources(t_token *newtok);
+t_token	*create_token(char *str, char *expmap);
+char	*toktype_to_str(enum e_toktype token);
+void	put_token_details(t_token *token);
+
+// tokens4.c
+void	put_token(void *content);
+t_token	tok_lst_get(void *n);
 
 // #############################################################################
 // #                          Mandatory Functions                              #
@@ -406,6 +458,16 @@ void	add_env_node(t_envlst **env_list, char *name, char *value);
 // lexer.c
 void	lex_prompt(t_minishell *m);
 void	add_token_to_list(t_list **lst, t_token *token);
+void	initialize_token_data(t_token_data *data);
+void	lex_escape(t_token_data *data, char c);
+void	lex_quote(t_token_data *data, char c);
+void	lex_space(t_token_data *data, t_list **tok_lst);
+void	lex_pipe(t_token_data *data, t_list **tok_lst);
+void	lex_redirection(t_token_data *data, t_list **tok_lst, char **ptr);
+void	lex_regular_char(t_token_data *data, char c);
+void	resize_token_buffers(t_token_data *data);
+void	process_character(t_token_data *data, char **ptr, t_list **tok_lst);
+void	prompt_to_token(char *prompt, t_list **tok_lst);
 
 // minishell_helper.c
 void	cleanup_minishell(t_minishell *minishell);
@@ -428,14 +490,6 @@ void	remove_helper(const char *s, const char *chrs_to_rmv, char *new_s);
 // whitespace_handler.c
 char	*whitespace_handler(const char *str);
 
-// tokens.c
-t_token	*create_token(char *str, char *expmap);
-char	*toktype_to_str(enum e_toktype token);
-void	put_token(void *content);
-void	update_tok_type(t_token *tok, enum e_toktype token);
-void	update_tok_type_next(t_list *current, enum e_toktype token);
-void	update_tok_type_next_word(t_list *current, enum e_toktype token);
-void	free_token(void *n);
 // signal.c
 void	handle_child_process(int sig);
 void	handle_main_process(int sig);

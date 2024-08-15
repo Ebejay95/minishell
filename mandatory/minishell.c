@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeberle <jeberle@student.42heilbronn.de    +#+  +:+       +#+        */
+/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:01:33 by jeberle           #+#    #+#             */
-/*   Updated: 2024/08/13 23:12:11 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/15 09:56:03 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,6 @@ static int	handle_input(t_minishell *minishell)
 	minishell->ast = ft_btreenew(NULL);
 	if (minishell->prompt)
 	{
-
 		minishell->leave = 0;
 		lex_prompt(minishell);
 		pre_exec_prep(minishell);

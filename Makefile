@@ -6,7 +6,7 @@
 #    By: chorst <chorst@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/25 22:43:08 by jonathanebe       #+#    #+#              #
-#    Updated: 2024/08/14 15:51:57 by chorst           ###   ########.fr        #
+#    Updated: 2024/08/15 10:13:05 by chorst           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -119,7 +119,14 @@ SRCS=	mandatory/builtins/cd.c \
 		mandatory/handler/handle_escape2.c \
 		mandatory/handler/handle_exit_status.c \
 		mandatory/handler/handle_exit_status2.c \
+		mandatory/handler/handle_variable.c \
+		mandatory/lexer/lexer_helper.c \
+		mandatory/lexer/prompt_to_token.c \
+		mandatory/lexer/prompt_to_token2.c \
 		mandatory/lexer/lexer.c \
+		mandatory/tokens/tokens.c \
+		mandatory/tokens/tokens2.c \
+		mandatory/tokens/tokens3.c \
 		mandatory/ast.c \
 		mandatory/hierarchy_validation.c \
 		mandatory/init_envlst.c \
@@ -130,8 +137,6 @@ SRCS=	mandatory/builtins/cd.c \
 		mandatory/remove_chars.c \
 		mandatory/whitespace_handler.c \
 		mandatory/signals.c \
-		mandatory/tokens.c \
-		mandatory/tokens2.c \
 
 BONUS_SRCS= \
 # bonus/minishell_bonus.c \
