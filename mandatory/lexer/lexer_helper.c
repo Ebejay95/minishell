@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 09:54:56 by chorst            #+#    #+#             */
-/*   Updated: 2024/08/15 20:49:36 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/16 01:25:28 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,11 +60,9 @@ void	afterbreakup(t_list **tok_lst)
 	t_list	*current;
 	t_token	*cur;
 
-	ft_printf("afterbreakup\n");
 	current = *tok_lst;
 	while (current != NULL)
 	{
-		ft_printf("afterbreakup while\n");
 		cur = (t_token *)current->content;
 		if (should_process_token(cur))
 		{

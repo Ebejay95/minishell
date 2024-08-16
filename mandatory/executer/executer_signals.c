@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/14 14:01:58 by chorst            #+#    #+#             */
-/*   Updated: 2024/08/15 19:40:31 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/16 01:40:49 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,23 +42,23 @@ void	handle_parent_process(t_pipe_info *pi)
 	}
 }
 
-void	wait_for_children(t_minishell *m, t_pipe_info *pi)
+void wait_for_children(t_minishell *m, t_pipe_info *pi)
 {
-	int	j;
-	int	status;
+    int j;
+    int status;
 
-	j = 0;
-	while (j < pi->i)
-	{
-		waitpid(pi->pids[j], &status, 0);
-		signal(SIGINT, handle_main_process);
-		signal(SIGQUIT, handle_main_process);
-		if (WIFEXITED(status))
-			m->exitcode = WEXITSTATUS(status);
-		else if (WIFSIGNALED(status))
-			m->exitcode = 128 + WTERMSIG(status);
-		j++;
-	}
+    j = 0;
+    while (j < pi->i)
+    {
+        waitpid(pi->pids[j], &status, 0);
+        signal(SIGINT, handle_main_process);
+        signal(SIGQUIT, handle_main_process);
+        if (WIFEXITED(status))
+            m->exitcode = WEXITSTATUS(status);
+        else if (WIFSIGNALED(status))
+            m->exitcode = 128 + WTERMSIG(status);
+        j++;
+    }
 }
 
 void	setup_child_process(t_fd *fd)
@@ -77,15 +77,15 @@ void	setup_child_process(t_fd *fd)
 	}
 }
 
-void	run_parent_process(t_minishell *m, pid_t pid)
+void run_parent_process(t_minishell *m, pid_t pid)
 {
-	int	status;
+    int status;
 
-	waitpid(pid, &status, 0);
-	signal(SIGINT, handle_main_process);
-	signal(SIGQUIT, handle_main_process);
-	if (WIFEXITED(status))
-		m->exitcode = WEXITSTATUS(status);
-	else if (WIFSIGNALED(status))
-		m->exitcode = 128 + WTERMSIG(status);
+    waitpid(pid, &status, 0);
+    signal(SIGINT, handle_main_process);
+    signal(SIGQUIT, handle_main_process);
+    if (WIFEXITED(status))
+        m->exitcode = WEXITSTATUS(status);
+    else if (WIFSIGNALED(status))
+        m->exitcode = 128 + WTERMSIG(status);
 }

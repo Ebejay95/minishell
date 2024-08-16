@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/31 17:01:26 by jeberle           #+#    #+#             */
-/*   Updated: 2024/08/15 23:36:04 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/16 01:40:08 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,21 +62,23 @@ int	fork_and_execute(t_minishell *m, t_pipe_info *pi)
 	return (1);
 }
 
-void	execute(t_minishell *m)
+void execute(t_minishell *m)
 {
-	m->pipes = 0;
-	split_pipes(m, &(m->cmd_seqs), &(m->exec_seqs));
-	if (m->pipes != 0)
-	{
-		execute_with_pipes(m);
-	}
-	else
-	{
-		debug_print(m, 0);
-		prexecute(m, &(m->tok_lst), &(m->exec_lst));
-		if (g_global == 0)
-			run_seg(m, m->tok_lst, STDIN_FILENO, STDOUT_FILENO);
-	}
-	reset_sequences(m);
-	// exit code... TODO!!!!
+    m->last_exitcode = m->exitcode;  // Speichern des vorherigen Exitcodes
+    m->exitcode = 0;  // Zurücksetzen des Exitcodes für den neuen Befehl
+
+    m->pipes = 0;
+    split_pipes(m, &(m->cmd_seqs), &(m->exec_seqs));
+    if (m->pipes != 0)
+    {
+        execute_with_pipes(m);
+    }
+    else
+    {
+        debug_print(m, 0);
+        prexecute(m, &(m->tok_lst), &(m->exec_lst));
+        if (g_global == 0)
+            run_seg(m, m->tok_lst, STDIN_FILENO, STDOUT_FILENO);
+    }
+    reset_sequences(m);
 }

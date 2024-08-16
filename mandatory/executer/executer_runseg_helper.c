@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/14 14:31:50 by chorst            #+#    #+#             */
-/*   Updated: 2024/08/15 18:53:20 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/16 01:40:27 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,36 +47,38 @@ void	exec_builtin_cmd(t_minishell *m, char **args, int arg_count, t_fd *fd)
 	if (fd->last_output != fd->output)
 		dup2(fd->last_output, STDOUT_FILENO);
 	execute_builtin(m, args[0], args, arg_count);
-	if (ft_strcmp(args[0], "exit") == 0)
-	{
-		write(1, "exec\n", 5);
-		exit(m->exitcode);
-	}
 }
 
-void	execute_external_command(t_minishell *m, char **args, t_fd *fd)
+void execute_external_command(t_minishell *m, char **args, t_fd *fd)
 {
-	pid_t	pid;
-	char	*tmp;
+    pid_t pid;
+    char *tmp;
 
-	tmp = get_executable(m, args[0]);
-	if (!tmp)
-	{
-		ft_fprintf(2, "bash: %s: Command not found\n", args[0]);
-		return ;
-	}
-	signal(SIGINT, SIG_IGN);
-	signal(SIGQUIT, SIG_IGN);
-	pid = fork();
-	if (pid == 0)
-	{
-		setup_child_process(fd);
-		run_command(m, args);
-	}
-	else if (pid < 0)
-		ft_fprintf(2, "Fork failed\n");
-	else
-		run_parent_process(m, pid);
+    tmp = get_executable(m, args[0]);
+    if (!tmp)
+    {
+        ft_fprintf(2, "bash: %s: Command not found\n", args[0]);
+        m->exitcode = 127;
+        return;
+    }
+    signal(SIGINT, SIG_IGN);
+    signal(SIGQUIT, SIG_IGN);
+    pid = fork();
+    if (pid == 0)
+    {
+        setup_child_process(fd);
+        execve(tmp, args, m->envp);  // Direkte Ausführung des Befehls
+        ft_fprintf(2, "execve failed\n");
+        exit(1);
+    }
+    else if (pid < 0)
+    {
+        ft_fprintf(2, "Fork failed\n");
+        m->exitcode = 1;
+    }
+    else
+        run_parent_process(m, pid);
+    free(tmp);
 }
 
 void	process_tok(t_list *exec_lst, t_fd *fd, char ***args, int *arg_count)
