@@ -23,6 +23,13 @@ static void	ft_envlstclear(t_minishell *minishell)
 	while (current != NULL)
 	{
 		next = current->next;
+		printf("freeing current->name: %s\n", current->name);
+		printf("freeing current->value: %s\n", current->value);
+		printf("address of current: %p\n", current);
+		if (current->name)
+			free(current->name);
+		if (current->value)
+			free(current->value);
 		free(current);
 		current = next;
 	}
@@ -35,10 +42,10 @@ void	cleanup_minishell(t_minishell *minishell)
 	if (minishell->prompt && g_global == 0)
 		free(minishell->prompt);
 	minishell->prompt = NULL;
-	ft_envlstclear(minishell);
 	reset_minishell_args(minishell);
 	mlstclear(minishell->exec_lst);
 	mlstclear(minishell->tok_lst);
+	ft_envlstclear(minishell);
 }
 
 // Initialize the minishell struct

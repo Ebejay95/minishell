@@ -58,7 +58,7 @@ void    init_env_list(char **envp, t_minishell *m)
             ft_multifree(name, value, NULL, NULL);
         envp++;
     }
-    add_env_node(&m->env_list, "OLDPWD", NULL);
+    add_env_node(&m->env_list, ft_strdup("OLDPWD"), NULL);
 }
 void    extract_name_value(char *arg, char **name, char **value)
 {
