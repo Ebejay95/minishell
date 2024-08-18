@@ -112,23 +112,14 @@ void prexecute(t_minishell *m, int i)
         mlstclear(m->exec_lst);
         m->exec_lst = NULL;
     }
-    ft_printf("prexecute start\n");
 	if (m->pipes == 0)
 	{
-    	ft_printf("tok_lst:\n");
-    	ft_lstput(&(m->tok_lst), put_token, '\n');
 	prex_ins(m, m->tok_lst, &(m->exec_lst));
 	prex_mains(m->tok_lst, &(m->exec_lst));
 	prex_outs(m->tok_lst, &(m->exec_lst));
-    	ft_printf("exec_lst:\n");
-	ft_lstput(&(m->exec_lst), put_token, '\n');
 	}
 	else
 	{
-    	ft_printf("tok_lst:\n");
-    	ft_lstput(&(m->tok_lst), put_token, '\n');
-    	ft_printf("cmd_seqs_lst:\n");
-    	ft_lstput(&(m->cmd_seqs[i]), put_token, '\n');
 		prex_ins(m, m->cmd_seqs[i], &(m->exec_seqs[i]));
 		prex_mains(m->cmd_seqs[i], &(m->exec_seqs[i]));
 		prex_outs(m->cmd_seqs[i], &(m->exec_seqs[i]));

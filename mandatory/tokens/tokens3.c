@@ -75,16 +75,16 @@ void	print_toktype(enum e_toktype token)
 
 void	put_token_details(t_token *token)
 {
-	if (token->token == REDIRECTION)
-	{
-		ft_printf(" ( rdrcmeta: %s %p rdrctarget: %s %p)",
-			token->rdrcmeta,
-			token->rdrcmeta,
-			token->rdrctarget,
-			token->rdrctarget);
-	}
-	else if (token->token == MINIFILE)
-	{
-		ft_printf(" (fd: %d)", token->fd);
-	}
+	ft_printf("( ");
+	if(token->rdrcmeta)
+		ft_printf("rdrctarget: %s %p ",
+		token->rdrcmeta,
+		token->rdrcmeta);
+
+	if(token->rdrctarget)
+		ft_printf("rdrctarget: %s %p ",
+		token->rdrctarget,
+		token->rdrctarget);
+	ft_printf("fd: %d ", token->fd);
+	ft_printf(" )");
 }

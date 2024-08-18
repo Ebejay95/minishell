@@ -34,15 +34,59 @@ void	ft_envlstclear(t_minishell *minishell)
 }
 
 // Cleanup the minishell struct
-void	cleanup_minishell(t_minishell *minishell)
+void free_token_list(t_list *list)
 {
-	if (minishell->prompt && g_global == 0)
-		free(minishell->prompt);
-	minishell->prompt = NULL;
-	reset_minishell_args(minishell);
-	mlstclear(minishell->exec_lst);
-	mlstclear(minishell->tok_lst);
-	ft_envlstclear(minishell);
+    t_list *current = list;
+    while (current)
+    {
+        t_list *next = current->next;
+        t_token *token = current->content;
+
+        if (token != NULL) {
+            newfree_token(token);  // Token vollständig freigeben
+        }
+
+        free(current);  // Freigeben der Listenknoten
+        current = next;
+    }
+}
+
+void clear_cmd_seqs(t_minishell *minishell)
+{
+    for (int i = 0; i < MAXPIPS; i++)
+    {
+        if (minishell->cmd_seqs[i])
+        {
+            free_token_list(minishell->cmd_seqs[i]);
+            minishell->cmd_seqs[i] = NULL;
+        }
+    }
+}
+
+void clear_exec_seqs(t_minishell *minishell)
+{
+    for (int i = 0; i < MAXPIPS; i++)
+    {
+        if (minishell->exec_seqs[i])
+        {
+            free_token_list(minishell->exec_seqs[i]);
+            minishell->exec_seqs[i] = NULL;
+        }
+    }
+}
+
+void cleanup_minishell(t_minishell *minishell)
+{
+    reset_minishell_args(minishell);
+    mlstclear(minishell->exec_lst);
+    mlstclear(minishell->tok_lst);
+    ft_envlstclear(minishell);
+	if(minishell->pids)
+   		free(minishell->pids);
+
+    ft_printf("Entering reset_sequences\n");
+    clear_cmd_seqs(minishell);
+    clear_exec_seqs(minishell);
 }
 
 // Initialize the minishell struct

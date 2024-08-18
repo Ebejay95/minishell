@@ -80,7 +80,7 @@
 # define RDRCSET "><0123456789"
 
 // mode
-# define DEBUG 1
+# define DEBUG 0
 # define DEBUG_LOG "/tmp/minishell_debug.log"
 # define MAXPIPS 1024
 
@@ -173,7 +173,6 @@ typedef struct s_pipe_info
 	int				prv_pipe;
 	int				i;
 	int				total;
-	pid_t			*pids;
 }					t_pipe_info;
 
 typedef struct s_minishell
@@ -194,6 +193,7 @@ typedef struct s_minishell
 	int				in_heredoc;
 	t_list			*tok_lst;
 	t_list			*exec_lst;
+	pid_t			*pids;
 	int				pipes;
 	int				argc;
 	char			*args[1024];
@@ -345,7 +345,6 @@ int		add_arg(char ***argv, int *capacity, t_list *temp, int *argc);
 int		add_first_arg(char **argv, t_list *current, int *argc);
 
 // executer_helper2.c
-void	reset_sequences(t_minishell *m);
 char	*get_executable(t_minishell *m, char *command);
 void	execute_command(t_minishell *m, char *executable, char **argv);
 int		keep_for_exec(t_token *token);
@@ -388,7 +387,7 @@ void	run_parent_process(t_minishell *m, pid_t pid);
 
 // executer.c
 void newfree_token(t_token *token);
-int		allocate_pids(t_pipe_info *pi, int pipes);
+int		allocate_pids(t_minishell *m, int pipes);
 int		fork_and_execute(t_minishell *m, t_pipe_info *pi);
 void	execute(t_minishell *m);
 

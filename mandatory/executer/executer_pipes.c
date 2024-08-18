@@ -52,18 +52,20 @@ void	execute_with_pipes(t_minishell *m)
 	pi.prv_pipe = STDIN_FILENO;
 	pi.i = 0;
 	pi.total = m->pipes;
-	if (!allocate_pids(&pi, m->pipes))
+	if (!allocate_pids(m, m->pipes))
 		return ;
 	while (m->cmd_seqs[pi.i] != NULL)
 	{
 		if (!process_pipecommand(m, &pi))
 		{
-			free(pi.pids);
+			free(m->pids);
+			m->pids = NULL;
 			return ;
 		}
 		reset_minishell_args(m);
 		pi.i++;
 	}
 	wait_for_children(m, &pi);
-	free(pi.pids);
+	free(m->pids);
+	m->pids = NULL;
 }

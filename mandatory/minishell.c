@@ -39,7 +39,6 @@ void mlstclear(t_list *list)
     {
         next = current->next;
         token = (t_token *)current->content;
-        ft_printf("free token: %p %s %p %s %p %s %p %s %p\n", token, token->str, token->str, token->expmap, token->expmap, token->rdrcmeta, token->rdrcmeta, token->rdrctarget, token->rdrctarget);
         if (token != NULL)
         {
             free(token->str);
@@ -48,7 +47,6 @@ void mlstclear(t_list *list)
             free(token->rdrctarget);
             free(token);
         }
-
         free(current);
         current = next;
     }
@@ -120,6 +118,7 @@ static int	handle_input(t_minishell *minishell)
 		return (1);
 	minishell->tok_lst = NULL;
 	minishell->exec_lst = NULL;
+	minishell->pids = NULL;
 	minishell->argc = 0;
 	if (minishell->prompt)
 	{
@@ -144,26 +143,6 @@ int	g_global = 0;
 int	main(int argc, char **argv, char **envp)
 {
 	t_minishell	minishell;
-	int i;
-
-	i = 0;
-	while(i < MAXPIPS)
-	{
-		minishell.cmd_seqs[i] = NULL;
-		i++;
-	}
-	i = 0;
-	while(i < MAXPIPS)
-	{
-		minishell.exec_seqs[i] = NULL;
-		i++;
-	}
-	i = 0;
-	while(i < MAXPIPS)
-	{
-		minishell.args[i] = NULL;
-		i++;
-	}
 	g_global = 0;
 	minishell.env_list = NULL;
 	init_env_list(envp, &minishell);
