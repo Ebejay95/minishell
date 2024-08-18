@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executer_runseg.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jonathaneberle <jonathaneberle@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/14 12:46:24 by jeberle           #+#    #+#             */
-/*   Updated: 2024/08/16 01:37:59 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/19 00:55:38 by jonathanebe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,37 +56,36 @@ void	cleanup_fds(t_fd *fd)
 	if (fd->last_output != fd->output)
 		close(fd->last_output);
 }
-void print_token_pointers3(t_list *tok_lst)
-{
-    t_list  *current;
-    t_token *cur_token;
 
-    ft_printf("\n"Y"AFTER RUN: Token Pointers:"D"\n");
-    current = tok_lst;
-    while (current != NULL)
-    {
-        cur_token = (t_token *)current->content;
-        ft_printf("Token address: %p\n", cur_token);
-        ft_printf("Token->str: %p (%s)\n", cur_token->str, cur_token->str);
-        ft_printf("Token->expmap: %p (%s)\n", cur_token->expmap, cur_token->expmap);
-        current = current->next;
-    }
-    ft_printf(Y"End of token pointers\n"D);
+void	print_token_pointers3(t_list *tok_lst)
+{
+	t_list	*current;
+	t_token	*c;
+
+	ft_printf("\n"Y"AFTER RUN: Token Pointers:"D"\n");
+	current = tok_lst;
+	while (current != NULL)
+	{
+		c = (t_token *)current->content;
+		ft_printf("Token address: %p\n", c);
+		ft_printf("Token->str: %p (%s)\n", c->str, c->str);
+		ft_printf("Token->expmap: %p (%s)\n", c->expmap, c->expmap);
+		current = current->next;
+	}
+	ft_printf(Y"End of token pointers\n"D);
 }
 
-void run_seg(t_minishell *m, int i, int input_fd, int output_fd)
+void	run_seg(t_minishell *m, int i, int input_fd, int output_fd)
 {
-    t_fd    fd;
+	t_fd	fd;
 
-    init_fd(&fd, input_fd, output_fd);
+	init_fd(&fd, input_fd, output_fd);
 	if (m->pipes == 0)
-    	process_tok(m, m->exec_lst, &fd);
+		process_tok(m, m->exec_lst, &fd);
 	else
-    	process_tok(m, m->exec_seqs[i], &fd);
-    if (m->args[0])
-    {
-        run(m, m->args, m->argc, &fd);
-    }
-		reset_minishell_args(m);
-    cleanup_fds(&fd);
+		process_tok(m, m->exec_seqs[i], &fd);
+	if (m->args[0])
+		run(m, m->args, m->argc, &fd);
+	reset_minishell_args(m);
+	cleanup_fds(&fd);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executer_checks.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jonathaneberle <jonathaneberle@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/02 14:04:35 by chorst            #+#    #+#             */
-/*   Updated: 2024/08/14 12:28:47 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/19 00:56:06 by jonathanebe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,8 +30,8 @@ static void	check_rdrc_norm(char *last_str, t_token *cont, t_minishell *m)
 
 static void	check_pipes(t_minishell *m)
 {
-	t_list	*cur;
-	t_token	*cont;
+	t_list			*cur;
+	t_token			*cont;
 	enum e_toktype	end;
 	enum e_toktype	ltype;
 
@@ -80,11 +80,11 @@ static void	check_rdrcmeta(t_list *last, t_list *current, t_token *token)
 
 static void	check_redirections(t_minishell *m)
 {
-	t_list	*cur;
-	t_list	*last;
-	t_token	*cont;
+	t_list			*cur;
+	t_list			*last;
+	t_token			*cont;
 	enum e_toktype	end;
-	char	*last_str;
+	char			*last_str;
 
 	last = NULL;
 	end = UNSET;

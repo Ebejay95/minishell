@@ -83,8 +83,6 @@ void cleanup_minishell(t_minishell *minishell)
     ft_envlstclear(minishell);
 	if(minishell->pids)
    		free(minishell->pids);
-
-    ft_printf("Entering reset_sequences\n");
     clear_cmd_seqs(minishell);
     clear_exec_seqs(minishell);
 }

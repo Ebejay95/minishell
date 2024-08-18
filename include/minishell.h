@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jonathaneberle <jonathaneberle@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:18:56 by jeberle           #+#    #+#             */
-/*   Updated: 2024/08/16 01:09:18 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/19 00:22:51 by jonathanebe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -264,8 +264,8 @@ typedef struct s_expand_data
 // #############################################################################
 // #                               Builtins                                    #
 // #############################################################################
-void reset_minishell_args(t_minishell *m);
-void mlstclear(t_list *list);
+void	reset_minishell_args(t_minishell *m);
+void	mlstclear(t_list *list);
 void	ft_envlstclear(t_minishell *minishell);
 // cd.c
 void	ft_cd(int argc, char **argv, t_envlst **envp);
@@ -366,17 +366,17 @@ void	run_out_redirection(t_token *token, t_fd *fd);
 void	run_redirection(t_token *token, t_fd *fd);
 
 // executer_runseg_helper.c
-void add_argument(t_minishell *m, char *arg);
+void	add_argument(t_minishell *m, char *arg);
 void	exec_builtin_cmd(t_minishell *m, char **args, int arg_count, t_fd *fd);
-void execute_external_command(t_minishell *m, char **args,  t_fd *fd);
-void process_tok(t_minishell *m, t_list *exec_lst, t_fd *fd);
+void	execute_external_command(t_minishell *m, char **args, t_fd *fd);
+void	process_tok(t_minishell *m, t_list *exec_lst, t_fd *fd);
 
 // executer_runseg.c
 void	run_heredoc(t_token *t, t_fd *fd);
 void	run_command(t_minishell *m, char **args);
 void	run(t_minishell *m, char **args, int arg_count, t_fd *fd);
 void	cleanup_fds(t_fd *fd);
-void run_seg(t_minishell *m, int i, int input_fd, int output_fd);
+void	run_seg(t_minishell *m, int i, int input_fd, int output_fd);
 
 // executer_signals.c
 void	run_child_process(t_minishell *m, t_pipe_info *pi);
@@ -386,7 +386,7 @@ void	setup_child_process(t_fd *fd);
 void	run_parent_process(t_minishell *m, pid_t pid);
 
 // executer.c
-void newfree_token(t_token *token);
+void	newfree_token(t_token *token);
 int		allocate_pids(t_minishell *m, int pipes);
 int		fork_and_execute(t_minishell *m, t_pipe_info *pi);
 void	execute(t_minishell *m);
@@ -427,8 +427,8 @@ int		append_regular_character(t_expand_data *data);
 int		process_character(t_expand_data *data, t_expand_ctx *ctx);
 void	finalize_expansion(t_expand_data *data);
 void	expand(t_exp_p *p, t_expand_ctx *ctx);
-void free_expmap_temp_memory(t_exp_data *data);
-void free_temp_memory(t_exp_data *d);
+void	free_expmap_temp_memory(t_exp_data *data);
+void	free_temp_memory(t_exp_data *d);
 
 // expand_heredoc.c
 char	*expand_var(t_minishell *m, char *str, size_t *i, char **result);
@@ -492,8 +492,8 @@ char	*add_line(char *cont, char *tmp, const char *line, size_t total_size);
 int		validate_input(const char *str, const char *expmap);
 
 // tokens2.c
-void	free_if_not_null(void **ptr);
-void	free_token(void *n);
+void	free_if_not_null(void	**ptr);
+void	free_token(void	*n);
 void	update_tok_type(t_token *tok, enum e_toktype token);
 void	update_tok_type_next_word(t_list *current, enum e_toktype token);
 void	update_tok_type_next(t_list *current, enum e_toktype token);
@@ -505,8 +505,8 @@ void	print_toktype(enum e_toktype token);
 void	put_token_details(t_token *token);
 
 // tokens4.c
-void	put_token(void *content);
-t_token	tok_lst_get(void *n);
+void	put_token(void	*content);
+t_token	tok_lst_get(void	*n);
 
 // #############################################################################
 // #                          Mandatory Functions                              #

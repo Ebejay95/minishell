@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executer_helper2.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jonathaneberle <jonathaneberle@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 09:16:46 by chorst            #+#    #+#             */
-/*   Updated: 2024/08/15 18:53:32 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/19 00:26:20 by jonathanebe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,18 +36,17 @@ static char	*find_executable(char **paths, int pathcount, char *command)
 	return (NULL);
 }
 
-void newfree_token(t_token *token)
+void	newfree_token(t_token *token)
 {
-    if (token)
-    {
-        free(token->str);
-        free(token->expmap);
-        free(token->rdrcmeta);
-        free(token->rdrctarget);
-        free(token);
-    }
+	if (token)
+	{
+		free(token->str);
+		free(token->expmap);
+		free(token->rdrcmeta);
+		free(token->rdrctarget);
+		free(token);
+	}
 }
-
 
 char	*get_executable(t_minishell *m, char *command)
 {
