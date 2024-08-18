@@ -52,23 +52,6 @@ int has_pipes(t_list *tok_lst)
     }
     return 0;
 }
-void print_token_pointers2(t_list *tok_lst)
-{
-    t_list  *current;
-    t_token *cur_token;
-
-    ft_printf("\n"Y"AFTER PREX: Token Pointers:"D"\n");
-    current = tok_lst;
-    while (current != NULL)
-    {
-        cur_token = (t_token *)current->content;
-        ft_printf("Token address: %p\n", cur_token);
-        ft_printf("Token->str: %p (%s)\n", cur_token->str, cur_token->str);
-        ft_printf("Token->expmap: %p (%s)\n", cur_token->expmap, cur_token->expmap);
-        current = current->next;
-    }
-    ft_printf(Y"End of token pointers\n"D);
-}
 
 
 void execute(t_minishell *m)
@@ -81,23 +64,26 @@ void execute(t_minishell *m)
     {
     	split_pipes(m);
         execute_with_pipes(m);
-
-    	ft_printf("tok_lst:\n");
-    	ft_lstput(&(m->tok_lst), put_token, '\n');
+        reset_minishell_args(m);
     	reset_sequences(m);
     }
     else
     {
         prexecute(m, 0);
-		print_token_pointers2(m->tok_lst);
         if (g_global == 0)
 		{
-            run_seg(m, m->tok_lst, STDIN_FILENO, STDOUT_FILENO);
+            run_seg(m, 0, STDIN_FILENO, STDOUT_FILENO);
 		}
-    if (m->tok_lst)
-    {
-        mlstclear(m->tok_lst);
-        m->tok_lst = NULL;
-    }
+    	if (m->exec_lst)
+    	{
+    	    mlstclear(m->exec_lst);
+    	    m->exec_lst = NULL;
+    	}
+        reset_minishell_args(m);
+    	if (m->tok_lst)
+    	{
+    	    mlstclear(m->tok_lst);
+    	    m->tok_lst = NULL;
+    	}
     }
 }

@@ -12,30 +12,30 @@
 
 #include "./../../include/minishell.h"
 
-void	handle_double_redirection(t_tokenizer_state *state)
+void	handle_double_redirection(t_minishell *m, t_tokenizer_state *state)
 {
 	if (*state->ptr == '>')
-		create_rdrct_token(state, ">>", "00");
+		create_rdrct_token(m, ">>", "00");
 	else
-		create_rdrct_token(state, "<<", "00");
+		create_rdrct_token(m, "<<", "00");
 	state->ptr++;
 }
 
-void	handle_single_redirection(t_tokenizer_state *state)
+void	handle_single_redirection(t_minishell *m, t_tokenizer_state *state)
 {
 	if (*state->ptr == '>')
-		create_rdrct_token(state, ">", "0");
+		create_rdrct_token(m, ">", "0");
 	else
-		create_rdrct_token(state, "<", "0");
+		create_rdrct_token(m, "<", "0");
 }
 
-void	handle_redirection(t_tokenizer_state *state)
+void	handle_redirection(t_minishell *m, t_tokenizer_state *state)
 {
-	handle_current_token(state);
+	handle_current_token(m, state);
 	if (*(state->ptr + 1) == *state->ptr)
-		handle_double_redirection(state);
+		handle_double_redirection(m, state);
 	else
-		handle_single_redirection(state);
+		handle_single_redirection(m, state);
 	state->ptr++;
 }
 

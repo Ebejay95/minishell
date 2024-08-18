@@ -80,7 +80,7 @@
 # define RDRCSET "><0123456789"
 
 // mode
-# define DEBUG 0
+# define DEBUG 1
 # define DEBUG_LOG "/tmp/minishell_debug.log"
 # define MAXPIPS 1024
 
@@ -118,7 +118,6 @@ typedef struct s_tokenizer_state
 	int		quote_level;
 	int		escape_next;
 	int		current_token_size;
-	t_list	**tok_lst;
 }	t_tokenizer_state;
 
 typedef struct s_token
@@ -130,7 +129,6 @@ typedef struct s_token
 	int				is_freed;
 	char			*rdrcmeta;
 	char			*rdrctarget;
-	int				open_prompt;
 	int				fd;
 }	t_token;
 
@@ -197,7 +195,10 @@ typedef struct s_minishell
 	t_list			*tok_lst;
 	t_list			*exec_lst;
 	int				pipes;
+	int				argc;
+	char			*args[1024];
 	t_list			*cmd_seqs[1024];
+	t_list			*exec_seqs[1024];
 	t_btree			*ast;
 }	t_minishell;
 
@@ -263,7 +264,7 @@ typedef struct s_expand_data
 // #############################################################################
 // #                               Builtins                                    #
 // #############################################################################
-
+void reset_minishell_args(t_minishell *m);
 void mlstclear(t_list *list);
 // cd.c
 void	ft_cd(int argc, char **argv, t_envlst **envp);
@@ -365,18 +366,17 @@ void	run_out_redirection(t_token *token, t_fd *fd);
 void	run_redirection(t_token *token, t_fd *fd);
 
 // executer_runseg_helper.c
-void	add_argument(char ***args, int *arg_count, char *arg);
+void add_argument(t_minishell *m, char *arg);
 void	exec_builtin_cmd(t_minishell *m, char **args, int arg_count, t_fd *fd);
 void execute_external_command(t_minishell *m, char **args,  t_fd *fd);
-void	process_tok(t_list *exec_lst, t_fd *fd, char ***args, int *arg_count);
+void process_tok(t_minishell *m, t_list *exec_lst, t_fd *fd);
 
 // executer_runseg.c
 void	run_heredoc(t_token *t, t_fd *fd);
 void	run_command(t_minishell *m, char **args);
 void	run(t_minishell *m, char **args, int arg_count, t_fd *fd);
 void	cleanup_fds(t_fd *fd);
-void cleanup_args(char **args, int arg_count);
-void	run_seg(t_minishell *m, t_list *exec_lst, int input_fd, int output_fd);
+void run_seg(t_minishell *m, int i, int input_fd, int output_fd);
 
 // executer_signals.c
 void	run_child_process(t_minishell *m, t_pipe_info *pi);
@@ -435,7 +435,6 @@ char	*expand_hd(t_minishell *m, char *str);
 
 // expand_token.c
 void	expand_token(t_minishell *m, t_token *token);
-void	prompt_to_token(char *prompt, t_list **tok_lst);
 void	afterbreakup(t_list **tok_lst);
 void	expand_toklst(t_minishell *m, t_list **tok_lst);
 
@@ -490,9 +489,6 @@ char	*add_line(char *cont, char *tmp, const char *line, size_t total_size);
 
 // tokens.c
 int		validate_input(const char *str, const char *expmap);
-t_token	*allocate_token(void);
-int		set_token_str(t_token *newtok, char *str);
-void	set_token_details(t_token *newtok, const char *str);
 
 // tokens2.c
 void	free_if_not_null(void **ptr);
@@ -502,7 +498,6 @@ void	update_tok_type_next_word(t_list *current, enum e_toktype token);
 void	update_tok_type_next(t_list *current, enum e_toktype token);
 
 // tokens3.c
-int		set_token_expmap(t_token *newtok, char *expmap);
 void	free_token_resources(t_token *newtok);
 t_token	*create_token(char *str, char *expmap);
 void	print_toktype(enum e_toktype token);
@@ -541,20 +536,19 @@ void	handle_escape_char(t_tokenizer_state *state);
 void	handle_backslash(t_tokenizer_state *state);
 void	handle_single_quote(t_tokenizer_state *state);
 void	handle_double_quote(t_tokenizer_state *state);
-void	handle_space(t_tokenizer_state *state);
-void	handle_pipe(t_tokenizer_state *state);
-void	handle_current_token(t_tokenizer_state *state);
-void	create_rdrct_token(t_tokenizer_state *state, char *rdrct, char *expmap);
-void	handle_double_redirection(t_tokenizer_state *state);
-void	handle_single_redirection(t_tokenizer_state *state);
-void	handle_redirection(t_tokenizer_state *state);
+void	handle_space(t_minishell *m, t_tokenizer_state *state);
+void	handle_pipe(t_minishell *m, t_tokenizer_state *state);
+void	handle_current_token(t_minishell *m, t_tokenizer_state *state);
+void	create_rdrct_token(t_minishell *m, char *rdrct, char *expmap);
+void	handle_double_redirection(t_minishell *m, t_tokenizer_state *state);
+void	handle_single_redirection(t_minishell *m, t_tokenizer_state *state);
+void	handle_redirection(t_minishell *m, t_tokenizer_state *state);
 void	handle_regular_char(t_tokenizer_state *state);
 void	resize_token_buffers(t_tokenizer_state *state);
-void	init_tokenizer_state(t_tokenizer_state *state, char *p, t_list **lst);
-void	process_char(t_tokenizer_state *s);
-void	finalize_token(t_tokenizer_state *state);
+void	init_tokenizer_state(t_tokenizer_state *state, char *p);
+void	process_char(t_minishell *m, t_tokenizer_state *s);
 void	cleanup_tokenizer_state(t_tokenizer_state *state);
-void	prompt_to_token(char *prompt, t_list **tok_lst);
+void	prompt_to_token(t_minishell *m);
 void	expand_toklst(t_minishell *m, t_list **tok_lst);
 void	lex_prompt(t_minishell *m);
 

@@ -38,16 +38,23 @@ void	process_abtoken(t_list **current, t_token *cur)
 	work = whitespace_handler(cur->str);
 	wordcount = ft_count_words(work, ' ');
 	words = ft_split(work, ' ');
+
+	// Freigeben des ursprünglichen `cur->str` Speicherbereichs
 	free(cur->str);
+
+	// Setze `cur->str` auf das erste Wort in `words`
 	cur->str = words[0];
+
 	i = 1;
 	while (i < wordcount)
 	{
-		add_new_abtoken(current, words[i], cur->expmap);
+		add_new_abtoken(current, words[i], cur->expmap);  // Füge jedes weitere Wort als neues Token hinzu
+		free(words[i]);  // Freigeben der nicht mehr benötigten Strings
 		i++;
 	}
-	free(words);
-	*current = next_node;
+
+	free(words);  // Freigeben des Arrays `words` selbst
+	*current = next_node;  // Setze den aktuellen Zeiger auf den nächsten Knoten
 }
 
 int	should_process_token(t_token *t)

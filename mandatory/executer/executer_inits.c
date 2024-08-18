@@ -12,15 +12,10 @@
 
 #include "./../../include/minishell.h"
 
-static t_token	*init_pipe_details(t_token *pipetok)
-{
-	pipetok->open_prompt = 0;
-	return (pipetok);
-}
-
 static t_token	*init_redirection_details(t_token *redirectiontoken)
 {
 	redirectiontoken->rdrcmeta = NULL;
+	redirectiontoken->rdrctarget = NULL;
 	return (redirectiontoken);
 }
 
@@ -60,9 +55,7 @@ void	pre_exec_prep(t_minishell *m)
 	while (current != NULL)
 	{
 		cur_content = (t_token *)current->content;
-		if (cur_content->token == PIPE)
-			cur_content = init_pipe_details(cur_content);
-		else if (cur_content->token == REDIRECTION)
+		if (cur_content->token == REDIRECTION)
 			init_redirection_details(cur_content);
 		current = current->next;
 	}

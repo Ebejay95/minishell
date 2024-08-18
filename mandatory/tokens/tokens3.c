@@ -12,13 +12,6 @@
 
 #include "./../../include/minishell.h"
 
-int	set_token_expmap(t_token *newtok, char *expmap)
-{
-	newtok->expmap = ft_strdup(expmap);
-	if (!newtok->expmap)
-		return (0);
-	return (1);
-}
 
 void	free_token_resources(t_token *newtok)
 {
@@ -27,29 +20,37 @@ void	free_token_resources(t_token *newtok)
 	free(newtok);
 }
 
-t_token	*create_token(char *str, char *expmap)
+t_token *create_token(char *str, char *expmap)
 {
-	t_token	*newtok;
+    t_token *newtok;
 
-	if (!validate_input(str, expmap))
-		return (NULL);
-	newtok = allocate_token();
-	if (!newtok)
-		return (NULL);
-	if (!set_token_str(newtok, str))
-	{
-		free_token_resources(newtok);
-		return (NULL);
-	}
-	set_token_details(newtok, str);
-	if (!set_token_expmap(newtok, expmap))
-	{
-		free_token_resources(newtok);
-		if (str)
-			free(str);
-		return (NULL);
-	}
-	return (newtok);
+    if (!validate_input(str, expmap))
+        return NULL;
+
+    newtok = (t_token *)malloc(sizeof(t_token));
+    if (!newtok)
+        return NULL;
+
+    newtok->token = WORD;
+    newtok->is_freed = 0;
+    newtok->str = ft_strdup(str);
+    if (!newtok->str)
+    {
+        free(newtok);
+        return NULL;
+    }
+    newtok->expmap = ft_strdup(expmap);
+    if (!newtok->expmap)
+    {
+        free(newtok->str);
+        free(newtok);
+        return NULL;
+    }
+    
+    newtok->rdrcmeta = NULL;
+    newtok->rdrctarget = NULL;
+    newtok->had_quote = (ft_strchr(str, '\"') || ft_strchr(str, '\''));
+    return newtok;
 }
 
 void	print_toktype(enum e_toktype token)
@@ -74,11 +75,7 @@ void	print_toktype(enum e_toktype token)
 
 void	put_token_details(t_token *token)
 {
-	if (token->token == PIPE)
-	{
-		ft_printf(" (open_prompt: %d)", token->open_prompt);
-	}
-	else if (token->token == REDIRECTION)
+	if (token->token == REDIRECTION)
 	{
 		ft_printf(" ( rdrcmeta: %s %p rdrctarget: %s %p)",
 			token->rdrcmeta,

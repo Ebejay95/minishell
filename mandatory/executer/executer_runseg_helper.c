@@ -12,34 +12,20 @@
 
 #include "./../../include/minishell.h"
 
-void add_argument(char ***args, int *arg_count, char *arg)
-{
-    // Wenn args NULL ist, wird Speicher für das erste Element allokiert
-    if (*args == NULL)
-    {
-        *args = ft_calloc(2, sizeof(char *));
-        (*args)[0] = arg;
-        (*args)[1] = NULL; // Null-terminieren
-        *arg_count = 1;
+void add_argument(t_minishell *m, char *arg) {
+    int i;
+
+    // Find the first NULL element in the args array
+    for (i = 0; i < 1024; i++) {
+        if (m->args[i] == NULL) {
+            m->args[i] = arg;
+            break;
+        }
     }
-    else
-    {
-        // Speicher für ein zusätzliches Argument allokieren
-        char **temp = ft_calloc(*arg_count + 2, sizeof(char *));
-        
-        // Bestehende Argumente kopieren
-        memcpy(temp, *args, *arg_count * sizeof(char *));
-        
-        // Neues Argument hinzufügen
-        temp[*arg_count] = arg;
-        temp[*arg_count + 1] = NULL; // Null-terminieren
-        
-        // Alten Speicher freigeben und args aktualisieren
-        free(*args);
-        *args = temp;
-        
-        // arg_count erhöhen
-        (*arg_count)++;
+
+    // If we've reached the end of the array, print an error
+    if (i == 1024) {
+        ft_fprintf(2, "Error: Maximum number of arguments reached\n");
     }
 }
 
@@ -84,13 +70,13 @@ void execute_external_command(t_minishell *m, char **args, t_fd *fd)
     free(tmp);
 }
 
-void process_tok(t_list *exec_lst, t_fd *fd, char ***args, int *arg_count)
-{
+void process_tok(t_minishell *m, t_list *exec_lst, t_fd *fd) {
     t_list  *current;
     t_token *token;
     char    *dup_str;
 
     current = exec_lst;
+    m->argc = 0;
     while (current != NULL)
     {
         token = (t_token *)current->content;
@@ -104,10 +90,10 @@ void process_tok(t_list *exec_lst, t_fd *fd, char ***args, int *arg_count)
             if (!dup_str)
             {
                 ft_fprintf(2, "Error: Memory allocation failed for token string duplication\n");
-                cleanup_args(*args, *arg_count);
                 return;
             }
-            add_argument(args, arg_count, dup_str);
+            add_argument(m, dup_str);
+            m->argc++;
         }
         current = current->next;
     }

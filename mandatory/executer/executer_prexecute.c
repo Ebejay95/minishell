@@ -19,14 +19,21 @@ t_token *duplicate(t_token *src)
         return NULL;
 
     *new_token = *src;
-    new_token->token = src->token;
     new_token->str = ft_strdup(src->str);
     new_token->expmap = ft_strdup(src->expmap);
+    new_token->rdrcmeta = src->rdrcmeta ? ft_strdup(src->rdrcmeta) : NULL;
+    new_token->rdrctarget = src->rdrctarget ? ft_strdup(src->rdrctarget) : NULL;
 
-    if (src->token == REDIRECTION)
+    if (!new_token->str || !new_token->expmap || 
+        (src->rdrcmeta && !new_token->rdrcmeta) || 
+        (src->rdrctarget && !new_token->rdrctarget))
     {
-        new_token->rdrcmeta = ft_strdup(src->rdrcmeta);
-        new_token->rdrctarget = ft_strdup(src->rdrctarget);
+        free(new_token->str);
+        free(new_token->expmap);
+        free(new_token->rdrcmeta);
+        free(new_token->rdrctarget);
+        free(new_token);
+        return NULL;
     }
 
     return new_token;
@@ -99,6 +106,12 @@ static void prex_outs(t_list *tok_lst, t_list **exec_lst)
 
 void prexecute(t_minishell *m, int i)
 {
+    // Prüfen und Freigeben von m->exec_lst vor neuer Zuweisung
+    if (m->exec_lst)
+    {
+        mlstclear(m->exec_lst);
+        m->exec_lst = NULL;
+    }
     ft_printf("prexecute start\n");
 	if (m->pipes == 0)
 	{
@@ -116,17 +129,10 @@ void prexecute(t_minishell *m, int i)
     	ft_lstput(&(m->tok_lst), put_token, '\n');
     	ft_printf("cmd_seqs_lst:\n");
     	ft_lstput(&(m->cmd_seqs[i]), put_token, '\n');
-	prex_ins(m, m->cmd_seqs[i], &(m->exec_lst));
-	prex_mains(m->cmd_seqs[i], &(m->exec_lst));
-	prex_outs(m->cmd_seqs[i], &(m->exec_lst));
-    	ft_printf("exec_lst:\n");
-	ft_lstput(&(m->exec_lst), put_token, '\n');
+		prex_ins(m, m->cmd_seqs[i], &(m->exec_seqs[i]));
+		prex_mains(m->cmd_seqs[i], &(m->exec_seqs[i]));
+		prex_outs(m->cmd_seqs[i], &(m->exec_seqs[i]));
+    	ft_printf("exec_seqs[%i]:\n", i);
+	ft_lstput(&(m->exec_seqs[i]), put_token, '\n');
 	}
-
-    // Clear previous exec_lst
-    if (m->exec_lst)
-    {
-        mlstclear(m->exec_lst);
-        m->exec_lst = NULL;
-    }
 }

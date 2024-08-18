@@ -73,27 +73,20 @@ void print_token_pointers3(t_list *tok_lst)
     }
     ft_printf(Y"End of token pointers\n"D);
 }
-void cleanup_args(char **args, int arg_count)
-{
-    for (int i = 0; i < arg_count; i++)
-    {
-        free(args[i]);
-    }
-    free(args);
-}
 
-void run_seg(t_minishell *m, t_list *exec_lst, int input_fd, int output_fd)
+void run_seg(t_minishell *m, int i, int input_fd, int output_fd)
 {
     t_fd    fd;
-    char    **args = NULL;
-    int     arg_count = 0;
 
     init_fd(&fd, input_fd, output_fd);
-    process_tok(exec_lst, &fd, &args, &arg_count);
-    if (args && args[0])
+	if (m->pipes == 0)
+    	process_tok(m, m->exec_lst, &fd);
+	else
+    	process_tok(m, m->exec_seqs[i], &fd);
+    if (m->args[0])
     {
-        run(m, args, arg_count, &fd);
+        run(m, m->args, m->argc, &fd);
     }
-    cleanup_args(args, arg_count);
+		reset_minishell_args(m);
     cleanup_fds(&fd);
 }

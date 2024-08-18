@@ -42,17 +42,6 @@ static int	process_pipecommand(t_minishell *m, t_pipe_info *pi)
 		}
 		handle_parent_process(pi);
 	}
-	ft_printf(Y"free exec\n"D);
-	ft_lstput(&(m->exec_lst), put_token, '\n');    // Clear previous exec_lst
-	if (m->exec_lst)
-	{
-    	mlstclear(m->exec_lst);
-    	m->exec_lst = NULL;
-	}
-	ft_printf(Y"after free exec\n"D);
-	ft_lstput(&(m->exec_lst), put_token, '\n');    // Clear previous exec_lst
-    	ft_printf("tok_lst:\n");
-    	ft_lstput(&(m->tok_lst), put_token, '\n');
 	return (1);
 }
 
@@ -72,6 +61,7 @@ void	execute_with_pipes(t_minishell *m)
 			free(pi.pids);
 			return ;
 		}
+		reset_minishell_args(m);
 		pi.i++;
 	}
 	wait_for_children(m, &pi);

@@ -568,23 +568,6 @@ int has_pipes(t_list *tok_lst)
     }
     return 0;
 }
-void print_token_pointers2(t_list *tok_lst)
-{
-    t_list  *current;
-    t_token *cur_token;
-
-    ft_printf("\n"Y"AFTER PREX: Token Pointers:"D"\n");
-    current = tok_lst;
-    while (current != NULL)
-    {
-        cur_token = (t_token *)current->content;
-        ft_printf("Token address: %p\n", cur_token);
-        ft_printf("Token->str: %p (%s)\n", cur_token->str, cur_token->str);
-        ft_printf("Token->expmap: %p (%s)\n", cur_token->expmap, cur_token->expmap);
-        current = current->next;
-    }
-    ft_printf(Y"End of token pointers\n"D);
-}
 
 
 void execute(t_minishell *m)
@@ -597,19 +580,27 @@ void execute(t_minishell *m)
     {
     	split_pipes(m);
         execute_with_pipes(m);
-
-    	ft_printf("tok_lst:\n");
-    	ft_lstput(&(m->tok_lst), put_token, '\n');
+        reset_minishell_args(m);
     	reset_sequences(m);
     }
     else
     {
         prexecute(m, 0);
-		print_token_pointers2(m->tok_lst);
         if (g_global == 0)
 		{
-            run_seg(m, m->tok_lst, STDIN_FILENO, STDOUT_FILENO);
+            run_seg(m, 0, STDIN_FILENO, STDOUT_FILENO);
 		}
+    	if (m->exec_lst)
+    	{
+    	    mlstclear(m->exec_lst);
+    	    m->exec_lst = NULL;
+    	}
+        reset_minishell_args(m);
+    	if (m->tok_lst)
+    	{
+    	    mlstclear(m->tok_lst);
+    	    m->tok_lst = NULL;
+    	}
     }
 }
 
@@ -939,30 +930,44 @@ static char	*find_executable(char **paths, int pathcount, char *command)
 	return (NULL);
 }
 
+void newfree_token(t_token *token)
+{
+    if (token)
+    {
+        free(token->str);
+        free(token->expmap);
+        free(token->rdrcmeta);
+        free(token->rdrctarget);
+        free(token);
+    }
+}
+
 void reset_sequences(t_minishell *m)
 {
     int i;
 
+    ft_printf("Entering reset_sequences\n");
     i = 0;
     while(i < MAXPIPS)
     {
         if(m->cmd_seqs[i])
         {
-            mlstclear(m->cmd_seqs[i]);
+            ft_printf("Clearing cmd_seq %d\n", i);
+            t_list *current = m->cmd_seqs[i];
+            while (current)
+            {
+                t_list *next = current->next;
+                t_token *token = current->content;
+                ft_printf("Freeing token: %p\n", token);
+                newfree_token(token);
+                free(current);
+                current = next;
+            }
             m->cmd_seqs[i] = NULL;
         }
         i++;
     }
-    if (m->exec_lst)
-    {
-        mlstclear(m->exec_lst);
-        m->exec_lst = NULL;
-    }
-    if (m->tok_lst)
-    {
-        mlstclear(m->tok_lst);
-        m->tok_lst = NULL;
-    }
+    ft_printf("Exiting reset_sequences\n");
 }
 
 char	*get_executable(t_minishell *m, char *command)
@@ -1087,15 +1092,10 @@ int	add_first_arg(char **argv, t_list *current, int *argc)
 
 #include "./../../include/minishell.h"
 
-static t_token	*init_pipe_details(t_token *pipetok)
-{
-	pipetok->open_prompt = 0;
-	return (pipetok);
-}
-
 static t_token	*init_redirection_details(t_token *redirectiontoken)
 {
 	redirectiontoken->rdrcmeta = NULL;
+	redirectiontoken->rdrctarget = NULL;
 	return (redirectiontoken);
 }
 
@@ -1135,9 +1135,7 @@ void	pre_exec_prep(t_minishell *m)
 	while (current != NULL)
 	{
 		cur_content = (t_token *)current->content;
-		if (cur_content->token == PIPE)
-			cur_content = init_pipe_details(cur_content);
-		else if (cur_content->token == REDIRECTION)
+		if (cur_content->token == REDIRECTION)
 			init_redirection_details(cur_content);
 		current = current->next;
 	}
@@ -1184,17 +1182,6 @@ static int	process_pipecommand(t_minishell *m, t_pipe_info *pi)
 		}
 		handle_parent_process(pi);
 	}
-	ft_printf(Y"free exec\n"D);
-	ft_lstput(&(m->exec_lst), put_token, '\n');    // Clear previous exec_lst
-	if (m->exec_lst)
-	{
-    	mlstclear(m->exec_lst);
-    	m->exec_lst = NULL;
-	}
-	ft_printf(Y"after free exec\n"D);
-	ft_lstput(&(m->exec_lst), put_token, '\n');    // Clear previous exec_lst
-    	ft_printf("tok_lst:\n");
-    	ft_lstput(&(m->tok_lst), put_token, '\n');
 	return (1);
 }
 
@@ -1214,6 +1201,7 @@ void	execute_with_pipes(t_minishell *m)
 			free(pi.pids);
 			return ;
 		}
+		reset_minishell_args(m);
 		pi.i++;
 	}
 	wait_for_children(m, &pi);
@@ -1230,15 +1218,19 @@ t_token *duplicate(t_token *src)
         return NULL;
 
     *new_token = *src;
-    new_token->token = src->token;
+	new_token->token = src->token;
     new_token->str = ft_strdup(src->str);
     new_token->expmap = ft_strdup(src->expmap);
 
-    if (src->token == REDIRECTION)
-    {
+    if (src->rdrcmeta)
         new_token->rdrcmeta = ft_strdup(src->rdrcmeta);
+    else
+        new_token->rdrcmeta = NULL;
+
+    if (src->rdrctarget)
         new_token->rdrctarget = ft_strdup(src->rdrctarget);
-    }
+    else
+        new_token->rdrctarget = NULL;
 
     return new_token;
 }
@@ -1310,6 +1302,12 @@ static void prex_outs(t_list *tok_lst, t_list **exec_lst)
 
 void prexecute(t_minishell *m, int i)
 {
+    // Prüfen und Freigeben von m->exec_lst vor neuer Zuweisung
+    if (m->exec_lst)
+    {
+        mlstclear(m->exec_lst);
+        m->exec_lst = NULL;
+    }
     ft_printf("prexecute start\n");
 	if (m->pipes == 0)
 	{
@@ -1327,19 +1325,12 @@ void prexecute(t_minishell *m, int i)
     	ft_lstput(&(m->tok_lst), put_token, '\n');
     	ft_printf("cmd_seqs_lst:\n");
     	ft_lstput(&(m->cmd_seqs[i]), put_token, '\n');
-	prex_ins(m, m->cmd_seqs[i], &(m->exec_lst));
-	prex_mains(m->cmd_seqs[i], &(m->exec_lst));
-	prex_outs(m->cmd_seqs[i], &(m->exec_lst));
-    	ft_printf("exec_lst:\n");
-	ft_lstput(&(m->exec_lst), put_token, '\n');
+		prex_ins(m, m->cmd_seqs[i], &(m->exec_seqs[i]));
+		prex_mains(m->cmd_seqs[i], &(m->exec_seqs[i]));
+		prex_outs(m->cmd_seqs[i], &(m->exec_seqs[i]));
+    	ft_printf("exec_seqs[%i]:\n", i);
+	ft_lstput(&(m->exec_seqs[i]), put_token, '\n');
 	}
-
-    // Clear previous exec_lst
-    if (m->exec_lst)
-    {
-        mlstclear(m->exec_lst);
-        m->exec_lst = NULL;
-    }
 }
 
 #include "./../../include/minishell.h"
@@ -1449,77 +1440,39 @@ void print_token_pointers3(t_list *tok_lst)
     ft_printf(Y"End of token pointers\n"D);
 }
 
-void	run_seg(t_minishell *m, t_list *exec_lst, int input_fd, int output_fd)
+void run_seg(t_minishell *m, int i, int input_fd, int output_fd)
 {
-	t_fd	fd;
-	char	**args;
-	int		arg_count;
+    t_fd    fd;
 
-	args = NULL;
-	arg_count = 0;
-	init_fd(&fd, input_fd, output_fd);
-	process_tok(exec_lst, &fd, &args, &arg_count);
-	if (args && args[0])
-	{
-		run(m, args, arg_count, &fd);
-	print_token_pointers3(m->tok_lst);
-	}
-	cleanup_fds(&fd);
-	ft_array_l_free(args, arg_count);
+    init_fd(&fd, input_fd, output_fd);
+	if (m->pipes == 0)
+    	process_tok(m, m->exec_lst, &fd);
+	else
+    	process_tok(m, m->exec_seqs[i], &fd);
+    if (m->args[0])
+    {
+        run(m, m->args, m->argc, &fd);
+    }
+		reset_minishell_args(m);
+    cleanup_fds(&fd);
 }
-
 
 #include "./../../include/minishell.h"
 
-void	add_argument(char ***args, int *arg_count, char *arg)
-{
-    char	**temp;
-    int		i;
+void add_argument(t_minishell *m, char *arg) {
+    int i;
 
-    // Debug: Vor dem Hinzufügen eines neuen Arguments
-    ft_printf(Y"DEBUG: add_argument called with arg_count=%d, arg='%s'\n"D, *arg_count, arg);
-
-    (*arg_count)++;
-    ft_printf(Y"DEBUG: Incremented arg_count to %d\n"D, *arg_count);
-
-    temp = ft_calloc(*arg_count + 1, sizeof(char *));
-    if (!temp)
-    {
-        ft_fprintf(2, "Error: Memory allocation failed\n");
-        ft_array_l_free(*args, *arg_count - 1);
-        return;
-    }
-
-    // Debug: Überprüfen der neuen Speicheradresse
-    ft_printf(Y"DEBUG: Allocated new temp array at address %p\n"D, temp);
-
-    if (*args)
-    {
-        i = 0;
-        ft_printf(Y"DEBUG: Copying existing arguments to new temp array\n"D);
-        while (i < *arg_count - 1)
-        {
-            temp[i] = (*args)[i];
-            ft_printf(Y"DEBUG: Copied arg[%d] = '%s' (Address: %p)\n"D, i, temp[i], temp[i]);
-            i++;
+    // Find the first NULL element in the args array
+    for (i = 0; i < 1024; i++) {
+        if (m->args[i] == NULL) {
+            m->args[i] = arg;
+            break;
         }
-        ft_printf(Y"DEBUG: Freeing old args array at address %p\n"D, *args);
-        free(*args);
     }
 
-    *args = temp;
-    (*args)[*arg_count - 1] = arg;
-
-    // Debug: Neues Argument hinzufügen
-    ft_printf(Y"DEBUG: Added new arg at position %d, Address: %p, Value: '%s'\n"D, *arg_count - 1, (*args)[*arg_count - 1], (*args)[*arg_count - 1]);
-
-    (*args)[*arg_count] = NULL;
-
-    // Debug: Gesamte Argumentliste anzeigen
-    ft_printf(Y"DEBUG: Current args list:\n"D);
-    for (i = 0; i < *arg_count; i++)
-    {
-        ft_printf(Y"DEBUG: args[%d] = '%s' (Address: %p)\n"D, i, (*args)[i], (*args)[i]);
+    // If we've reached the end of the array, print an error
+    if (i == 1024) {
+        ft_fprintf(2, "Error: Maximum number of arguments reached\n");
     }
 }
 
@@ -1564,33 +1517,34 @@ void execute_external_command(t_minishell *m, char **args, t_fd *fd)
     free(tmp);
 }
 
-void	process_tok(t_list *exec_lst, t_fd *fd, char ***args, int *arg_count)
-{
-    t_list	*current;
-    t_token	*token;
+void process_tok(t_minishell *m, t_list *exec_lst, t_fd *fd) {
+    t_list  *current;
+    t_token *token;
     char    *dup_str;
 
     current = exec_lst;
+    m->argc = 0;
     while (current != NULL)
     {
         token = (t_token *)current->content;
         if (token->token == REDIRECTION)
+        {
             run_redirection(token, fd);
+        }
         else if (token->token == COMMAND || token->token == WORD)
         {
-            // String duplizieren, um unabhängige Speicherverwaltung zu gewährleisten
             dup_str = ft_strdup(token->str);
             if (!dup_str)
             {
                 ft_fprintf(2, "Error: Memory allocation failed for token string duplication\n");
                 return;
             }
-            add_argument(args, arg_count, dup_str);
+            add_argument(m, dup_str);
+            m->argc++;
         }
         current = current->next;
     }
 }
-
 
 #include "./../../include/minishell.h"
 
@@ -1609,7 +1563,7 @@ void	run_child_process(t_minishell *m, t_pipe_info *pi)
 		dup2(pi->pipe_fd[1], STDOUT_FILENO);
 		close(pi->pipe_fd[1]);
 	}
-	run_seg(m, m->exec_lst, STDIN_FILENO, STDOUT_FILENO);
+	run_seg(m, pi->i, STDIN_FILENO, STDOUT_FILENO);
 	exit(0);
 }
 
@@ -1876,15 +1830,15 @@ void expand_token(t_minishell *m, t_token *token)
     exp.str = token->str;
     exp.expmap = token->expmap;
 
-    ft_printf("Before init_exp:\n");
-    ft_printf("token->str: %p (%s)\n", token->str, token->str);
-    ft_printf("token->expmap: %p (%s)\n", token->expmap, token->expmap);
+    // ft_printf("Before init_exp:\n");
+    // ft_printf("token->str: %p (%s)\n", token->str, token->str);
+    // ft_printf("token->expmap: %p (%s)\n", token->expmap, token->expmap);
 
     init_exp(&exp);
 
-    ft_printf("After init_exp:\n");
-    ft_printf("exp.result: %p\n", exp.result);
-    ft_printf("exp.expmap_result: %p\n", exp.expmap_result);
+    // ft_printf("After init_exp:\n");
+    // ft_printf("exp.result: %p\n", exp.result);
+    // ft_printf("exp.expmap_result: %p\n", exp.expmap_result);
 
     if (!exp.result || !exp.expmap_result) {
         free(exp.result);
@@ -1894,9 +1848,9 @@ void expand_token(t_minishell *m, t_token *token)
 
     process_token(&exp);
 
-    ft_printf("After process_token:\n");
-    ft_printf("exp.result: %p (%s)\n", exp.result, exp.result);
-    ft_printf("exp.expmap_result: %p (%s)\n", exp.expmap_result, exp.expmap_result);
+    // ft_printf("After process_token:\n");
+    // ft_printf("exp.result: %p (%s)\n", exp.result, exp.result);
+    // ft_printf("exp.expmap_result: %p (%s)\n", exp.expmap_result, exp.expmap_result);
 
     free(token->str);
     free(token->expmap);
@@ -1904,9 +1858,9 @@ void expand_token(t_minishell *m, t_token *token)
     token->str = exp.result;
     token->expmap = exp.expmap_result;
 
-    ft_printf("After assigning to token:\n");
-    ft_printf("token->str: %p (%s)\n", token->str, token->str);
-    ft_printf("token->expmap: %p (%s)\n", token->expmap, token->expmap);
+    // ft_printf("After assigning to token:\n");
+    // ft_printf("token->str: %p (%s)\n", token->str, token->str);
+    // ft_printf("token->expmap: %p (%s)\n", token->expmap, token->expmap);
 
 }
 
@@ -2820,110 +2774,120 @@ char	*handle_whitespaces(const char *str)
 
 #include "./../include/minishell.h"
 
-void	init_env_list(char **envp, t_minishell *m)
+void    increment_shlvl(char **value)
 {
-	char	*name;
-	char	*value;
-	char	*new_shell_level;
-
-	while (*envp != NULL)
-	{
-		name = NULL;
-		value = NULL;
-		extract_name_value(*envp, &name, &value);
-		new_shell_level = NULL;
-		if (ft_strcmp(name, "SHLVL") == 0)
-		{
-			new_shell_level = ft_itoa(ft_atoi(value) + 1);
-			free(value);
-		}
-		else
-			new_shell_level = value;
-		if (ft_strcmp(name, "OLDPWD") != 0)
-			add_env_node(&m->env_list, name, new_shell_level);
-		else
-			ft_multifree(name, new_shell_level, NULL, NULL);
-		envp++;
-	}
-	add_env_node(&m->env_list, ft_strdup("OLDPWD"), NULL);
+    int     i;
+    int     carry;
+    char    *new_value;
+    i = strlen(*value) - 1;
+    carry = 1;
+    while (i >= 0 && carry)
+    {
+        if ((*value)[i] < '9')
+        {
+            (*value)[i] += 1;
+            carry = 0;
+        }
+        else
+        {
+            (*value)[i] = '0';
+        }
+        i--;
+    }
+    if (carry)
+    {
+        new_value = malloc(strlen(*value) + 2);
+        new_value[0] = '1';
+        strcpy(new_value + 1, *value);
+        free(*value);
+        *value = new_value;
+    }
 }
-
-void	extract_name_value(char *arg, char **name, char **value)
+void    init_env_list(char **envp, t_minishell *m)
 {
-	char	*equal_sign;
-	char	*plus_sign;
-	char	*trimmed_value;
-
-	plus_sign = ft_strchr(arg, '+');
-	equal_sign = ft_strchr(arg, '=');
-	if (equal_sign)
-	{
-		if (plus_sign && plus_sign < equal_sign)
-			*name = ft_strndup(arg, plus_sign - arg);
-		else
-			*name = ft_strndup(arg, equal_sign - arg);
-		trimmed_value = ft_strtrim(equal_sign + 1, "\"");
-		*value = ft_strdup(trimmed_value);
-		free(trimmed_value);
-	}
-	else
-	{
-		*name = ft_strdup(arg);
-		*value = NULL;
-		free(arg);
-	}
+    char    *name;
+    char    *value;
+    while (*envp != NULL)
+    {
+        name = NULL;
+        value = NULL;
+        extract_name_value(*envp, &name, &value);
+        if (ft_strcmp(name, "SHLVL") == 0)
+            increment_shlvl(&value);
+        if (ft_strcmp(name, "OLDPWD") != 0)
+            add_env_node(&m->env_list, name, value);
+        else
+            ft_multifree(name, value, NULL, NULL);
+        envp++;
+    }
+    add_env_node(&m->env_list, "OLDPWD", NULL);
 }
-
-void	add_env_node(t_envlst **env_list, char *name, char *value)
+void    extract_name_value(char *arg, char **name, char **value)
 {
-	t_envlst	*new_node;
-	t_envlst	*temp;
-
-	new_node = malloc(sizeof(t_envlst));
-	if (new_node == NULL)
-	{
-		free(name);
-		free(value);
-		return ((void)ft_printf(MEM_ERR));
-	}
-	new_node->name = name;
-	new_node->value = value;
-	new_node->next = NULL;
-	if (*env_list == NULL)
-		*env_list = new_node;
-	else
-	{
-		temp = *env_list;
-		while (temp->next != NULL)
-			temp = temp->next;
-		temp->next = new_node;
-	}
+    char    *equal_sign;
+    char    *plus_sign;
+    char    *trimmed_value;
+    plus_sign = ft_strchr(arg, '+');
+    equal_sign = ft_strchr(arg, '=');
+    if (equal_sign)
+    {
+        if (plus_sign && plus_sign < equal_sign)
+            *name = ft_strndup(arg, plus_sign - arg);
+        else
+            *name = ft_strndup(arg, equal_sign - arg);
+        trimmed_value = ft_strtrim(equal_sign + 1, "\"");
+        *value = ft_strdup(trimmed_value);
+        free(trimmed_value);
+    }
+    else
+    {
+        *name = ft_strdup(arg);
+        *value = NULL;
+        free(arg);
+    }
 }
-
-t_envlst	*find_env_var(t_envlst *head, const char *name)
+void    add_env_node(t_envlst **env_list, char *name, char *value)
 {
-	t_envlst	*current;
-
-	current = head;
-	while (current != NULL)
-	{
-		if (ft_strcmp(current->name, name) == 0)
-			return (current);
-		current = current->next;
-	}
-	return (NULL);
+    t_envlst    *new_node;
+    t_envlst    *temp;
+    new_node = malloc(sizeof(t_envlst));
+    if (new_node == NULL)
+    {
+        free(name);
+        free(value);
+        return ((void)ft_printf(MEM_ERR));
+    }
+    new_node->name = name;
+    new_node->value = value;
+    new_node->next = NULL;
+    if (*env_list == NULL)
+        *env_list = new_node;
+    else
+    {
+        temp = *env_list;
+        while (temp->next != NULL)
+            temp = temp->next;
+        temp->next = new_node;
+    }
 }
-
+t_envlst    *find_env_var(t_envlst *head, const char *name)
+{
+    t_envlst    *current;
+    current = head;
+    while (current != NULL)
+    {
+        if (ft_strcmp(current->name, name) == 0)
+            return (current);
+        current = current->next;
+    }
+    return (NULL);
+}
 
 #include "./../../include/minishell.h"
 
 void    add_token_to_list(t_list **lst, t_token *token)
 {
-    t_token *new_token = duplicate(token);
-    if (new_token)
-    {
-        ft_lstadd_back(lst, ft_lstnew(new_token));
-    }
+    ft_lstadd_back(lst, ft_lstnew(token));
 }
 
 // void	prompt_to_token(char *prompt, t_list **tok_lst)
@@ -3130,24 +3094,6 @@ void	expand_toklst(t_minishell *m, t_list **tok_lst)
 	}
 }
 
-void print_token_pointers(t_list *tok_lst)
-{
-    t_list  *current;
-    t_token *cur_token;
-
-    ft_printf("\n"Y"DEBUG: Token Pointers:"D"\n");
-    current = tok_lst;
-    while (current != NULL)
-    {
-        cur_token = (t_token *)current->content;
-        ft_printf("Token address: %p\n", cur_token);
-        ft_printf("Token->str: %p (%s)\n", cur_token->str, cur_token->str);
-        ft_printf("Token->expmap: %p (%s)\n", cur_token->expmap, cur_token->expmap);
-        current = current->next;
-    }
-    ft_printf(Y"End of token pointers\n"D);
-}
-
 
 void	lex_prompt(t_minishell *m)
 {
@@ -3161,7 +3107,7 @@ void	lex_prompt(t_minishell *m)
 	// 	m->prompt = tmpp;
 	// }
 	detect_lexing_errors(m);
-	prompt_to_token(m->prompt, &(m->tok_lst));
+	prompt_to_token(m);
 	if (DEBUG == 1)
 	{
 		ft_printf(Y"TOKENs:\n"D);
@@ -3174,7 +3120,6 @@ void	lex_prompt(t_minishell *m)
 		ft_lstput(&(m->tok_lst), put_token, '\n');
 	}
 	afterbreakup(&(m->tok_lst));
-        print_token_pointers(m->tok_lst);
 }
 
 
@@ -3206,16 +3151,23 @@ void	process_abtoken(t_list **current, t_token *cur)
 	work = whitespace_handler(cur->str);
 	wordcount = ft_count_words(work, ' ');
 	words = ft_split(work, ' ');
+
+	// Freigeben des ursprünglichen `cur->str` Speicherbereichs
 	free(cur->str);
+
+	// Setze `cur->str` auf das erste Wort in `words`
 	cur->str = words[0];
+
 	i = 1;
 	while (i < wordcount)
 	{
-		add_new_abtoken(current, words[i], cur->expmap);
+		add_new_abtoken(current, words[i], cur->expmap);  // Füge jedes weitere Wort als neues Token hinzu
+		free(words[i]);  // Freigeben der nicht mehr benötigten Strings
 		i++;
 	}
-	free(words);
-	*current = next_node;
+
+	free(words);  // Freigeben des Arrays `words` selbst
+	*current = next_node;  // Setze den aktuellen Zeiger auf den nächsten Knoten
 }
 
 int	should_process_token(t_token *t)
@@ -3270,30 +3222,30 @@ void	detect_lexing_errors(t_minishell *m)
 
 #include "./../../include/minishell.h"
 
-void	handle_double_redirection(t_tokenizer_state *state)
+void	handle_double_redirection(t_minishell *m, t_tokenizer_state *state)
 {
 	if (*state->ptr == '>')
-		create_rdrct_token(state, ">>", "00");
+		create_rdrct_token(m, ">>", "00");
 	else
-		create_rdrct_token(state, "<<", "00");
+		create_rdrct_token(m, "<<", "00");
 	state->ptr++;
 }
 
-void	handle_single_redirection(t_tokenizer_state *state)
+void	handle_single_redirection(t_minishell *m, t_tokenizer_state *state)
 {
 	if (*state->ptr == '>')
-		create_rdrct_token(state, ">", "0");
+		create_rdrct_token(m, ">", "0");
 	else
-		create_rdrct_token(state, "<", "0");
+		create_rdrct_token(m, "<", "0");
 }
 
-void	handle_redirection(t_tokenizer_state *state)
+void	handle_redirection(t_minishell *m, t_tokenizer_state *state)
 {
-	handle_current_token(state);
+	handle_current_token(m, state);
 	if (*(state->ptr + 1) == *state->ptr)
-		handle_double_redirection(state);
+		handle_double_redirection(m, state);
 	else
-		handle_single_redirection(state);
+		handle_single_redirection(m, state);
 	state->ptr++;
 }
 
@@ -3353,7 +3305,7 @@ void	handle_double_quote(t_tokenizer_state *state)
 	state->ptr++;
 }
 
-void	handle_space(t_tokenizer_state *state)
+void	handle_space(t_minishell *m, t_tokenizer_state *state)
 {
 	t_token	*token;
 
@@ -3363,13 +3315,13 @@ void	handle_space(t_tokenizer_state *state)
 		state->expmap[state->current_pos] = '\0';
 		token = create_token(state->current_token, state->expmap);
 		update_tok_type(token, WORD);
-		add_token_to_list(state->tok_lst, token);
+		add_token_to_list(&(m->tok_lst), token);
 		state->current_pos = 0;
 	}
 	state->ptr++;
 }
 
-void	handle_pipe(t_tokenizer_state *state)
+void	handle_pipe(t_minishell *m, t_tokenizer_state *state)
 {
 	t_token	*token;
 
@@ -3379,16 +3331,16 @@ void	handle_pipe(t_tokenizer_state *state)
 		state->expmap[state->current_pos] = '\0';
 		token = create_token(state->current_token, state->expmap);
 		update_tok_type(token, WORD);
-		add_token_to_list(state->tok_lst, token);
+		add_token_to_list(&(m->tok_lst), token);
 		state->current_pos = 0;
 	}
 	token = create_token("|", "0");
 	update_tok_type(token, PIPE);
-	add_token_to_list(state->tok_lst, token);
+	add_token_to_list(&(m->tok_lst), token);
 	state->ptr++;
 }
 
-void	handle_current_token(t_tokenizer_state *state)
+void	handle_current_token(t_minishell *m, t_tokenizer_state *state)
 {
 	t_token	*token;
 
@@ -3398,18 +3350,18 @@ void	handle_current_token(t_tokenizer_state *state)
 		state->expmap[state->current_pos] = '\0';
 		token = create_token(state->current_token, state->expmap);
 		update_tok_type(token, WORD);
-		add_token_to_list(state->tok_lst, token);
+		add_token_to_list(&(m->tok_lst), token);
 		state->current_pos = 0;
 	}
 }
 
-void	create_rdrct_token(t_tokenizer_state *state, char *rdrct, char *expmap)
+void	create_rdrct_token(t_minishell *m, char *rdrct, char *expmap)
 {
 	t_token	*token;
 
 	token = create_token(rdrct, expmap);
 	update_tok_type(token, REDIRECTION);
-	add_token_to_list(state->tok_lst, token);
+	add_token_to_list(&(m->tok_lst), token);
 }
 
 
@@ -3450,15 +3402,14 @@ void	handle_single_quote(t_tokenizer_state *state)
 
 #include "./../../include/minishell.h"
 
-void	init_tokenizer_state(t_tokenizer_state *state, char *p, t_list **lst)
+void	init_tokenizer_state(t_tokenizer_state *state, char *p)
 {
 	*state = (t_tokenizer_state){
 		.ptr = p,
 		.current_pos = 0,
 		.quote_level = 0,
 		.escape_next = 0,
-		.current_token_size = 10,
-		.tok_lst = lst
+		.current_token_size = 10
 	};
 	state->current_token = ft_calloc(state->current_token_size, sizeof(char));
 	state->expmap = ft_calloc(state->current_token_size, sizeof(char));
@@ -3470,7 +3421,7 @@ void	init_tokenizer_state(t_tokenizer_state *state, char *p, t_list **lst)
 	}
 }
 
-void	process_char(t_tokenizer_state *s)
+void	process_char(t_minishell *m, t_tokenizer_state *s)
 {
 	if (s->escape_next)
 	{
@@ -3484,48 +3435,57 @@ void	process_char(t_tokenizer_state *s)
 	else if (*s->ptr == '"' && s->quote_level != 1)
 		handle_double_quote(s);
 	else if (ft_isspace(*s->ptr) && s->quote_level == 0)
-		handle_space(s);
+		handle_space(m, s);
 	else if (*s->ptr == '|' && s->quote_level == 0)
-		handle_pipe(s);
+		handle_pipe(m, s);
 	else if ((*s->ptr == '>' || *s->ptr == '<') && s->quote_level == 0)
-		handle_redirection(s);
+		handle_redirection(m, s);
 	else
 		handle_regular_char(s);
 }
 
-void	finalize_token(t_tokenizer_state *state)
+void cleanup_tokenizer_state(t_tokenizer_state *state)
 {
-	t_token	*token;
-
-	if (state->current_pos > 0)
-	{
-		state->current_token[state->current_pos] = '\0';
-		state->expmap[state->current_pos] = '\0';
-		token = create_token(state->current_token, state->expmap);
-		update_tok_type(token, WORD);
-		add_token_to_list(state->tok_lst, token);
-	}
+    if (state->current_token) {
+        free(state->current_token);  // Freigabe des aktuellen Tokens
+    }
+    if (state->expmap) {
+        free(state->expmap);  // Freigabe der Expansionsmap
+    }
 }
-
-void	cleanup_tokenizer_state(t_tokenizer_state *state)
+void handle_error_and_cleanup(t_tokenizer_state *state, t_minishell *m)
 {
-	free(state->current_token);
-	free(state->expmap);
+    cleanup_tokenizer_state(state);  // Freigabe der in state allokierten Speicher
+    mlstclear(m->tok_lst);
 }
-
-void	prompt_to_token(char *prompt, t_list **tok_lst)
+void prompt_to_token(t_minishell *m)
 {
-	t_tokenizer_state	state;
+    t_tokenizer_state state;
+    init_tokenizer_state(&state, m->prompt);
 
-	init_tokenizer_state(&state, prompt, tok_lst);
-	while (*state.ptr)
-	{
-		process_char(&state);
-		if (state.current_pos >= state.current_token_size - 1)
-			resize_token_buffers(&state);
-	}
-	finalize_token(&state);
-	cleanup_tokenizer_state(&state);
+    while (*state.ptr)
+    {
+        process_char(m, &state);
+        if (state.current_pos >= state.current_token_size - 1)
+            resize_token_buffers(&state);
+    }
+
+    // Finale Tokenisierung direkt im Hauptloop
+    if (state.current_pos > 0)
+    {
+        state.current_token[state.current_pos] = '\0';
+        state.expmap[state.current_pos] = '\0';
+        t_token *token = create_token(state.current_token, state.expmap);
+        if (!token)  // Prüfe, ob Token erstellt wurde
+        {
+            cleanup_tokenizer_state(&state);
+            ft_error_exit("Fehler beim Erstellen des Tokens");  // Bei Fehlern sauber abbrechen
+        }
+        update_tok_type(token, WORD);
+        add_token_to_list(&(m->tok_lst), token);
+    }
+
+    cleanup_tokenizer_state(&state);  // Freigabe des Tokenizers
 }
 
 
@@ -3542,16 +3502,6 @@ static void	ft_envlstclear(t_minishell *minishell)
 	while (current != NULL)
 	{
 		next = current->next;
-		if (current->name)
-		{
-			free(current->name);
-			current->name = NULL;
-		}
-		if (current->value)
-		{
-			free(current->value);
-			current->value = NULL;
-		}
 		free(current);
 		current = next;
 	}
@@ -3565,6 +3515,7 @@ void	cleanup_minishell(t_minishell *minishell)
 		free(minishell->prompt);
 	minishell->prompt = NULL;
 	ft_envlstclear(minishell);
+		reset_minishell_args(minishell);
 	mlstclear(minishell->tok_lst);
 }
 
@@ -3581,6 +3532,22 @@ void	initialize_minishell(t_minishell *minishell, char **envp)
 
 #include "./../include/minishell.h"
 
+void reset_minishell_args(t_minishell *m)
+{
+    int i;
+
+    i = 0;
+    while (i < MAXPIPS)
+    {
+        if (m->args[i] != NULL)
+        {
+            free(m->args[i]);  // Free the string if it's not NULL
+            m->args[i] = NULL;
+        }
+        i++;
+    }
+    m->argc = 0;
+}
 void mlstclear(t_list *list)
 {
     t_list *current;
@@ -3592,7 +3559,7 @@ void mlstclear(t_list *list)
     {
         next = current->next;
         token = (t_token *)current->content;
-        ft_printf("free token: %p %s %p %s %p %s %p %s %p", token, token->str, token->str, token->expmap, token->expmap, token->rdrcmeta, token->rdrcmeta, token->rdrctarget, token->rdrctarget);
+        ft_printf("free token: %p %s %p %s %p %s %p %s %p\n", token, token->str, token->str, token->expmap, token->expmap, token->rdrcmeta, token->rdrcmeta, token->rdrctarget, token->rdrctarget);
         if (token != NULL)
         {
             free(token->str);
@@ -3673,6 +3640,7 @@ static int	handle_input(t_minishell *minishell)
 		return (1);
 	minishell->tok_lst = NULL;
 	minishell->exec_lst = NULL;
+	minishell->argc = 0;
 	if (minishell->prompt)
 	{
 		minishell->last_exitcode = minishell->exitcode;
@@ -3704,6 +3672,18 @@ int	main(int argc, char **argv, char **envp)
 		minishell.cmd_seqs[i] = NULL;
 		i++;
 	}
+	i = 0;
+	while(i < MAXPIPS)
+	{
+		minishell.exec_seqs[i] = NULL;
+		i++;
+	}
+	i = 0;
+	while(i < MAXPIPS)
+	{
+		minishell.args[i] = NULL;
+		i++;
+	}
 	g_global = 0;
 	minishell.env_list = NULL;
 	init_env_list(envp, &minishell);
@@ -3732,57 +3712,7 @@ int	main(int argc, char **argv, char **envp)
 
 #include "./../include/minishell.h"
 
-t_token *newtoken_dup(t_token *src)
-{
-    if (!src)
-        return NULL;
-
-    t_token *dup = malloc(sizeof(t_token));
-    if (!dup)
-        return NULL;
-
-    // Copy basic types
-    dup->token = src->token;
-    dup->had_quote = src->had_quote;
-    dup->is_freed = src->is_freed;
-    dup->open_prompt = src->open_prompt;
-    dup->fd = src->fd;
-
-    // Duplicate strings, handling NULL cases
-    dup->str = src->str ? strdup(src->str) : NULL;
-    dup->expmap = src->expmap ? strdup(src->expmap) : NULL;
-    dup->rdrcmeta = src->rdrcmeta ? strdup(src->rdrcmeta) : NULL;
-    dup->rdrctarget = src->rdrctarget ? strdup(src->rdrctarget) : NULL;
-
-    // Check if any string duplication failed
-    if ((src->str && !dup->str) ||
-        (src->expmap && !dup->expmap) || (src->rdrcmeta && !dup->rdrcmeta) ||
-        (src->rdrctarget && !dup->rdrctarget))
-    {
-        // Free any successfully allocated strings
-        free(dup->str);
-        free(dup->expmap);
-        free(dup->rdrcmeta);
-        free(dup->rdrctarget);
-        free(dup);
-        return NULL;
-    }
-
-    return dup;
-}
-
 // Function to free a token
-void newfree_token(t_token *token)
-{
-    if (token)
-    {
-        free(token->str);
-        free(token->expmap);
-        free(token->rdrcmeta);
-        free(token->rdrctarget);
-        free(token);
-    }
-}
 void split_pipes(t_minishell *m)
 {
     t_list *current;
@@ -3815,7 +3745,7 @@ void split_pipes(t_minishell *m)
         else
         {
             // Duplicate the token before adding it to the temporary list
-            t_token *token_dup = newtoken_dup(token);
+            t_token *token_dup = duplicate(token);
             if (!token_dup)
                 ft_error_exit("token_dup");
 
@@ -4036,13 +3966,6 @@ void	update_tok_type_next(t_list *current, enum e_toktype token)
 
 #include "./../../include/minishell.h"
 
-int	set_token_expmap(t_token *newtok, char *expmap)
-{
-	newtok->expmap = ft_strdup(expmap);
-	if (!newtok->expmap)
-		return (0);
-	return (1);
-}
 
 void	free_token_resources(t_token *newtok)
 {
@@ -4051,29 +3974,37 @@ void	free_token_resources(t_token *newtok)
 	free(newtok);
 }
 
-t_token	*create_token(char *str, char *expmap)
+t_token *create_token(char *str, char *expmap)
 {
-	t_token	*newtok;
+    t_token *newtok;
 
-	if (!validate_input(str, expmap))
-		return (NULL);
-	newtok = allocate_token();
-	if (!newtok)
-		return (NULL);
-	if (!set_token_str(newtok, str))
-	{
-		free_token_resources(newtok);
-		return (NULL);
-	}
-	set_token_details(newtok, str);
-	if (!set_token_expmap(newtok, expmap))
-	{
-		free_token_resources(newtok);
-		if (str)
-			free(str);
-		return (NULL);
-	}
-	return (newtok);
+    if (!validate_input(str, expmap))
+        return NULL;
+
+    newtok = (t_token *)malloc(sizeof(t_token));
+    if (!newtok)
+        return NULL;
+
+    newtok->token = WORD;
+    newtok->is_freed = 0;
+    newtok->str = ft_strdup(str);
+    if (!newtok->str)
+    {
+        free(newtok);
+        return NULL;
+    }
+    newtok->expmap = ft_strdup(expmap);
+    if (!newtok->expmap)
+    {
+        free(newtok->str);
+        free(newtok);
+        return NULL;
+    }
+    
+    newtok->rdrcmeta = NULL;
+    newtok->rdrctarget = NULL;
+    newtok->had_quote = (ft_strchr(str, '\"') || ft_strchr(str, '\''));
+    return newtok;
 }
 
 void	print_toktype(enum e_toktype token)
@@ -4098,11 +4029,7 @@ void	print_toktype(enum e_toktype token)
 
 void	put_token_details(t_token *token)
 {
-	if (token->token == PIPE)
-	{
-		ft_printf(" (open_prompt: %d)", token->open_prompt);
-	}
-	else if (token->token == REDIRECTION)
+	if (token->token == REDIRECTION)
 	{
 		ft_printf(" ( rdrcmeta: %s %p rdrctarget: %s %p)",
 			token->rdrcmeta,
@@ -4157,33 +4084,6 @@ t_token	tok_lst_get(void *n)
 int	validate_input(const char *str, const char *expmap)
 {
 	return (str && *str && expmap && *expmap);
-}
-
-t_token	*allocate_token(void)
-{
-	t_token	*newtok;
-
-	newtok = (t_token *)ft_calloc(1, sizeof(t_token));
-	if (!newtok)
-		return (NULL);
-	newtok->token = WORD;
-	newtok->is_freed = 0;
-	return (newtok);
-}
-
-int	set_token_str(t_token *newtok, char *str)
-{
-	newtok->str = ft_strdup(str);
-	if (!newtok->str)
-		return (0);
-	return (1);
-}
-
-void	set_token_details(t_token *newtok, const char *str)
-{
-	newtok->rdrcmeta = NULL;
-	newtok->rdrctarget = NULL;
-	newtok->had_quote = (ft_strchr(str, '\"') || ft_strchr(str, '\''));
 }
 
 

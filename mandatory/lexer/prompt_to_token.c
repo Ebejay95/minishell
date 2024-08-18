@@ -12,15 +12,14 @@
 
 #include "./../../include/minishell.h"
 
-void	init_tokenizer_state(t_tokenizer_state *state, char *p, t_list **lst)
+void	init_tokenizer_state(t_tokenizer_state *state, char *p)
 {
 	*state = (t_tokenizer_state){
 		.ptr = p,
 		.current_pos = 0,
 		.quote_level = 0,
 		.escape_next = 0,
-		.current_token_size = 10,
-		.tok_lst = lst
+		.current_token_size = 10
 	};
 	state->current_token = ft_calloc(state->current_token_size, sizeof(char));
 	state->expmap = ft_calloc(state->current_token_size, sizeof(char));
@@ -32,7 +31,7 @@ void	init_tokenizer_state(t_tokenizer_state *state, char *p, t_list **lst)
 	}
 }
 
-void	process_char(t_tokenizer_state *s)
+void	process_char(t_minishell *m, t_tokenizer_state *s)
 {
 	if (s->escape_next)
 	{
@@ -46,46 +45,55 @@ void	process_char(t_tokenizer_state *s)
 	else if (*s->ptr == '"' && s->quote_level != 1)
 		handle_double_quote(s);
 	else if (ft_isspace(*s->ptr) && s->quote_level == 0)
-		handle_space(s);
+		handle_space(m, s);
 	else if (*s->ptr == '|' && s->quote_level == 0)
-		handle_pipe(s);
+		handle_pipe(m, s);
 	else if ((*s->ptr == '>' || *s->ptr == '<') && s->quote_level == 0)
-		handle_redirection(s);
+		handle_redirection(m, s);
 	else
 		handle_regular_char(s);
 }
 
-void	finalize_token(t_tokenizer_state *state)
+void cleanup_tokenizer_state(t_tokenizer_state *state)
 {
-	t_token	*token;
-
-	if (state->current_pos > 0)
-	{
-		state->current_token[state->current_pos] = '\0';
-		state->expmap[state->current_pos] = '\0';
-		token = create_token(state->current_token, state->expmap);
-		update_tok_type(token, WORD);
-		add_token_to_list(state->tok_lst, token);
-	}
+    if (state->current_token) {
+        free(state->current_token);  // Freigabe des aktuellen Tokens
+    }
+    if (state->expmap) {
+        free(state->expmap);  // Freigabe der Expansionsmap
+    }
 }
-
-void	cleanup_tokenizer_state(t_tokenizer_state *state)
+void handle_error_and_cleanup(t_tokenizer_state *state, t_minishell *m)
 {
-	free(state->current_token);
-	free(state->expmap);
+    cleanup_tokenizer_state(state);  // Freigabe der in state allokierten Speicher
+    mlstclear(m->tok_lst);
 }
-
-void	prompt_to_token(char *prompt, t_list **tok_lst)
+void prompt_to_token(t_minishell *m)
 {
-	t_tokenizer_state	state;
+    t_tokenizer_state state;
+    init_tokenizer_state(&state, m->prompt);
 
-	init_tokenizer_state(&state, prompt, tok_lst);
-	while (*state.ptr)
-	{
-		process_char(&state);
-		if (state.current_pos >= state.current_token_size - 1)
-			resize_token_buffers(&state);
-	}
-	finalize_token(&state);
-	cleanup_tokenizer_state(&state);
+    while (*state.ptr)
+    {
+        process_char(m, &state);
+        if (state.current_pos >= state.current_token_size - 1)
+            resize_token_buffers(&state);
+    }
+
+    // Finale Tokenisierung direkt im Hauptloop
+    if (state.current_pos > 0)
+    {
+        state.current_token[state.current_pos] = '\0';
+        state.expmap[state.current_pos] = '\0';
+        t_token *token = create_token(state.current_token, state.expmap);
+        if (!token)  // Prüfe, ob Token erstellt wurde
+        {
+            cleanup_tokenizer_state(&state);
+            ft_error_exit("Fehler beim Erstellen des Tokens");  // Bei Fehlern sauber abbrechen
+        }
+        update_tok_type(token, WORD);
+        add_token_to_list(&(m->tok_lst), token);
+    }
+
+    cleanup_tokenizer_state(&state);  // Freigabe des Tokenizers
 }

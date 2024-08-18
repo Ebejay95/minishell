@@ -24,7 +24,7 @@ void	handle_double_quote(t_tokenizer_state *state)
 	state->ptr++;
 }
 
-void	handle_space(t_tokenizer_state *state)
+void	handle_space(t_minishell *m, t_tokenizer_state *state)
 {
 	t_token	*token;
 
@@ -34,13 +34,13 @@ void	handle_space(t_tokenizer_state *state)
 		state->expmap[state->current_pos] = '\0';
 		token = create_token(state->current_token, state->expmap);
 		update_tok_type(token, WORD);
-		add_token_to_list(state->tok_lst, token);
+		add_token_to_list(&(m->tok_lst), token);
 		state->current_pos = 0;
 	}
 	state->ptr++;
 }
 
-void	handle_pipe(t_tokenizer_state *state)
+void	handle_pipe(t_minishell *m, t_tokenizer_state *state)
 {
 	t_token	*token;
 
@@ -50,16 +50,16 @@ void	handle_pipe(t_tokenizer_state *state)
 		state->expmap[state->current_pos] = '\0';
 		token = create_token(state->current_token, state->expmap);
 		update_tok_type(token, WORD);
-		add_token_to_list(state->tok_lst, token);
+		add_token_to_list(&(m->tok_lst), token);
 		state->current_pos = 0;
 	}
 	token = create_token("|", "0");
 	update_tok_type(token, PIPE);
-	add_token_to_list(state->tok_lst, token);
+	add_token_to_list(&(m->tok_lst), token);
 	state->ptr++;
 }
 
-void	handle_current_token(t_tokenizer_state *state)
+void	handle_current_token(t_minishell *m, t_tokenizer_state *state)
 {
 	t_token	*token;
 
@@ -69,16 +69,16 @@ void	handle_current_token(t_tokenizer_state *state)
 		state->expmap[state->current_pos] = '\0';
 		token = create_token(state->current_token, state->expmap);
 		update_tok_type(token, WORD);
-		add_token_to_list(state->tok_lst, token);
+		add_token_to_list(&(m->tok_lst), token);
 		state->current_pos = 0;
 	}
 }
 
-void	create_rdrct_token(t_tokenizer_state *state, char *rdrct, char *expmap)
+void	create_rdrct_token(t_minishell *m, char *rdrct, char *expmap)
 {
 	t_token	*token;
 
 	token = create_token(rdrct, expmap);
 	update_tok_type(token, REDIRECTION);
-	add_token_to_list(state->tok_lst, token);
+	add_token_to_list(&(m->tok_lst), token);
 }

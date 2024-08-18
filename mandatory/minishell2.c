@@ -23,16 +23,6 @@ static void	ft_envlstclear(t_minishell *minishell)
 	while (current != NULL)
 	{
 		next = current->next;
-		if (current->name)
-		{
-			free(current->name);
-			current->name = NULL;
-		}
-		if (current->value)
-		{
-			free(current->value);
-			current->value = NULL;
-		}
 		free(current);
 		current = next;
 	}
@@ -46,6 +36,7 @@ void	cleanup_minishell(t_minishell *minishell)
 		free(minishell->prompt);
 	minishell->prompt = NULL;
 	ft_envlstclear(minishell);
+		reset_minishell_args(minishell);
 	mlstclear(minishell->tok_lst);
 }
 

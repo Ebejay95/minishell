@@ -14,11 +14,7 @@
 
 void    add_token_to_list(t_list **lst, t_token *token)
 {
-    t_token *new_token = duplicate(token);
-    if (new_token)
-    {
-        ft_lstadd_back(lst, ft_lstnew(new_token));
-    }
+    ft_lstadd_back(lst, ft_lstnew(token));
 }
 
 // void	prompt_to_token(char *prompt, t_list **tok_lst)
@@ -225,24 +221,6 @@ void	expand_toklst(t_minishell *m, t_list **tok_lst)
 	}
 }
 
-void print_token_pointers(t_list *tok_lst)
-{
-    t_list  *current;
-    t_token *cur_token;
-
-    ft_printf("\n"Y"DEBUG: Token Pointers:"D"\n");
-    current = tok_lst;
-    while (current != NULL)
-    {
-        cur_token = (t_token *)current->content;
-        ft_printf("Token address: %p\n", cur_token);
-        ft_printf("Token->str: %p (%s)\n", cur_token->str, cur_token->str);
-        ft_printf("Token->expmap: %p (%s)\n", cur_token->expmap, cur_token->expmap);
-        current = current->next;
-    }
-    ft_printf(Y"End of token pointers\n"D);
-}
-
 
 void	lex_prompt(t_minishell *m)
 {
@@ -256,7 +234,7 @@ void	lex_prompt(t_minishell *m)
 	// 	m->prompt = tmpp;
 	// }
 	detect_lexing_errors(m);
-	prompt_to_token(m->prompt, &(m->tok_lst));
+	prompt_to_token(m);
 	if (DEBUG == 1)
 	{
 		ft_printf(Y"TOKENs:\n"D);
@@ -269,5 +247,4 @@ void	lex_prompt(t_minishell *m)
 		ft_lstput(&(m->tok_lst), put_token, '\n');
 	}
 	afterbreakup(&(m->tok_lst));
-        print_token_pointers(m->tok_lst);
 }

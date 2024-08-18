@@ -36,30 +36,44 @@ static char	*find_executable(char **paths, int pathcount, char *command)
 	return (NULL);
 }
 
+void newfree_token(t_token *token)
+{
+    if (token)
+    {
+        free(token->str);
+        free(token->expmap);
+        free(token->rdrcmeta);
+        free(token->rdrctarget);
+        free(token);
+    }
+}
+
 void reset_sequences(t_minishell *m)
 {
     int i;
 
+    ft_printf("Entering reset_sequences\n");
     i = 0;
     while(i < MAXPIPS)
     {
         if(m->cmd_seqs[i])
         {
-            mlstclear(m->cmd_seqs[i]);
+            ft_printf("Clearing cmd_seq %d\n", i);
+            t_list *current = m->cmd_seqs[i];
+            while (current)
+            {
+                t_list *next = current->next;
+                t_token *token = current->content;
+                ft_printf("Freeing token: %p\n", token);
+                newfree_token(token);
+                free(current);
+                current = next;
+            }
             m->cmd_seqs[i] = NULL;
         }
         i++;
     }
-    if (m->exec_lst)
-    {
-        mlstclear(m->exec_lst);
-        m->exec_lst = NULL;
-    }
-    if (m->tok_lst)
-    {
-        mlstclear(m->tok_lst);
-        m->tok_lst = NULL;
-    }
+    ft_printf("Exiting reset_sequences\n");
 }
 
 char	*get_executable(t_minishell *m, char *command)
