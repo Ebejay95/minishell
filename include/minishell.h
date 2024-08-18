@@ -266,6 +266,7 @@ typedef struct s_expand_data
 // #############################################################################
 void reset_minishell_args(t_minishell *m);
 void mlstclear(t_list *list);
+void	ft_envlstclear(t_minishell *minishell);
 // cd.c
 void	ft_cd(int argc, char **argv, t_envlst **envp);
 void	cd_home(t_envlst **envp);

@@ -12,7 +12,7 @@
 
 #include "./../include/minishell.h"
 
-static void	ft_envlstclear(t_minishell *minishell)
+void	ft_envlstclear(t_minishell *minishell)
 {
 	t_envlst	*current;
 	t_envlst	*next;
@@ -23,9 +23,6 @@ static void	ft_envlstclear(t_minishell *minishell)
 	while (current != NULL)
 	{
 		next = current->next;
-		printf("freeing current->name: %s\n", current->name);
-		printf("freeing current->value: %s\n", current->value);
-		printf("address of current: %p\n", current);
 		if (current->name)
 			free(current->name);
 		if (current->value)
