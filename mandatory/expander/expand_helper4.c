@@ -3,49 +3,59 @@
 /*                                                        :::      ::::::::   */
 /*   expand_helper4.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jonathaneberle <jonathaneberle@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/16 00:09:18 by jeberle           #+#    #+#             */
-/*   Updated: 2024/08/16 00:15:42 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/19 01:14:55 by jonathanebe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../../include/minishell.h"
 
-void	process_token(t_exp *e)
+void process_token(t_exp *e)
 {
-	size_t	i;
-	char	c;
+    ft_printf("DEBUG: Entering process_token\n");
+    ft_printf("DEBUG: Token str: %s\n", e->token->str);
+    ft_printf("DEBUG: Token expmap: %s\n", e->token->expmap);
 
-	i = 0;
-	while (i < ft_strlen(e->token->str))
-	{
-		if (e->token->expmap[i] == '1')
-		{
-			e->start = i;
-			while (i < ft_strlen(e->token->str) && e->token->expmap[i] == '1')
-				i++;
-			e->end = i;
-			handle_unexpanded_part(e);
-		}
-		else
-		{
-			e->start = i;
-			c = e->token->expmap[i];
-			while (i < ft_strlen(e->token->str) && e->token->expmap[i] == c)
-				i++;
-			e->end = i;
-			handle_expanded_part(e);
-		}
-	}
+    size_t i;
+    char c;
+
+    i = 0;
+    while (i < ft_strlen(e->token->str))
+    {
+        ft_printf("DEBUG: Processing character at index %zu: %c\n", i, e->token->str[i]);
+        if (e->token->expmap[i] == '1')
+        {
+            ft_printf("DEBUG: Handling unexpanded part\n");
+            e->start = i;
+            while (i < ft_strlen(e->token->str) && e->token->expmap[i] == '1')
+                i++;
+            e->end = i;
+            handle_unexpanded_part(e);
+        }
+        else
+        {
+            ft_printf("DEBUG: Handling expanded part\n");
+            e->start = i;
+            c = e->token->expmap[i];
+            while (i < ft_strlen(e->token->str) && e->token->expmap[i] == c)
+                i++;
+            e->end = i;
+            handle_expanded_part(e);
+        }
+        ft_printf("DEBUG: After processing, i = %zu\n", i);
+    }
+    ft_printf("DEBUG: Exiting process_token\n");
 }
 void expand_token(t_minishell *m, t_token *token)
 {
+    ft_printf("DEBUG: Entering expand_token for token: %s\n", token->str);
+    ft_printf("DEBUG: Token expmap: %s\n", token->expmap);
+
     t_exp exp;
 
-    if (!token || !token->str || !token->expmap)
-        return;
-
+    ft_printf("DEBUG: Initializing exp structure\n");
     exp.result = NULL;
     exp.expmap_result = NULL;
     exp.m = m;
@@ -53,38 +63,29 @@ void expand_token(t_minishell *m, t_token *token)
     exp.str = token->str;
     exp.expmap = token->expmap;
 
-    // ft_printf("Before init_exp:\n");
-    // ft_printf("token->str: %p (%s)\n", token->str, token->str);
-    // ft_printf("token->expmap: %p (%s)\n", token->expmap, token->expmap);
-
+    ft_printf("DEBUG: Before init_exp\n");
     init_exp(&exp);
-
-    // ft_printf("After init_exp:\n");
-    // ft_printf("exp.result: %p\n", exp.result);
-    // ft_printf("exp.expmap_result: %p\n", exp.expmap_result);
+    ft_printf("DEBUG: After init_exp\n");
 
     if (!exp.result || !exp.expmap_result) {
+        ft_printf("DEBUG: exp.result or exp.expmap_result is NULL, returning\n");
         free(exp.result);
         free(exp.expmap_result);
         return;
     }
 
+    ft_printf("DEBUG: Before process_token\n");
     process_token(&exp);
+    ft_printf("DEBUG: After process_token\n");
 
-    // ft_printf("After process_token:\n");
-    // ft_printf("exp.result: %p (%s)\n", exp.result, exp.result);
-    // ft_printf("exp.expmap_result: %p (%s)\n", exp.expmap_result, exp.expmap_result);
-
+    ft_printf("DEBUG: Before freeing and reassigning token members\n");
     free(token->str);
     free(token->expmap);
 
     token->str = exp.result;
     token->expmap = exp.expmap_result;
 
-    // ft_printf("After assigning to token:\n");
-    // ft_printf("token->str: %p (%s)\n", token->str, token->str);
-    // ft_printf("token->expmap: %p (%s)\n", token->expmap, token->expmap);
-
+    ft_printf("DEBUG: Exiting expand_token. New token str: %s\n", token->str);
 }
 
 int	expmapcheck(char *expmap, const char *str, int i, int escaped)

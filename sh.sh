@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Pfad zum Verzeichnis, dessen Dateien ausgedruckt werden sollen
-directory="./"
+directory="./mandatory/expander/"
 
 # Ausgabe-Datei
 output_file="out.txt"

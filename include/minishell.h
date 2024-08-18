@@ -6,7 +6,7 @@
 /*   By: jonathaneberle <jonathaneberle@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:18:56 by jeberle           #+#    #+#             */
-/*   Updated: 2024/08/19 00:22:51 by jonathanebe      ###   ########.fr       */
+/*   Updated: 2024/08/19 01:02:55 by jonathanebe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@
 # define RDRCSET "><0123456789"
 
 // mode
-# define DEBUG 0
+# define DEBUG 1
 # define DEBUG_LOG "/tmp/minishell_debug.log"
 # define MAXPIPS 1024
 

@@ -3,29 +3,47 @@
 /*                                                        :::      ::::::::   */
 /*   expand_helper2.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jonathaneberle <jonathaneberle@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/16 00:09:18 by jeberle           #+#    #+#             */
-/*   Updated: 2024/08/16 00:13:30 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/19 01:16:56 by jonathanebe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../../include/minishell.h"
 
-void	init_exp(t_exp *exp)
+void init_exp(t_exp *exp)
 {
-	if (exp->result)
-	{
-		free(exp->result);
-		exp->result = NULL;
-	}
-	if (exp->expmap_result)
-	{
-		free(exp->expmap_result);
-		exp->expmap_result = NULL;
-	}
-	exp->result = NULL;
-	exp->expmap_result = NULL;
+    ft_printf("DEBUG: Entering init_exp\n");
+
+    if (exp->result)
+    {
+        ft_printf("DEBUG: Freeing existing exp->result\n");
+        free(exp->result);
+        exp->result = NULL;
+    }
+    if (exp->expmap_result)
+    {
+        ft_printf("DEBUG: Freeing existing exp->expmap_result\n");
+        free(exp->expmap_result);
+        exp->expmap_result = NULL;
+    }
+
+    ft_printf("DEBUG: Allocating memory for exp->result\n");
+    exp->result = ft_calloc(1, sizeof(char));
+    ft_printf("DEBUG: Allocating memory for exp->expmap_result\n");
+    exp->expmap_result = ft_calloc(1, sizeof(char));
+
+    if (!exp->result || !exp->expmap_result)
+    {
+        ft_printf("DEBUG: Memory allocation failed in init_exp\n");
+    }
+    else
+    {
+        ft_printf("DEBUG: Memory allocation successful in init_exp\n");
+    }
+
+    ft_printf("DEBUG: Exiting init_exp\n");
 }
 
 void	handle_unexpanded_part(t_exp *exp)
