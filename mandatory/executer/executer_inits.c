@@ -14,13 +14,13 @@
 
 static t_token	*init_pipe_details(t_token *pipetok)
 {
-	pipetok->detail.pipe.open_prompt = 0;
+	pipetok->open_prompt = 0;
 	return (pipetok);
 }
 
 static t_token	*init_redirection_details(t_token *redirectiontoken)
 {
-	redirectiontoken->detail.rdrc.rdrcmeta = NULL;
+	redirectiontoken->rdrcmeta = NULL;
 	return (redirectiontoken);
 }
 
@@ -34,20 +34,20 @@ void	init_semantics(t_list *last, t_list *current)
 	if (last)
 	{
 		last_token = (t_token *)last->content;
-		if (!ft_strcmp(token->type, "Word")
-			&& !ft_strcmp(last_token->type, "Redirection")
+		if (token->token == WORD
+			&& last_token->token == REDIRECTION
 			&& !ft_strcmp(last_token->str, "<<"))
 		{
 			update_tok_type(token, DELIMITER);
 			update_tok_type_next_word(current, COMMAND);
 		}
-		if (!ft_strcmp(token->type, "Word")
-			&& !ft_strcmp(last_token->type, "Pipe")
+		if (token->token == WORD
+			&& last_token->token == PIPE
 			&& !ft_strcmp(last_token->str, "|"))
 			update_tok_type(token, COMMAND);
 	}
 	else
-		if (!ft_strcmp(token->type, "Word"))
+		if (token->token == WORD)
 			update_tok_type(token, COMMAND);
 }
 
@@ -60,9 +60,9 @@ void	pre_exec_prep(t_minishell *m)
 	while (current != NULL)
 	{
 		cur_content = (t_token *)current->content;
-		if (ft_strcmp(cur_content->type, "Pipe") == 0)
+		if (cur_content->token == PIPE)
 			cur_content = init_pipe_details(cur_content);
-		else if (ft_strcmp(cur_content->type, "Redirection") == 0)
+		else if (cur_content->token == REDIRECTION)
 			init_redirection_details(cur_content);
 		current = current->next;
 	}

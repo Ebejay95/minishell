@@ -29,15 +29,7 @@ t_token	*allocate_token(void)
 	return (newtok);
 }
 
-int	set_token_type(t_token *newtok)
-{
-	newtok->type = toktype_to_str(WORD);
-	if (!newtok->type)
-		return (0);
-	return (1);
-}
-
-int	set_token_str(t_token *newtok, const char *str)
+int	set_token_str(t_token *newtok, char *str)
 {
 	newtok->str = ft_strdup(str);
 	if (!newtok->str)
@@ -47,7 +39,7 @@ int	set_token_str(t_token *newtok, const char *str)
 
 void	set_token_details(t_token *newtok, const char *str)
 {
-	newtok->detail.rdrc.rdrcmeta = NULL;
-	newtok->detail.rdrc.rdrctarget = NULL;
+	newtok->rdrcmeta = NULL;
+	newtok->rdrctarget = NULL;
 	newtok->had_quote = (ft_strchr(str, '\"') || ft_strchr(str, '\''));
 }

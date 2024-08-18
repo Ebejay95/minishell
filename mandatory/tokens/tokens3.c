@@ -12,7 +12,7 @@
 
 #include "./../../include/minishell.h"
 
-int	set_token_expmap(t_token *newtok, const char *expmap)
+int	set_token_expmap(t_token *newtok, char *expmap)
 {
 	newtok->expmap = ft_strdup(expmap);
 	if (!newtok->expmap)
@@ -22,8 +22,6 @@ int	set_token_expmap(t_token *newtok, const char *expmap)
 
 void	free_token_resources(t_token *newtok)
 {
-	if (newtok->type)
-		free(newtok->type);
 	if (newtok->str)
 		free(newtok->str);
 	free(newtok);
@@ -38,7 +36,7 @@ t_token	*create_token(char *str, char *expmap)
 	newtok = allocate_token();
 	if (!newtok)
 		return (NULL);
-	if (!set_token_type(newtok) || !set_token_str(newtok, str))
+	if (!set_token_str(newtok, str))
 	{
 		free_token_resources(newtok);
 		return (NULL);
@@ -47,45 +45,49 @@ t_token	*create_token(char *str, char *expmap)
 	if (!set_token_expmap(newtok, expmap))
 	{
 		free_token_resources(newtok);
+		if (str)
+			free(str);
 		return (NULL);
 	}
 	return (newtok);
 }
 
-// tranform token type into string for readeable cmp and logging
-char	*toktype_to_str(enum e_toktype token)
+void	print_toktype(enum e_toktype token)
 {
 	if (token == REDIRECTION)
-		return (ft_strdup("Redirection"));
-	if (token == PIPE)
-		return (ft_strdup("Pipe"));
-	if (token == COMMAND)
-		return (ft_strdup("Command"));
-	if (token == WORD)
-		return (ft_strdup("Word"));
-	if (token == MINIFILE)
-		return (ft_strdup("File"));
-	if (token == DELIMITER)
-		return (ft_strdup("Delimiter"));
-	if (token == UNSET)
-		return (ft_strdup("UNSET"));
-	return (ft_strdup(""));
+		ft_printf("Redirection");
+	else if (token == PIPE)
+		ft_printf("Pipe");
+	else if (token == COMMAND)
+		ft_printf("Command");
+	else if (token == WORD)
+		ft_printf("Word");
+	else if (token == MINIFILE)
+		ft_printf("File");
+	else if (token == DELIMITER)
+		ft_printf("Delimiter");
+	else if (token == UNSET)
+		ft_printf("UNSET");
+	else
+		ft_printf("Unknown");
 }
 
 void	put_token_details(t_token *token)
 {
-	if (ft_strcmp(token->type, "Pipe") == 0)
+	if (token->token == PIPE)
 	{
-		ft_printf(" (open_prompt: %d)", token->detail.pipe.open_prompt);
+		ft_printf(" (open_prompt: %d)", token->open_prompt);
 	}
-	else if (ft_strcmp(token->type, "Redirection") == 0)
+	else if (token->token == REDIRECTION)
 	{
-		ft_printf(" ( rdrcmeta: %s rdrctarget: %s)",
-			token->detail.rdrc.rdrcmeta,
-			token->detail.rdrc.rdrctarget);
+		ft_printf(" ( rdrcmeta: %s %p rdrctarget: %s %p)",
+			token->rdrcmeta,
+			token->rdrcmeta,
+			token->rdrctarget,
+			token->rdrctarget);
 	}
-	else if (ft_strcmp(token->type, "File") == 0)
+	else if (token->token == MINIFILE)
 	{
-		ft_printf(" (fd: %d)", token->detail.minifile.fd);
+		ft_printf(" (fd: %d)", token->fd);
 	}
 }

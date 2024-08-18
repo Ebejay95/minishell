@@ -12,32 +12,35 @@
 
 #include "./../../include/minishell.h"
 
-void	add_argument(char ***args, int *arg_count, char *arg)
+void add_argument(char ***args, int *arg_count, char *arg)
 {
-	char	**temp;
-	int		i;
-
-	(*arg_count)++;
-	temp = ft_calloc(*arg_count + 1, sizeof(char *));
-	if (!temp)
-	{
-		ft_fprintf(2, "Error: Memory allocation failed\n");
-		ft_array_l_free(*args, *arg_count - 1);
-		return ;
-	}
-	if (*args)
-	{
-		i = 0;
-		while (i < *arg_count - 1)
-		{
-			temp[i] = (*args)[i];
-			i++;
-		}
-		free(*args);
-	}
-	*args = temp;
-	(*args)[*arg_count - 1] = arg;
-	(*args)[*arg_count] = NULL;
+    // Wenn args NULL ist, wird Speicher für das erste Element allokiert
+    if (*args == NULL)
+    {
+        *args = ft_calloc(2, sizeof(char *));
+        (*args)[0] = arg;
+        (*args)[1] = NULL; // Null-terminieren
+        *arg_count = 1;
+    }
+    else
+    {
+        // Speicher für ein zusätzliches Argument allokieren
+        char **temp = ft_calloc(*arg_count + 2, sizeof(char *));
+        
+        // Bestehende Argumente kopieren
+        memcpy(temp, *args, *arg_count * sizeof(char *));
+        
+        // Neues Argument hinzufügen
+        temp[*arg_count] = arg;
+        temp[*arg_count + 1] = NULL; // Null-terminieren
+        
+        // Alten Speicher freigeben und args aktualisieren
+        free(*args);
+        *args = temp;
+        
+        // arg_count erhöhen
+        (*arg_count)++;
+    }
 }
 
 void	exec_builtin_cmd(t_minishell *m, char **args, int arg_count, t_fd *fd)
@@ -81,19 +84,31 @@ void execute_external_command(t_minishell *m, char **args, t_fd *fd)
     free(tmp);
 }
 
-void	process_tok(t_list *exec_lst, t_fd *fd, char ***args, int *arg_count)
+void process_tok(t_list *exec_lst, t_fd *fd, char ***args, int *arg_count)
 {
-	t_list	*current;
-	t_token	*token;
+    t_list  *current;
+    t_token *token;
+    char    *dup_str;
 
-	current = exec_lst;
-	while (current != NULL)
-	{
-		token = (t_token *)current->content;
-		if (token->token == REDIRECTION)
-			run_redirection(token, fd);
-		else if (token->token == COMMAND || token->token == WORD)
-			add_argument(args, arg_count, token->str);
-		current = current->next;
-	}
+    current = exec_lst;
+    while (current != NULL)
+    {
+        token = (t_token *)current->content;
+        if (token->token == REDIRECTION)
+        {
+            run_redirection(token, fd);
+        }
+        else if (token->token == COMMAND || token->token == WORD)
+        {
+            dup_str = ft_strdup(token->str);
+            if (!dup_str)
+            {
+                ft_fprintf(2, "Error: Memory allocation failed for token string duplication\n");
+                cleanup_args(*args, *arg_count);
+                return;
+            }
+            add_argument(args, arg_count, dup_str);
+        }
+        current = current->next;
+    }
 }

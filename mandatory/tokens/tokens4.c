@@ -19,10 +19,15 @@ void	put_token(void *content)
 	token = (t_token *)content;
 	if (token != NULL)
 	{
+		ft_printf("token: %p ", token);
 		ft_printf(Y"["D);
-		ft_printf(C"%s$ "D, token->type);
-		ft_printf("%s$ ", token->str);
-		ft_printf("map: %s", token->expmap);
+		ft_printf(C);
+		print_toktype(token->token);
+		ft_printf(" "D);
+		ft_printf("%s ", token->str);
+		ft_printf("%p ", token->str);
+		ft_printf("map: %s ", token->expmap);
+		ft_printf("%p ", token->expmap);
 		put_token_details(token);
 		ft_printf(Y"]"D);
 	}

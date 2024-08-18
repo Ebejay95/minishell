@@ -85,6 +85,6 @@ void	handle_trunc_append(t_list *current)
 		filecontent = create_new_file(filename);
 	if (!filecontent)
 		return ;
-	token->detail.rdrc.rdrcmeta = filecontent;
-	token->detail.rdrc.rdrctarget = filename;
+	token->rdrcmeta = filecontent;
+	token->rdrctarget = filename;
 }

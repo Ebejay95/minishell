@@ -32,7 +32,7 @@ void	execute_builtin(t_minishell *m, char *com, char **argv, int argc)
 	else if (!ft_strcmp(com, "env"))
 		ft_env(m->env_list);
 	else if (!ft_strcmp(com, "exit"))
-		ft_exit(argv, &m->exitcode);
+		ft_exit(argv, m);
 	else if (!ft_strcmp(com, "export"))
 		ft_export(argc, argv, &m->env_list);
 	else if (!ft_strcmp(com, "pwd"))

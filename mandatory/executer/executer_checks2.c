@@ -12,37 +12,37 @@
 
 #include "./../../include/minishell.h"
 
-int	check_one(t_minishell *m, char *lty, char *conty)
+int	check_one(t_minishell *m, enum e_toktype lty, enum e_toktype conty)
 {
-	if (!m->leave && !ft_strcmp(lty, PIP) && !ft_strcmp(conty, PIP))
+	if (!m->leave && lty == PIPE && conty == PIPE)
 		return (1);
 	return (0);
 }
 
-int	check_two(t_minishell *m, char *conty, char *end)
+int	check_two(t_minishell *m, enum e_toktype conty, enum e_toktype end)
 {
-	if (!m->leave && ft_strcmp(conty, PIP) == 0 && end == NULL)
+	if (!m->leave && conty == PIPE && end == UNSET)
 		return (1);
 	return (0);
 }
 
-int	check_three(t_minishell *m, t_list *curnext, char *conty)
+int	check_three(t_minishell *m, t_list *curnext, enum e_toktype conty)
 {
-	if (!m->leave && curnext == NULL && !ft_strcmp(conty, PIP))
+	if (!m->leave && curnext == NULL && conty == PIPE)
 		return (1);
 	return (0);
 }
 
-int	check_four(t_minishell *m, char *conty, char *end)
+int	check_four(t_minishell *m, enum e_toktype conty, enum e_toktype end)
 {
-	if (!m->leave && !ft_strcmp(conty, PIP) && !ft_strcmp(end, RDRC))
+	if (!m->leave && conty == PIPE && end == REDIRECTION)
 		return (1);
 	return (0);
 }
 
-int	check_five(t_minishell *m, t_list *curnext, char *conty)
+int	check_five(t_minishell *m, t_list *curnext, enum e_toktype conty)
 {
-	if (!m->leave && curnext == NULL && !ft_strcmp(conty, RDRC))
+	if (!m->leave && curnext == NULL && conty == REDIRECTION)
 		return (1);
 	return (0);
 }

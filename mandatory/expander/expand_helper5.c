@@ -77,37 +77,51 @@ int	append_regular_character(t_expand_data *data)
 	return (0);
 }
 
-int	process_character(t_expand_data *data, t_expand_ctx *ctx)
+int process_character(t_expand_data *data, t_expand_ctx *ctx)
 {
-	int	ret;
+    int ret;
 
-	if (data->expmap[*(data->i)] == 'S')
-	{
-		(*(data->i))++;
-		return (0);
-	}
-	if (data->str[*(data->i)] == '\\')
-	{
-		return (handle_escape_character(data));
-	}
-	ret = expmapcheck(data->expmap, data->str, *(data->i), *(data->escaped));
-	if (data->str[*(data->i)] == '$' && ret != 0)
-	{
-		return (handle_dollar_sign(data, ctx));
-	}
-	if (data->str[*(data->i)] != '"')
-	{
-		ret = append_regular_character(data);
-		if (ret == 0)
-			(*(data->i))++;
-		return (ret);
-	}
-	(*(data->i))++;
-	return (0);
+    ft_printf("DEBUG: Before processing character at index %zu\n", *(data->i));
+    ft_printf("Current data->res: %p (%s)\n", *(data->res), *(data->res));
+    ft_printf("Current data->exp_res: %p (%s)\n", *(data->exp_res), *(data->exp_res));
+
+    if (data->expmap[*(data->i)] == 'S') {
+        (*(data->i))++;
+        return (0);
+    }
+
+    if (data->str[*(data->i)] == '\\') {
+        return (handle_escape_character(data));
+    }
+
+    ret = expmapcheck(data->expmap, data->str, *(data->i), *(data->escaped));
+    if (data->str[*(data->i)] == '$' && ret != 0) {
+        return (handle_dollar_sign(data, ctx));
+    }
+
+    if (data->str[*(data->i)] != '"') {
+        ret = append_regular_character(data);
+        if (ret == 0) {
+            (*(data->i))++;
+        }
+        return (ret);
+    }
+
+    (*(data->i))++;
+
+    ft_printf("DEBUG: After processing character at index %zu\n", *(data->i));
+    ft_printf("Updated data->res: %p (%s)\n", *(data->res), *(data->res));
+    ft_printf("Updated data->exp_res: %p (%s)\n", *(data->exp_res), *(data->exp_res));
+
+    return (0);
 }
 
-void	finalize_expansion(t_expand_data *data)
+void finalize_expansion(t_expand_data *data)
 {
-	*(data->params->expanded) = *(data->res);
-	*(data->params->expanded_map) = *(data->exp_res);
+    ft_printf("DEBUG: Finalizing expansion\n");
+    ft_printf("Final res: %p (%s)\n", *(data->res), *(data->res));
+    ft_printf("Final exp_res: %p (%s)\n", *(data->exp_res), *(data->exp_res));
+
+    *(data->params->expanded) = *(data->res);
+    *(data->params->expanded_map) = *(data->exp_res);
 }

@@ -12,74 +12,108 @@
 
 #include "./../include/minishell.h"
 
-static void	add_seq_to_cmd_seq(t_pipe_data *data)
+t_token *newtoken_dup(t_token *src)
 {
-	t_list	**new_cmd_seq;
-	int		i;
+    if (!src)
+        return NULL;
 
-	new_cmd_seq = ft_calloc(*(data->count) + 2, sizeof(t_list *));
-	if (!new_cmd_seq)
-		ft_error_exit("ft_calloc");
-	if (*(data->cmd_seq))
-	{
-		i = 0;
-		while (i < *(data->count))
-		{
-			new_cmd_seq[i] = (*(data->cmd_seq))[i];
-			i++;
-		}
-		free(*(data->cmd_seq));
-	}
-	new_cmd_seq[*(data->count)] = *(data->s);
-	(*(data->count))++;
-	*(data->cmd_seq) = new_cmd_seq;
+    t_token *dup = malloc(sizeof(t_token));
+    if (!dup)
+        return NULL;
+
+    // Copy basic types
+    dup->token = src->token;
+    dup->had_quote = src->had_quote;
+    dup->is_freed = src->is_freed;
+    dup->open_prompt = src->open_prompt;
+    dup->fd = src->fd;
+
+    // Duplicate strings, handling NULL cases
+    dup->str = src->str ? strdup(src->str) : NULL;
+    dup->expmap = src->expmap ? strdup(src->expmap) : NULL;
+    dup->rdrcmeta = src->rdrcmeta ? strdup(src->rdrcmeta) : NULL;
+    dup->rdrctarget = src->rdrctarget ? strdup(src->rdrctarget) : NULL;
+
+    // Check if any string duplication failed
+    if ((src->str && !dup->str) ||
+        (src->expmap && !dup->expmap) || (src->rdrcmeta && !dup->rdrcmeta) ||
+        (src->rdrctarget && !dup->rdrctarget))
+    {
+        // Free any successfully allocated strings
+        free(dup->str);
+        free(dup->expmap);
+        free(dup->rdrcmeta);
+        free(dup->rdrctarget);
+        free(dup);
+        return NULL;
+    }
+
+    return dup;
 }
 
-void	process_pipetoken(t_pipe_data *d, t_token *t)
+// Function to free a token
+void newfree_token(t_token *token)
 {
-	if (t->token == PIPE)
-	{
-		if (*(d->s) != NULL)
-		{
-			add_seq_to_cmd_seq(d);
-			*(d->s) = NULL;
-		}
-		(*(d->pipes))++;
-	}
-	else
-	{
-		if (*(d->s) == NULL
-			|| (t->token == COMMAND && (*(d->s))->content != NULL))
-		{
-			if (*(d->s) != NULL)
-				add_seq_to_cmd_seq(d);
-			*(d->s) = NULL;
-		}
-		add_token_to_list(d->s, t);
-	}
+    if (token)
+    {
+        free(token->str);
+        free(token->expmap);
+        free(token->rdrcmeta);
+        free(token->rdrctarget);
+        free(token);
+    }
 }
-
-void	split_pipes(t_minishell *m, t_list ***cmd_seq, t_list ***exec_seq)
+void split_pipes(t_minishell *m)
 {
-	t_pipe_data	data;
-	t_list		*current;
-	t_list		*s;
-	int			count;
+    t_list *current;
+    t_list *temp_list = NULL;
+    int pipe_index = 0;
 
-	count = 0;
-	s = NULL;
-	*cmd_seq = NULL;
-	m->pipes = 0;
-	data = (t_pipe_data){cmd_seq, &s, &count, &(m->pipes)};
-	current = m->tok_lst;
-	while (current != NULL)
-	{
-		process_pipetoken(&data, (t_token *)current->content);
-		current = current->next;
-	}
-	if (s != NULL)
-		add_seq_to_cmd_seq(&data);
-	*exec_seq = ft_calloc(count + 1, sizeof(t_list *));
-	if (!*exec_seq)
-		ft_error_exit("ft_calloc");
+    // Initialize cmd_seqs with NULL
+    for (int i = 0; i < 1024; i++)
+    {
+        m->cmd_seqs[i] = NULL;
+    }
+
+    current = m->tok_lst;
+    m->pipes = 0;
+
+    while (current != NULL)
+    {
+        t_token *token = (t_token *)current->content;
+
+        if (token->token == PIPE)
+        {
+            if (temp_list != NULL)
+            {
+                m->cmd_seqs[pipe_index] = temp_list;
+                temp_list = NULL;
+                pipe_index++;
+            }
+            m->pipes++;
+        }
+        else
+        {
+            // Duplicate the token before adding it to the temporary list
+            t_token *token_dup = newtoken_dup(token);
+            if (!token_dup)
+                ft_error_exit("token_dup");
+
+            t_list *new_node = ft_lstnew(token_dup);
+            if (!new_node)
+            {
+                free(token_dup);  // Free the duplicated token if node creation fails
+                ft_error_exit("ft_lstnew");
+            }
+            ft_lstadd_back(&temp_list, new_node);
+        }
+
+        current = current->next;
+    }
+
+    // Add the last list if it exists
+    if (temp_list != NULL)
+    {
+        m->cmd_seqs[pipe_index] = temp_list;
+    }
 }

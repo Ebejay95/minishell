@@ -62,6 +62,7 @@ void	extract_name_value(char *arg, char **name, char **value)
 	{
 		*name = ft_strdup(arg);
 		*value = NULL;
+		free(arg);
 	}
 }
 

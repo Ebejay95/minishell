@@ -3,14 +3,40 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jonathaneberle <jonathaneberle@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:01:33 by jeberle           #+#    #+#             */
-/*   Updated: 2024/08/16 01:24:58 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/17 11:32:53 by jonathanebe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../include/minishell.h"
+
+void mlstclear(t_list *list)
+{
+    t_list *current;
+    t_list *next;
+    t_token *token;
+
+    current = list;
+    while (current != NULL)
+    {
+        next = current->next;
+        token = (t_token *)current->content;
+        ft_printf("free token: %p %s %p %s %p %s %p %s %p", token, token->str, token->str, token->expmap, token->expmap, token->rdrcmeta, token->rdrcmeta, token->rdrctarget, token->rdrctarget);
+        if (token != NULL)
+        {
+            free(token->str);
+            free(token->expmap);
+            free(token->rdrcmeta);
+            free(token->rdrctarget);
+            free(token);
+        }
+
+        free(current);
+        current = next;
+    }
+}
 
 // Function that defines the interactive mode
 static void	interactive_mode(t_minishell *minishell)
@@ -78,7 +104,6 @@ static int	handle_input(t_minishell *minishell)
 		return (1);
 	minishell->tok_lst = NULL;
 	minishell->exec_lst = NULL;
-	minishell->ast = ft_btreenew(NULL);
 	if (minishell->prompt)
 	{
 		minishell->last_exitcode = minishell->exitcode;
@@ -102,8 +127,14 @@ int	g_global = 0;
 int	main(int argc, char **argv, char **envp)
 {
 	t_minishell	minishell;
-	int			g_global;
+	int i;
 
+	i = 0;
+	while(i < MAXPIPS)
+	{
+		minishell.cmd_seqs[i] = NULL;
+		i++;
+	}
 	g_global = 0;
 	minishell.env_list = NULL;
 	init_env_list(envp, &minishell);

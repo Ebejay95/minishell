@@ -36,26 +36,30 @@ static char	*find_executable(char **paths, int pathcount, char *command)
 	return (NULL);
 }
 
-void	reset_sequences(t_minishell *m)
+void reset_sequences(t_minishell *m)
 {
-	int	i;
+    int i;
 
-	if (m->exec_seqs)
-	{
-		i = 0;
-		while (m->exec_seqs[i])
-		{
-			ft_lstclear(&(m->exec_seqs[i]), free_token);
-			i++;
-		}
-		free(m->exec_seqs);
-		m->exec_seqs = NULL;
-	}
-	if (m->exec_lst)
-	{
-		ft_lstclear(&(m->exec_lst), NULL);
-		m->exec_lst = NULL;
-	}
+    i = 0;
+    while(i < MAXPIPS)
+    {
+        if(m->cmd_seqs[i])
+        {
+            mlstclear(m->cmd_seqs[i]);
+            m->cmd_seqs[i] = NULL;
+        }
+        i++;
+    }
+    if (m->exec_lst)
+    {
+        mlstclear(m->exec_lst);
+        m->exec_lst = NULL;
+    }
+    if (m->tok_lst)
+    {
+        mlstclear(m->tok_lst);
+        m->tok_lst = NULL;
+    }
 }
 
 char	*get_executable(t_minishell *m, char *command)

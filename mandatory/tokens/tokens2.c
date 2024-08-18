@@ -29,9 +29,8 @@ void	free_token(void *n)
 	if (!token || token->is_freed)
 		return ;
 	free_if_not_null((void **)&token->str);
-	free_if_not_null((void **)&token->type);
-	free_if_not_null((void **)&token->detail.rdrc.rdrcmeta);
-	free_if_not_null((void **)&token->detail.rdrc.rdrctarget);
+	free_if_not_null((void **)&token->rdrcmeta);
+	free_if_not_null((void **)&token->rdrctarget);
 	free_if_not_null((void **)&token->expmap);
 	token->is_freed = 1;
 }
@@ -39,7 +38,6 @@ void	free_token(void *n)
 void	update_tok_type(t_token *tok, enum e_toktype token)
 {
 	tok->token = token;
-	tok->type = toktype_to_str(token);
 }
 
 void	update_tok_type_next_word(t_list *current, enum e_toktype token)
@@ -54,7 +52,6 @@ void	update_tok_type_next_word(t_list *current, enum e_toktype token)
 	if (tok->token == WORD)
 	{
 		tok->token = token;
-		tok->type = toktype_to_str(token);
 	}
 }
 
@@ -68,5 +65,4 @@ void	update_tok_type_next(t_list *current, enum e_toktype token)
 	}
 	tok = (t_token *)current->content;
 	tok->token = token;
-	tok->type = toktype_to_str(token);
 }

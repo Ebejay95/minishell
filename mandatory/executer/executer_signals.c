@@ -27,7 +27,7 @@ void	run_child_process(t_minishell *m, t_pipe_info *pi)
 		dup2(pi->pipe_fd[1], STDOUT_FILENO);
 		close(pi->pipe_fd[1]);
 	}
-	run_seg(m, m->exec_seqs[pi->i], STDIN_FILENO, STDOUT_FILENO);
+	run_seg(m, m->exec_lst, STDIN_FILENO, STDOUT_FILENO);
 	exit(0);
 }
 

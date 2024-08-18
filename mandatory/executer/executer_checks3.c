@@ -12,9 +12,9 @@
 
 #include "./../../include/minishell.h"
 
-int	check_six(t_minishell *m, char *end, char *conty)
+int	check_six(t_minishell *m, enum e_toktype end, enum e_toktype conty)
 {
-	if (!m->leave && !ft_strcmp(end, RDRC) && !ft_strcmp(conty, RDRC))
+	if (!m->leave && end == REDIRECTION && conty == REDIRECTION)
 		return (1);
 	return (0);
 }

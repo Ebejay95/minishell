@@ -30,17 +30,29 @@ static void	setup_pipes(t_pipe_info *pi)
 
 static int	process_pipecommand(t_minishell *m, t_pipe_info *pi)
 {
-	debug_print(m, pi->i);
-	prexecute(m, &(m->cmd_seqs[pi->i]), &(m->exec_seqs[pi->i]));
+	prexecute(m, pi->i);
 	if (g_global == 0)
 	{
 		setup_pipes(pi);
 		signal(SIGINT, SIG_IGN);
 		signal(SIGQUIT, SIG_IGN);
 		if (!fork_and_execute(m, pi))
+		{
 			return (0);
+		}
 		handle_parent_process(pi);
 	}
+	ft_printf(Y"free exec\n"D);
+	ft_lstput(&(m->exec_lst), put_token, '\n');    // Clear previous exec_lst
+	if (m->exec_lst)
+	{
+    	mlstclear(m->exec_lst);
+    	m->exec_lst = NULL;
+	}
+	ft_printf(Y"after free exec\n"D);
+	ft_lstput(&(m->exec_lst), put_token, '\n');    // Clear previous exec_lst
+    	ft_printf("tok_lst:\n");
+    	ft_lstput(&(m->tok_lst), put_token, '\n');
 	return (1);
 }
 

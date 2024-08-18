@@ -14,15 +14,18 @@
 
 void	init_exp(t_exp *exp)
 {
-	exp->result = ft_calloc(1, sizeof(char));
-	if (!exp->result)
-		return ;
-	exp->expmap_result = ft_calloc(1, sizeof(char));
-	if (!exp->expmap_result)
+	if (exp->result)
 	{
 		free(exp->result);
 		exp->result = NULL;
 	}
+	if (exp->expmap_result)
+	{
+		free(exp->expmap_result);
+		exp->expmap_result = NULL;
+	}
+	exp->result = NULL;
+	exp->expmap_result = NULL;
 }
 
 void	handle_unexpanded_part(t_exp *exp)

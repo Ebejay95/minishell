@@ -82,6 +82,7 @@
 // mode
 # define DEBUG 0
 # define DEBUG_LOG "/tmp/minishell_debug.log"
+# define MAXPIPS 1024
 
 // #############################################################################
 // #                        the one and only g_global                          #
@@ -123,27 +124,14 @@ typedef struct s_tokenizer_state
 typedef struct s_token
 {
 	enum e_toktype	token;
-	char			*type;
 	char			*str;
 	char			*expmap;
 	int				had_quote;
 	int				is_freed;
-	union u_detail
-	{
-		struct s_rdct_tokdetail
-		{
-			char	*rdrcmeta;
-			char	*rdrctarget;
-		}	rdrc;
-		struct s_pipe_tokdetail
-		{
-			int		open_prompt;
-		}	pipe;
-		struct s_minifile_tokdetail
-		{
-			int		fd;
-		}	minifile;
-	}	detail;
+	char			*rdrcmeta;
+	char			*rdrctarget;
+	int				open_prompt;
+	int				fd;
 }	t_token;
 
 typedef struct s_temps
@@ -209,8 +197,7 @@ typedef struct s_minishell
 	t_list			*tok_lst;
 	t_list			*exec_lst;
 	int				pipes;
-	t_list			**cmd_seqs;
-	t_list			**exec_seqs;
+	t_list			*cmd_seqs[1024];
 	t_btree			*ast;
 }	t_minishell;
 
@@ -277,6 +264,7 @@ typedef struct s_expand_data
 // #                               Builtins                                    #
 // #############################################################################
 
+void mlstclear(t_list *list);
 // cd.c
 void	ft_cd(int argc, char **argv, t_envlst **envp);
 void	cd_home(t_envlst **envp);
@@ -291,7 +279,7 @@ void	print_output(char **args, int start_index, bool newline);
 void	ft_env(t_envlst *env_list); // works
 
 // exit.c
-void	ft_exit(char **argv, int *exitcode);
+void	ft_exit(char **argv, t_minishell *m);
 
 // export.c
 void	ft_export(int argc, char **argv, t_envlst **envp);
@@ -325,16 +313,17 @@ char	*ft_strndup(const char *s, size_t n);
 
 // executer_checks.c
 void	pre_exec_checks(t_minishell *m);
+t_token	*duplicate(t_token *src);
 
 // executer_checks2.c
-int		check_one(t_minishell *m, char *lty, char *conty);
-int		check_two(t_minishell *m, char *conty, char *end);
-int		check_three(t_minishell *m, t_list *curnext, char *conty);
-int		check_four(t_minishell *m, char *conty, char *end);
-int		check_five(t_minishell *m, t_list *curnext, char *conty);
+int		check_one(t_minishell *m, enum e_toktype lty, enum e_toktype conty);
+int		check_two(t_minishell *m, enum e_toktype conty, enum e_toktype end);
+int		check_three(t_minishell *m, t_list *curnext, enum e_toktype conty);
+int		check_four(t_minishell *m, enum e_toktype conty, enum e_toktype end);
+int		check_five(t_minishell *m, t_list *curnext, enum e_toktype conty);
 
 // executer_checks3.c
-int		check_six(t_minishell *m, char *end, char *conty);
+int		check_six(t_minishell *m, enum e_toktype end, enum e_toktype conty);
 
 // executer_command.c
 int		is_builtin(char *command);
@@ -368,7 +357,7 @@ void	init_fd(t_fd *fd, int input_fd, int output_fd);
 void	execute_with_pipes(t_minishell *m);
 
 // executer_prexecute.c
-void	prexecute(t_minishell *m, t_list **tok_lst, t_list **exec_lst);
+void	prexecute(t_minishell *m, int i);
 
 // executer_redirection.c
 void	run_in_redirection(t_token *token, t_fd *fd);
@@ -378,7 +367,7 @@ void	run_redirection(t_token *token, t_fd *fd);
 // executer_runseg_helper.c
 void	add_argument(char ***args, int *arg_count, char *arg);
 void	exec_builtin_cmd(t_minishell *m, char **args, int arg_count, t_fd *fd);
-void	execute_external_command(t_minishell *m, char **args, t_fd *fd);
+void execute_external_command(t_minishell *m, char **args,  t_fd *fd);
 void	process_tok(t_list *exec_lst, t_fd *fd, char ***args, int *arg_count);
 
 // executer_runseg.c
@@ -386,6 +375,7 @@ void	run_heredoc(t_token *t, t_fd *fd);
 void	run_command(t_minishell *m, char **args);
 void	run(t_minishell *m, char **args, int arg_count, t_fd *fd);
 void	cleanup_fds(t_fd *fd);
+void cleanup_args(char **args, int arg_count);
 void	run_seg(t_minishell *m, t_list *exec_lst, int input_fd, int output_fd);
 
 // executer_signals.c
@@ -396,7 +386,6 @@ void	setup_child_process(t_fd *fd);
 void	run_parent_process(t_minishell *m, pid_t pid);
 
 // executer.c
-void	debug_print(t_minishell *m, int i);
 int		allocate_pids(t_pipe_info *pi, int pipes);
 int		fork_and_execute(t_minishell *m, t_pipe_info *pi);
 void	execute(t_minishell *m);
@@ -437,6 +426,8 @@ int		append_regular_character(t_expand_data *data);
 int		process_character(t_expand_data *data, t_expand_ctx *ctx);
 void	finalize_expansion(t_expand_data *data);
 void	expand(t_exp_p *p, t_expand_ctx *ctx);
+void free_expmap_temp_memory(t_exp_data *data);
+void free_temp_memory(t_exp_data *d);
 
 // expand_heredoc.c
 char	*expand_var(t_minishell *m, char *str, size_t *i, char **result);
@@ -500,8 +491,7 @@ char	*add_line(char *cont, char *tmp, const char *line, size_t total_size);
 // tokens.c
 int		validate_input(const char *str, const char *expmap);
 t_token	*allocate_token(void);
-int		set_token_type(t_token *newtok);
-int		set_token_str(t_token *newtok, const char *str);
+int		set_token_str(t_token *newtok, char *str);
 void	set_token_details(t_token *newtok, const char *str);
 
 // tokens2.c
@@ -512,10 +502,10 @@ void	update_tok_type_next_word(t_list *current, enum e_toktype token);
 void	update_tok_type_next(t_list *current, enum e_toktype token);
 
 // tokens3.c
-int		set_token_expmap(t_token *newtok, const char *expmap);
+int		set_token_expmap(t_token *newtok, char *expmap);
 void	free_token_resources(t_token *newtok);
 t_token	*create_token(char *str, char *expmap);
-char	*toktype_to_str(enum e_toktype token);
+void	print_toktype(enum e_toktype token);
 void	put_token_details(t_token *token);
 
 // tokens4.c
@@ -579,7 +569,7 @@ int		main(int argc, char **argv, char **envp);
 void	parse(t_minishell *m);
 
 // pipes.c
-void	split_pipes(t_minishell *m, t_list ***cmd_seq, t_list ***exec_seq);
+void	split_pipes(t_minishell *m);
 
 // remove_chars.c
 char	*remove_chars(const char *str, const char *chrs_to_rmv);

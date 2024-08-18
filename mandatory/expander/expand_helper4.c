@@ -39,27 +39,52 @@ void	process_token(t_exp *e)
 		}
 	}
 }
-
-void	expand_token(t_minishell *m, t_token *token)
+void expand_token(t_minishell *m, t_token *token)
 {
-	t_exp	exp;
+    t_exp exp;
 
-	if (!token || !token->str || !token->expmap)
-		return ;
-	exp.result = NULL;
-	exp.expmap_result = NULL;
-	exp.m = m;
-	exp.token = token;
-	exp.str = token->str;
-	exp.expmap = token->expmap;
-	init_exp(&exp);
-	if (!exp.result || !exp.expmap_result)
-		return ;
-	process_token(&exp);
-	free(token->str);
-	token->str = exp.result;
-	free(token->expmap);
-	token->expmap = exp.expmap_result;
+    if (!token || !token->str || !token->expmap)
+        return;
+
+    exp.result = NULL;
+    exp.expmap_result = NULL;
+    exp.m = m;
+    exp.token = token;
+    exp.str = token->str;
+    exp.expmap = token->expmap;
+
+    ft_printf("Before init_exp:\n");
+    ft_printf("token->str: %p (%s)\n", token->str, token->str);
+    ft_printf("token->expmap: %p (%s)\n", token->expmap, token->expmap);
+
+    init_exp(&exp);
+
+    ft_printf("After init_exp:\n");
+    ft_printf("exp.result: %p\n", exp.result);
+    ft_printf("exp.expmap_result: %p\n", exp.expmap_result);
+
+    if (!exp.result || !exp.expmap_result) {
+        free(exp.result);
+        free(exp.expmap_result);
+        return;
+    }
+
+    process_token(&exp);
+
+    ft_printf("After process_token:\n");
+    ft_printf("exp.result: %p (%s)\n", exp.result, exp.result);
+    ft_printf("exp.expmap_result: %p (%s)\n", exp.expmap_result, exp.expmap_result);
+
+    free(token->str);
+    free(token->expmap);
+
+    token->str = exp.result;
+    token->expmap = exp.expmap_result;
+
+    ft_printf("After assigning to token:\n");
+    ft_printf("token->str: %p (%s)\n", token->str, token->str);
+    ft_printf("token->expmap: %p (%s)\n", token->expmap, token->expmap);
+
 }
 
 int	expmapcheck(char *expmap, const char *str, int i, int escaped)

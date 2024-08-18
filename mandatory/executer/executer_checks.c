@@ -32,23 +32,23 @@ static void	check_pipes(t_minishell *m)
 {
 	t_list	*cur;
 	t_token	*cont;
-	char	*end;
-	char	*ltype;
+	enum e_toktype	end;
+	enum e_toktype	ltype;
 
-	end = NULL;
-	ltype = NULL;
+	end = UNSET;
+	ltype = UNSET;
 	cur = m->tok_lst;
 	while (cur != NULL)
 	{
 		cont = (t_token *)cur->content;
-		if (check_one(m, ltype, cont->type))
+		if (check_one(m, ltype, cont->token))
 			pic_err(m, 2, SYN_ERR_PIPE);
-		else if (check_two(m, cont->type, end))
+		else if (check_two(m, cont->token, end))
 			pic_err(m, 2, SYN_ERR_PIPE);
-		else if (check_three(m, cur->next, cont->type))
+		else if (check_three(m, cur->next, cont->token))
 			pic_err(m, 2, SYN_ERR_NEWLINE);
-		end = cont->type;
-		ltype = cont->type;
+		end = cont->token;
+		ltype = cont->token;
 		cur = cur->next;
 	}
 }
@@ -56,23 +56,23 @@ static void	check_pipes(t_minishell *m)
 static void	check_rdrcmeta(t_list *last, t_list *current, t_token *token)
 {
 	init_semantics(last, current);
-	if (ft_strcmp(token->type, "Redirection") == 0)
+	if (token->token == REDIRECTION)
 	{
 		if (ft_strcmp(token->str, "<<") == 0)
-			token->detail.rdrc.rdrcmeta = ft_strdup("here_doc");
+			token->rdrcmeta = ft_strdup("here_doc");
 		if (ft_strcmp(token->str, ">>") == 0)
 		{
-			token->detail.rdrc.rdrcmeta = ft_strdup("append");
+			token->rdrcmeta = ft_strdup("append");
 			update_tok_type_next_word(current, MINIFILE);
 		}
 		if (ft_strcmp(token->str, "<") == 0)
 		{
-			token->detail.rdrc.rdrcmeta = ft_strdup("redirection");
+			token->rdrcmeta = ft_strdup("redirection");
 			update_tok_type_next_word(current, MINIFILE);
 		}
 		if (ft_strcmp(token->str, ">") == 0)
 		{
-			token->detail.rdrc.rdrcmeta = ft_strdup("truncate");
+			token->rdrcmeta = ft_strdup("truncate");
 			update_tok_type_next_word(current, MINIFILE);
 		}
 	}
@@ -83,24 +83,24 @@ static void	check_redirections(t_minishell *m)
 	t_list	*cur;
 	t_list	*last;
 	t_token	*cont;
-	char	*end;
+	enum e_toktype	end;
 	char	*last_str;
 
 	last = NULL;
-	end = NULL;
+	end = UNSET;
 	last_str = NULL;
 	cur = m->tok_lst;
 	while (cur != NULL)
 	{
 		cont = (t_token *)cur->content;
-		if (check_four(m, cont->type, end))
+		if (check_four(m, cont->token, end))
 			pic_err(m, 2, SYN_ERR_PIPE);
-		else if (check_five(m, cur->next, cont->type))
+		else if (check_five(m, cur->next, cont->token))
 			pic_err(m, 2, SYN_ERR_NEWLINE);
-		else if (check_six(m, end, cont->type))
+		else if (check_six(m, end, cont->token))
 			check_rdrc_norm(last_str, cont, m);
 		check_rdrcmeta(last, cur, cont);
-		end = cont->type;
+		end = cont->token;
 		last_str = cont->str;
 		last = cur;
 		cur = cur->next;

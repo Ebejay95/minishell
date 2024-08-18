@@ -135,8 +135,6 @@ SRCS=	mandatory/builtins/cd.c \
 		mandatory/tokens/tokens2.c \
 		mandatory/tokens/tokens3.c \
 		mandatory/tokens/tokens4.c \
-		mandatory/ast.c \
-		mandatory/hierarchy_validation.c \
 		mandatory/init_envlst.c \
 		mandatory/minishell.c \
 		mandatory/minishell2.c \

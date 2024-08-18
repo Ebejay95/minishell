@@ -28,6 +28,6 @@ void	handle_infile(t_list *current)
 		ft_fprintf(2, "Error: Cannot access file '%s'\n", filename);
 		return ;
 	}
-	token->detail.rdrc.rdrcmeta = ft_strdup(filename);
-	token->detail.rdrc.rdrctarget = filename;
+	token->rdrcmeta = ft_strdup(filename);
+	token->rdrctarget = filename;
 }

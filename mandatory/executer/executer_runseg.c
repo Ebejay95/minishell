@@ -21,7 +21,7 @@ void	run_heredoc(t_token *t, t_fd *fd)
 		ft_fprintf(2, "Error creating pipe for heredoc\n");
 		return ;
 	}
-	write(hd[1], t->detail.rdrc.rdrcmeta, ft_strlen(t->detail.rdrc.rdrcmeta));
+	write(hd[1], t->rdrcmeta, ft_strlen(t->rdrcmeta));
 	close(hd[1]);
 	if (fd->last_input != fd->input)
 		close(fd->last_input);
@@ -56,19 +56,44 @@ void	cleanup_fds(t_fd *fd)
 	if (fd->last_output != fd->output)
 		close(fd->last_output);
 }
-
-void	run_seg(t_minishell *m, t_list *exec_lst, int input_fd, int output_fd)
+void print_token_pointers3(t_list *tok_lst)
 {
-	t_fd	fd;
-	char	**args;
-	int		arg_count;
+    t_list  *current;
+    t_token *cur_token;
 
-	args = NULL;
-	arg_count = 0;
-	init_fd(&fd, input_fd, output_fd);
-	process_tok(exec_lst, &fd, &args, &arg_count);
-	if (args && args[0])
-		run(m, args, arg_count, &fd);
-	cleanup_fds(&fd);
-	ft_array_l_free(args, arg_count);
+    ft_printf("\n"Y"AFTER RUN: Token Pointers:"D"\n");
+    current = tok_lst;
+    while (current != NULL)
+    {
+        cur_token = (t_token *)current->content;
+        ft_printf("Token address: %p\n", cur_token);
+        ft_printf("Token->str: %p (%s)\n", cur_token->str, cur_token->str);
+        ft_printf("Token->expmap: %p (%s)\n", cur_token->expmap, cur_token->expmap);
+        current = current->next;
+    }
+    ft_printf(Y"End of token pointers\n"D);
+}
+void cleanup_args(char **args, int arg_count)
+{
+    for (int i = 0; i < arg_count; i++)
+    {
+        free(args[i]);
+    }
+    free(args);
+}
+
+void run_seg(t_minishell *m, t_list *exec_lst, int input_fd, int output_fd)
+{
+    t_fd    fd;
+    char    **args = NULL;
+    int     arg_count = 0;
+
+    init_fd(&fd, input_fd, output_fd);
+    process_tok(exec_lst, &fd, &args, &arg_count);
+    if (args && args[0])
+    {
+        run(m, args, arg_count, &fd);
+    }
+    cleanup_args(args, arg_count);
+    cleanup_fds(&fd);
 }

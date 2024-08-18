@@ -90,28 +90,30 @@ char	*expand_var(t_minishell *m, char *str, size_t *i, char **result)
 	return (*result);
 }
 
-char	*expand_hd(t_minishell *m, char *str)
+char *expand_hd(t_minishell *m, char *str)
 {
-	char	*result;
-	size_t	i;
+    char *result;
+    size_t i;
 
-	i = 0;
-	result = ft_strdup("");
-	if (!result)
-		return (NULL);
-	while (str[i])
-	{
-		if (str[i] == '$' && str[i + 1] == '?')
-		{
-			if (!expand_exit_status(m, &result))
-				return (NULL);
-			i++;
-		}
-		else if (str[i] == '$' && !expand_var(m, str, &i, &result))
-			return (NULL);
-		else if (str[i] != '"' && !append_char(&result, str[i]))
-			return (NULL);
-		i++;
-	}
-	return (result);
+    i = 0;
+    result = ft_strdup("");
+    if (!result)
+        return NULL;
+    while (str[i]) {
+        if (str[i] == '$' && str[i + 1] == '?') {
+            if (!expand_exit_status(m, &result)) {
+                free(result);  // Fügen Sie diese Zeile hinzu
+                return NULL;
+            }
+            i++;
+        } else if (str[i] == '$' && !expand_var(m, str, &i, &result)) {
+            free(result);  // Fügen Sie diese Zeile hinzu
+            return NULL;
+        } else if (str[i] != '"' && !append_char(&result, str[i])) {
+            free(result);  // Fügen Sie diese Zeile hinzu
+            return NULL;
+        }
+        i++;
+    }
+    return result;
 }

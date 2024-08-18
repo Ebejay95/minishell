@@ -48,30 +48,32 @@ void	cleanup_expansion_data(t_exp_data *data)
 	free(data->expanded_map);
 }
 
-void	handle_expanded_part(t_exp *exp)
+void handle_expanded_part(t_exp *exp)
 {
-	t_exp_data		data;
-	t_exp_p			params;
-	t_expand_ctx	*ctx;
+    t_exp_data data;
+    t_exp_p params;
+    t_expand_ctx *ctx;
 
-	ctx = NULL;
-	init_exp_data(&data);
-	setup_expand_params(exp, &params, &data);
-	expand(&params, ctx);
-	if (data.expanded && data.expanded_map)
-	{
-		if (allocate_temp_memory(exp, &data) == -1)
-		{
-			cleanup_expansion_data(&data);
-			return ;
-		}
-		update_result(exp, &data);
-		if (allocate_expmap_temp_memory(exp, &data) == -1)
-		{
-			cleanup_expansion_data(&data);
-			return ;
-		}
-		update_expmap_result(exp, &data);
-		cleanup_expansion_data(&data);
-	}
+    ctx = NULL;
+    init_exp_data(&data);
+    setup_expand_params(exp, &params, &data);
+	    ft_printf("In handle_expanded_part: data.temp=%p, data.expmap_temp=%p\n", data.temp, data.expmap_temp);
+
+    expand(&params, ctx);
+    if (data.expanded && data.expanded_map) {
+        if (allocate_temp_memory(exp, &data) == -1) {
+            cleanup_expansion_data(&data);
+            return;
+        }
+        update_result(exp, &data);
+        if (allocate_expmap_temp_memory(exp, &data) == -1) {
+            free(data.temp);
+            cleanup_expansion_data(&data);
+            return;
+        }
+        update_expmap_result(exp, &data);
+    }
+    cleanup_expansion_data(&data);
+	    ft_printf("After cleanup: data.temp=%p, data.expmap_temp=%p\n", data.temp, data.expmap_temp);
+
 }

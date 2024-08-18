@@ -97,5 +97,5 @@ void	handle_heredoc(t_minishell *m, t_list *current)
 		return ;
 	if (next_content && !next_content->had_quote)
 		heredoc_content = expand_heredoc_content(m, heredoc_content);
-	token->detail.rdrc.rdrcmeta = heredoc_content;
+	token->rdrcmeta = heredoc_content;
 }

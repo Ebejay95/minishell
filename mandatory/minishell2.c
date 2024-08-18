@@ -33,6 +33,7 @@ static void	ft_envlstclear(t_minishell *minishell)
 			free(current->value);
 			current->value = NULL;
 		}
+		free(current);
 		current = next;
 	}
 	minishell->env_list = NULL;
@@ -45,6 +46,7 @@ void	cleanup_minishell(t_minishell *minishell)
 		free(minishell->prompt);
 	minishell->prompt = NULL;
 	ft_envlstclear(minishell);
+	mlstclear(minishell->tok_lst);
 }
 
 // Initialize the minishell struct

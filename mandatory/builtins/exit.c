@@ -12,16 +12,17 @@
 
 #include "./../../include/minishell.h"
 
-void	ft_exit(char **argv, int *exitcode)
+void	ft_exit(char **argv, t_minishell *m)
 {
 	if (argv[1])
 	{
-		if (exitcode == 0 && argv[1][0] != '0')
+		if (m->exitcode == 0 && argv[1][0] != '0')
 		{
 			printf("🍕🚀🌈🦄🍺: exit: %s: %s\n",
 				argv[1], NUMERIC_ARG_REQUIRED);
 			exit(2);
 		}
 	}
-	exit(*exitcode);
+	cleanup_minishell(m);
+	exit(m->exitcode);
 }
