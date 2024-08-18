@@ -36,7 +36,8 @@ void	cleanup_minishell(t_minishell *minishell)
 		free(minishell->prompt);
 	minishell->prompt = NULL;
 	ft_envlstclear(minishell);
-		reset_minishell_args(minishell);
+	reset_minishell_args(minishell);
+	mlstclear(minishell->exec_lst);
 	mlstclear(minishell->tok_lst);
 }
 

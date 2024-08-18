@@ -572,8 +572,8 @@ int has_pipes(t_list *tok_lst)
 
 void execute(t_minishell *m)
 {
-    m->last_exitcode = m->exitcode;  // Speichern des vorherigen Exitcodes
-    m->exitcode = 0;  // Zurücksetzen des Exitcodes für den neuen Befehl
+    m->last_exitcode = m->exitcode;
+    m->exitcode = 0;
 
     m->pipes = 0;
     if (has_pipes(m->tok_lst))
@@ -950,7 +950,7 @@ void reset_sequences(t_minishell *m)
     i = 0;
     while(i < MAXPIPS)
     {
-        if(m->cmd_seqs[i])
+        if (m->cmd_seqs[i])
         {
             ft_printf("Clearing cmd_seq %d\n", i);
             t_list *current = m->cmd_seqs[i];
@@ -958,12 +958,36 @@ void reset_sequences(t_minishell *m)
             {
                 t_list *next = current->next;
                 t_token *token = current->content;
-                ft_printf("Freeing token: %p\n", token);
-                newfree_token(token);
-                free(current);
+
+                if (token != NULL) {
+                    ft_printf("Freeing token: %p\n", token);
+                    newfree_token(token);  // Token vollständig freigeben
+                }
+
+                free(current);  // Freigeben der Listenknoten
                 current = next;
             }
             m->cmd_seqs[i] = NULL;
+        }
+
+        if (m->exec_seqs[i])
+        {
+            ft_printf("Clearing exec_seq %d\n", i);
+            t_list *current = m->exec_seqs[i];
+            while (current)
+            {
+                t_list *next = current->next;
+                t_token *token = current->content;
+
+                if (token != NULL) {
+                    ft_printf("Freeing token: %p\n", token);
+                    newfree_token(token);  // Token vollständig freigeben
+                }
+
+                free(current);  // Freigeben der Listenknoten
+                current = next;
+            }
+            m->exec_seqs[i] = NULL;
         }
         i++;
     }
@@ -1218,19 +1242,22 @@ t_token *duplicate(t_token *src)
         return NULL;
 
     *new_token = *src;
-	new_token->token = src->token;
     new_token->str = ft_strdup(src->str);
     new_token->expmap = ft_strdup(src->expmap);
+    new_token->rdrcmeta = src->rdrcmeta ? ft_strdup(src->rdrcmeta) : NULL;
+    new_token->rdrctarget = src->rdrctarget ? ft_strdup(src->rdrctarget) : NULL;
 
-    if (src->rdrcmeta)
-        new_token->rdrcmeta = ft_strdup(src->rdrcmeta);
-    else
-        new_token->rdrcmeta = NULL;
-
-    if (src->rdrctarget)
-        new_token->rdrctarget = ft_strdup(src->rdrctarget);
-    else
-        new_token->rdrctarget = NULL;
+    if (!new_token->str || !new_token->expmap || 
+        (src->rdrcmeta && !new_token->rdrcmeta) || 
+        (src->rdrctarget && !new_token->rdrctarget))
+    {
+        free(new_token->str);
+        free(new_token->expmap);
+        free(new_token->rdrcmeta);
+        free(new_token->rdrctarget);
+        free(new_token);
+        return NULL;
+    }
 
     return new_token;
 }
@@ -3515,7 +3542,9 @@ void	cleanup_minishell(t_minishell *minishell)
 		free(minishell->prompt);
 	minishell->prompt = NULL;
 	ft_envlstclear(minishell);
-		reset_minishell_args(minishell);
+	reset_sequences(minishell);
+	reset_minishell_args(minishell);
+	mlstclear(minishell->exec_lst);
 	mlstclear(minishell->tok_lst);
 }
 
@@ -3719,7 +3748,7 @@ void split_pipes(t_minishell *m)
     t_list *temp_list = NULL;
     int pipe_index = 0;
 
-    // Initialize cmd_seqs with NULL
+    // Initialisiere cmd_seqs mit NULL
     for (int i = 0; i < 1024; i++)
     {
         m->cmd_seqs[i] = NULL;
@@ -3744,7 +3773,7 @@ void split_pipes(t_minishell *m)
         }
         else
         {
-            // Duplicate the token before adding it to the temporary list
+            // Duplizieren des Tokens vor dem Hinzufügen zur temporären Liste
             t_token *token_dup = duplicate(token);
             if (!token_dup)
                 ft_error_exit("token_dup");
@@ -3752,7 +3781,8 @@ void split_pipes(t_minishell *m)
             t_list *new_node = ft_lstnew(token_dup);
             if (!new_node)
             {
-                free(token_dup);  // Free the duplicated token if node creation fails
+                // Falls Listenknoten-Erstellung fehlschlägt
+                newfree_token(token_dup);  // Freigeben des duplizierten Tokens
                 ft_error_exit("ft_lstnew");
             }
             ft_lstadd_back(&temp_list, new_node);
@@ -3761,7 +3791,7 @@ void split_pipes(t_minishell *m)
         current = current->next;
     }
 
-    // Add the last list if it exists
+    // Hinzufügen der letzten Liste, falls vorhanden
     if (temp_list != NULL)
     {
         m->cmd_seqs[pipe_index] = temp_list;

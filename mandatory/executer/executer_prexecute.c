@@ -132,7 +132,5 @@ void prexecute(t_minishell *m, int i)
 		prex_ins(m, m->cmd_seqs[i], &(m->exec_seqs[i]));
 		prex_mains(m->cmd_seqs[i], &(m->exec_seqs[i]));
 		prex_outs(m->cmd_seqs[i], &(m->exec_seqs[i]));
-    	ft_printf("exec_seqs[%i]:\n", i);
-	ft_lstput(&(m->exec_seqs[i]), put_token, '\n');
 	}
 }

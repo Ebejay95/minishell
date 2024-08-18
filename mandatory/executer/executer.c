@@ -56,8 +56,8 @@ int has_pipes(t_list *tok_lst)
 
 void execute(t_minishell *m)
 {
-    m->last_exitcode = m->exitcode;  // Speichern des vorherigen Exitcodes
-    m->exitcode = 0;  // Zurücksetzen des Exitcodes für den neuen Befehl
+    m->last_exitcode = m->exitcode;
+    m->exitcode = 0;
 
     m->pipes = 0;
     if (has_pipes(m->tok_lst))
@@ -74,16 +74,16 @@ void execute(t_minishell *m)
 		{
             run_seg(m, 0, STDIN_FILENO, STDOUT_FILENO);
 		}
-    	if (m->exec_lst)
-    	{
-    	    mlstclear(m->exec_lst);
-    	    m->exec_lst = NULL;
-    	}
         reset_minishell_args(m);
     	if (m->tok_lst)
     	{
     	    mlstclear(m->tok_lst);
     	    m->tok_lst = NULL;
+    	}
+    	if (m->exec_lst)
+    	{
+    	    mlstclear(m->exec_lst);
+    	    m->exec_lst = NULL;
     	}
     }
 }

@@ -56,7 +56,7 @@ void reset_sequences(t_minishell *m)
     i = 0;
     while(i < MAXPIPS)
     {
-        if(m->cmd_seqs[i])
+        if (m->cmd_seqs[i])
         {
             ft_printf("Clearing cmd_seq %d\n", i);
             t_list *current = m->cmd_seqs[i];
@@ -64,12 +64,36 @@ void reset_sequences(t_minishell *m)
             {
                 t_list *next = current->next;
                 t_token *token = current->content;
-                ft_printf("Freeing token: %p\n", token);
-                newfree_token(token);
-                free(current);
+
+                if (token != NULL) {
+                    ft_printf("Freeing token: %p\n", token);
+                    newfree_token(token);  // Token vollständig freigeben
+                }
+
+                free(current);  // Freigeben der Listenknoten
                 current = next;
             }
             m->cmd_seqs[i] = NULL;
+        }
+
+        if (m->exec_seqs[i])
+        {
+            ft_printf("Clearing exec_seq %d\n", i);
+            t_list *current = m->exec_seqs[i];
+            while (current)
+            {
+                t_list *next = current->next;
+                t_token *token = current->content;
+
+                if (token != NULL) {
+                    ft_printf("Freeing token: %p\n", token);
+                    newfree_token(token);  // Token vollständig freigeben
+                }
+
+                free(current);  // Freigeben der Listenknoten
+                current = next;
+            }
+            m->exec_seqs[i] = NULL;
         }
         i++;
     }

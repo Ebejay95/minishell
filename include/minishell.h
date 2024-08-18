@@ -386,6 +386,7 @@ void	setup_child_process(t_fd *fd);
 void	run_parent_process(t_minishell *m, pid_t pid);
 
 // executer.c
+void newfree_token(t_token *token);
 int		allocate_pids(t_pipe_info *pi, int pipes);
 int		fork_and_execute(t_minishell *m, t_pipe_info *pi);
 void	execute(t_minishell *m);
