@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand_heredoc.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jonathaneberle <jonathaneberle@student.    +#+  +:+       +#+        */
+/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/12 16:27:57 by chorst            #+#    #+#             */
-/*   Updated: 2024/08/19 07:19:57 by jonathanebe      ###   ########.fr       */
+/*   Updated: 2024/08/19 09:22:16 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,28 +98,20 @@ char	*expand_hd(t_minishell *m, char *str)
 	i = 0;
 	result = ft_strdup("");
 	if (!result)
-	    return (NULL);
+		return (NULL);
 	while (str[i])
 	{
 		if (str[i] == '$' && str[i + 1] == '?')
 		{
 			if (!expand_exit_status(m, &result))
-			{
-			    free(result);
-			    return (NULL);
-			}
+				return (free(result), NULL);
 			i++;
-		} else if (str[i] == '$' && !expand_var(m, str, &i, &result))
-		{
-			free(result);
-			return (NULL);
 		}
+		else if (str[i] == '$' && !expand_var(m, str, &i, &result))
+			return (free(result), NULL);
 		else if (str[i] != '"' && !append_char(&result, str[i]))
-		{
-			free(result);
-			return (NULL);
-		}
+			return (free(result), NULL);
 		i++;
 	}
-	return result;
+	return (result);
 }

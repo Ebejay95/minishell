@@ -3,42 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   executer.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jonathaneberle <jonathaneberle@student.    +#+  +:+       +#+        */
+/*   By: jeberle <jeberle@student.42heilbronn.de    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/31 17:01:26 by jeberle           #+#    #+#             */
-/*   Updated: 2024/08/19 07:17:05 by jonathanebe      ###   ########.fr       */
+/*   Updated: 2024/08/19 07:46:59 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../../include/minishell.h"
-
-int	allocate_pids(t_minishell *m, int pipes)
-{
-	m->pids = malloc(sizeof(pid_t) * (pipes + 1));
-	if (!m->pids)
-	{
-		ft_fprintf(2, "Memory allocation failed\n");
-		return (0);
-	}
-	return (1);
-}
-
-int	fork_and_execute(t_minishell *m, t_pipe_info *pi)
-{
-	m->pids[pi->i] = fork();
-	if (m->pids[pi->i] == 0)
-	{
-		run_child_process(m, pi);
-		write(1, "fork\n", 5);
-		exit(1);
-	}
-	else if (m->pids[pi->i] < 0)
-	{
-		ft_fprintf(2, "Fork failed\n");
-		return (0);
-	}
-	return (1);
-}
 
 int	has_pipes(t_list *tok_lst)
 {
@@ -56,7 +28,7 @@ int	has_pipes(t_list *tok_lst)
 	return (0);
 }
 
-void	execute(t_minishell *m)
+void	initialize_arrays(t_minishell *m)
 {
 	int	i;
 
@@ -64,20 +36,29 @@ void	execute(t_minishell *m)
 	while (i < MAXPIPS)
 	{
 		m->cmd_seqs[i] = NULL;
-		i++;
-	}
-	i = 0;
-	while (i < MAXPIPS)
-	{
 		m->exec_seqs[i] = NULL;
-		i++;
-	}
-	i = 0;
-	while (i < MAXPIPS)
-	{
 		m->args[i] = NULL;
 		i++;
 	}
+}
+
+void	cleanup_lists(t_minishell *m)
+{
+	if (m->tok_lst)
+	{
+		mlstclear(m->tok_lst);
+		m->tok_lst = NULL;
+	}
+	if (m->exec_lst)
+	{
+		mlstclear(m->exec_lst);
+		m->exec_lst = NULL;
+	}
+}
+
+void	execute(t_minishell *m)
+{
+	initialize_arrays(m);
 	m->last_exitcode = m->exitcode;
 	m->exitcode = 0;
 	m->pipes = 0;
@@ -94,15 +75,6 @@ void	execute(t_minishell *m)
 		if (g_global == 0)
 			run_seg(m, 0, STDIN_FILENO, STDOUT_FILENO);
 		reset_minishell_args(m);
-		if (m->tok_lst)
-		{
-			mlstclear(m->tok_lst);
-			m->tok_lst = NULL;
-		}
-		if (m->exec_lst)
-		{
-			mlstclear(m->exec_lst);
-			m->exec_lst = NULL;
-		}
+		cleanup_lists(m);
 	}
 }

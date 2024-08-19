@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executer_redirection.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/14 14:29:16 by chorst            #+#    #+#             */
-/*   Updated: 2024/08/14 14:31:00 by chorst           ###   ########.fr       */
+/*   Updated: 2024/08/19 09:20:40 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,4 +50,33 @@ void	run_redirection(t_token *t, t_fd *fd)
 		run_in_redirection(t, fd);
 	else if (ft_strcmp(t->str, ">") == 0 || ft_strcmp(t->str, ">>") == 0)
 		run_out_redirection(t, fd);
+}
+
+void	run_heredoc(t_token *t, t_fd *fd)
+{
+	int	hd[2];
+
+	if (pipe(hd) == -1)
+	{
+		ft_fprintf(2, "Error creating pipe for heredoc\n");
+		return ;
+	}
+	write(hd[1], t->rdrcmeta, ft_strlen(t->rdrcmeta));
+	close(hd[1]);
+	if (fd->last_input != fd->input)
+		close(fd->last_input);
+	fd->last_input = hd[0];
+}
+
+void	run_command(t_minishell *m, char **args)
+{
+	char	*path;
+
+	path = get_executable(m, args[0]);
+	if (path)
+	{
+		execute_command(m, path, args);
+		free(path);
+	}
+	ft_fprintf(2, "bash: %s: command not found\n", args[0]);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   prompt_to_token.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jonathaneberle <jonathaneberle@student.    +#+  +:+       +#+        */
+/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/14 14:50:42 by jeberle           #+#    #+#             */
-/*   Updated: 2024/08/19 07:30:12 by jonathanebe      ###   ########.fr       */
+/*   Updated: 2024/08/19 09:29:12 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,18 +57,21 @@ void	process_char(t_minishell *m, t_tokenizer_state *s)
 void	cleanup_tokenizer_state(t_tokenizer_state *state)
 {
 	if (state->current_token)
-	    free(state->current_token);
+		free(state->current_token);
 	if (state->expmap)
-	    free(state->expmap);
+		free(state->expmap);
 }
+
 void	handle_error_and_cleanup(t_tokenizer_state *state, t_minishell *m)
 {
-	cleanup_tokenizer_state(state);  // Freigabe der in state allokierten Speicher
+	cleanup_tokenizer_state(state);
 	mlstclear(m->tok_lst);
 }
+
 void	prompt_to_token(t_minishell *m)
 {
-	t_tokenizer_state state;
+	t_tokenizer_state	state;
+	t_token				*token;
 
 	init_tokenizer_state(&state, m->prompt);
 	while (*state.ptr)
@@ -81,7 +84,7 @@ void	prompt_to_token(t_minishell *m)
 	{
 		state.current_token[state.current_pos] = '\0';
 		state.expmap[state.current_pos] = '\0';
-		t_token *token = create_token(state.current_token, state.expmap);
+		token = create_token(state.current_token, state.expmap);
 		if (!token)
 		{
 			cleanup_tokenizer_state(&state);

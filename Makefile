@@ -6,7 +6,7 @@
 #    By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/25 22:43:08 by jonathanebe       #+#    #+#              #
-#    Updated: 2024/08/16 00:16:25 by jeberle          ###   ########.fr        #
+#    Updated: 2024/08/19 09:26:39 by jeberle          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -138,6 +138,7 @@ SRCS=	mandatory/builtins/cd.c \
 		mandatory/init_envlst.c \
 		mandatory/minishell.c \
 		mandatory/minishell2.c \
+		mandatory/minishell3.c \
 		mandatory/parser.c \
 		mandatory/pipes.c \
 		mandatory/remove_chars.c \

@@ -3,77 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jonathaneberle <jonathaneberle@student.    +#+  +:+       +#+        */
+/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:01:33 by jeberle           #+#    #+#             */
-/*   Updated: 2024/08/19 07:45:15 by jonathanebe      ###   ########.fr       */
+/*   Updated: 2024/08/19 09:19:43 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../include/minishell.h"
 
-void reset_minishell_args(t_minishell *m)
-{
-	int i;
-
-	i = 0;
-	while (i < MAXPIPS)
-	{
-		if (m->args[i] != NULL)
-		{
-			free(m->args[i]);
-			m->args[i] = NULL;
-		}
-		i++;
-	}
-	m->argc = 0;
-}
-void	mlstclear(t_list *list)
-{
-	t_list	*current;
-	t_list	*next;
-	t_token	*token;
-
-	current = list;
-	while (current != NULL)
-	{
-		next = current->next;
-		token = (t_token *)current->content;
-		if (token != NULL)
-		{
-			if (token->str)
-			{
-				free(token->str);
-				token->str = NULL;
-			}
-			if (token->expmap)
-			{
-				free(token->expmap);
-				token->expmap = NULL;
-			}
-			if (token->rdrcmeta)
-			{
-				free(token->rdrcmeta);
-				token->rdrcmeta = NULL;
-			}
-			if (token->rdrctarget)
-			{
-				free(token->rdrctarget);
-				token->rdrctarget = NULL;
-			}
-			free(token);
-			token = NULL;
-		}
-		if (current != NULL)
-		{
-			free(current);
-			current = NULL;
-		}
-		current = next;
-	}
-}
-
-// Function that defines the interactive mode
 static void	interactive_mode(t_minishell *minishell)
 {
 	int	tty_fd;
@@ -99,7 +37,6 @@ static void	interactive_mode(t_minishell *minishell)
 	g_global = 0;
 }
 
-// Function that defines the non-interactive mode
 static void	non_interactive_mode(t_minishell *minishell)
 {
 	char	*input;
@@ -128,7 +65,6 @@ int	is_only_whitespace(const char *str)
 	return (1);
 }
 
-// Function that handles the input from the user or the script
 static int	handle_input(t_minishell *minishell)
 {
 	if (minishell->modus > 0)
@@ -149,9 +85,7 @@ static int	handle_input(t_minishell *minishell)
 		pre_exec_prep(minishell);
 		pre_exec_checks(minishell);
 		if (!minishell->leave)
-		{
 			execute(minishell);
-		}
 		if (minishell->modus && *minishell->prompt
 			&& !is_only_whitespace(minishell->prompt))
 			add_history(minishell->prompt);
@@ -164,6 +98,7 @@ int	g_global = 0;
 int	main(int argc, char **argv, char **envp)
 {
 	t_minishell	minishell;
+
 	g_global = 0;
 	minishell.env_list = NULL;
 	init_env_list(envp, &minishell);

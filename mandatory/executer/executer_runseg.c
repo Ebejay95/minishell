@@ -3,43 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   executer_runseg.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jonathaneberle <jonathaneberle@student.    +#+  +:+       +#+        */
+/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/14 12:46:24 by jeberle           #+#    #+#             */
-/*   Updated: 2024/08/19 00:55:38 by jonathanebe      ###   ########.fr       */
+/*   Updated: 2024/08/19 09:20:25 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../../include/minishell.h"
-
-void	run_heredoc(t_token *t, t_fd *fd)
-{
-	int	hd[2];
-
-	if (pipe(hd) == -1)
-	{
-		ft_fprintf(2, "Error creating pipe for heredoc\n");
-		return ;
-	}
-	write(hd[1], t->rdrcmeta, ft_strlen(t->rdrcmeta));
-	close(hd[1]);
-	if (fd->last_input != fd->input)
-		close(fd->last_input);
-	fd->last_input = hd[0];
-}
-
-void	run_command(t_minishell *m, char **args)
-{
-	char	*path;
-
-	path = get_executable(m, args[0]);
-	if (path)
-	{
-		execute_command(m, path, args);
-		free(path);
-	}
-	ft_fprintf(2, "bash: %s: command not found\n", args[0]);
-}
 
 void	run(t_minishell *m, char **args, int arg_count, t_fd *fd)
 {

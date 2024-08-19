@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jonathaneberle <jonathaneberle@student.    +#+  +:+       +#+        */
+/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 11:30:06 by jeberle           #+#    #+#             */
-/*   Updated: 2024/08/19 07:28:45 by jonathanebe      ###   ########.fr       */
+/*   Updated: 2024/08/19 09:31:48 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,17 +22,13 @@ void	expand_toklst(t_minishell *m, t_list **tok_lst)
 	t_list	*current;
 	t_token	*cur_content;
 
-	ft_printf("DEBUG: Entering expand_toklst\n");
 	current = *tok_lst;
 	while (current != NULL)
 	{
 		cur_content = (t_token *)current->content;
-		ft_printf("DEBUG: Expanding token: %s\n", cur_content->str);
 		expand_token(m, cur_content);
-		ft_printf("DEBUG: After expansion: %s\n", cur_content->str);
 		current = current->next;
 	}
-	ft_printf("DEBUG: Exiting expand_toklst\n");
 }
 
 void	lex_prompt(t_minishell *m)

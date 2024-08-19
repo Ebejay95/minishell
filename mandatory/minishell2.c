@@ -3,35 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   minishell2.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jonathaneberle <jonathaneberle@student.    +#+  +:+       +#+        */
+/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/23 13:04:21 by chorst            #+#    #+#             */
-/*   Updated: 2024/08/19 07:43:06 by jonathanebe      ###   ########.fr       */
+/*   Updated: 2024/08/19 09:19:57 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "./../include/minishell.h"
-
-void	ft_envlstclear(t_minishell *minishell)
-{
-	t_envlst	*current;
-	t_envlst	*next;
-
-	if (minishell == NULL || minishell->env_list == NULL)
-		return ;
-	current = minishell->env_list;
-	while (current != NULL)
-	{
-		next = current->next;
-		if (current->name)
-			free(current->name);
-		if (current->value)
-			free(current->value);
-		free(current);
-		current = next;
-	}
-	minishell->env_list = NULL;
-}
 
 // Cleanup the minishell struct
 void	free_token_list(t_list *list)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executer_signals.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jonathaneberle <jonathaneberle@student.    +#+  +:+       +#+        */
+/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/14 14:01:58 by chorst            #+#    #+#             */
-/*   Updated: 2024/08/19 00:57:23 by jonathanebe      ###   ########.fr       */
+/*   Updated: 2024/08/19 09:31:56 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,6 @@ void	run_child_process(t_minishell *m, t_pipe_info *pi)
 	}
 	run_seg(m, pi->i, STDIN_FILENO, STDOUT_FILENO);
 	cleanup_minishell(m);
-	ft_printf("Exiting reset_sequences\n");
 	exit(0);
 }
 

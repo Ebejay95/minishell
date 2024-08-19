@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jonathaneberle <jonathaneberle@student.    +#+  +:+       +#+        */
+/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:18:56 by jeberle           #+#    #+#             */
-/*   Updated: 2024/08/19 01:02:55 by jonathanebe      ###   ########.fr       */
+/*   Updated: 2024/08/19 09:27:06 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@
 # define RDRCSET "><0123456789"
 
 // mode
-# define DEBUG 1
+# define DEBUG 0
 # define DEBUG_LOG "/tmp/minishell_debug.log"
 # define MAXPIPS 1024
 

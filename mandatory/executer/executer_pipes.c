@@ -6,7 +6,7 @@
 /*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/14 14:00:34 by chorst            #+#    #+#             */
-/*   Updated: 2024/08/15 21:00:44 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/19 09:27:49 by jeberle          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,4 +68,32 @@ void	execute_with_pipes(t_minishell *m)
 	wait_for_children(m, &pi);
 	free(m->pids);
 	m->pids = NULL;
+}
+
+int	allocate_pids(t_minishell *m, int pipes)
+{
+	m->pids = malloc(sizeof(pid_t) * (pipes + 1));
+	if (!m->pids)
+	{
+		ft_fprintf(2, "Memory allocation failed\n");
+		return (0);
+	}
+	return (1);
+}
+
+int	fork_and_execute(t_minishell *m, t_pipe_info *pi)
+{
+	m->pids[pi->i] = fork();
+	if (m->pids[pi->i] == 0)
+	{
+		run_child_process(m, pi);
+		write(1, "fork\n", 5);
+		exit(1);
+	}
+	else if (m->pids[pi->i] < 0)
+	{
+		ft_fprintf(2, "Fork failed\n");
+		return (0);
+	}
+	return (1);
 }
