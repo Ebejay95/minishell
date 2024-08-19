@@ -22,12 +22,16 @@ void	handle_infile(t_list *current)
 	next_content = NULL;
 	if (current->next)
 		next_content = (t_token *)current->next->content;
-	filename = next_content->str;
+	filename = ft_strdup(next_content->str);
 	if (access(filename, R_OK) == -1)
 	{
 		ft_fprintf(2, "Error: Cannot access file '%s'\n", filename);
 		return ;
 	}
-	token->rdrcmeta = ft_strdup(filename);
-	token->rdrctarget = filename;
+	if(token->rdrcmeta)
+	{
+		free(token->rdrcmeta);
+		token->rdrcmeta = NULL;
+	}
+	token->rdrcmeta = filename;
 }

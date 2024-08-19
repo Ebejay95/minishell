@@ -33,7 +33,7 @@ void mlstclear(t_list *list)
     t_list *current;
     t_list *next;
     t_token *token;
-
+	ft_printf("start mlstclear\n");
     current = list;
     while (current != NULL)
     {
@@ -41,15 +41,42 @@ void mlstclear(t_list *list)
         token = (t_token *)current->content;
         if (token != NULL)
         {
-            free(token->str);
-            free(token->expmap);
-            free(token->rdrcmeta);
-            free(token->rdrctarget);
+	ft_printf("free token\n");
+			if (token->str)
+			{
+	ft_printf("free token str\n");
+            	free(token->str);
+				token->str = NULL;
+			}
+			if (token->expmap)
+			{
+	ft_printf("free token expmap\n");
+            	free(token->expmap);
+				token->expmap = NULL;
+			}
+			if (token->rdrcmeta)
+			{
+	ft_printf("free token rdrcmeta\n");
+            	free(token->rdrcmeta);
+				token->rdrcmeta = NULL;
+			}
+			if (token->rdrctarget)
+			{
+	ft_printf("free token rdrctarget\n");
+            	free(token->rdrctarget);
+				token->rdrctarget = NULL;
+			}
             free(token);
+			token = NULL;
         }
-        free(current);
+		if (current != NULL)
+		{
+        	free(current);
+			current = NULL;
+		}
         current = next;
     }
+	ft_printf("end mlstclear\n");
 }
 
 // Function that defines the interactive mode

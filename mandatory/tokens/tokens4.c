@@ -28,7 +28,6 @@ void	put_token(void *content)
 		ft_printf("%p ", token->str);
 		ft_printf("map: %s ", token->expmap);
 		ft_printf("%p ", token->expmap);
-		put_token_details(token);
 		ft_printf(Y"]"D);
 	}
 	else

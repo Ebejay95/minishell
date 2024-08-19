@@ -85,6 +85,11 @@ void	handle_trunc_append(t_list *current)
 		filecontent = create_new_file(filename);
 	if (!filecontent)
 		return ;
+	if(token->rdrcmeta)
+	{
+		free(token->rdrcmeta);
+		token->rdrcmeta = NULL;
+	}
 	token->rdrcmeta = filecontent;
-	token->rdrctarget = filename;
+	token->rdrctarget = ft_strdup(filename);
 }

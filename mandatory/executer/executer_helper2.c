@@ -40,11 +40,28 @@ void	newfree_token(t_token *token)
 {
 	if (token)
 	{
-		free(token->str);
-		free(token->expmap);
-		free(token->rdrcmeta);
-		free(token->rdrctarget);
+		if (token->str)
+		{
+        	free(token->str);
+			token->str = NULL;
+		}
+		if (token->expmap)
+		{
+        	free(token->expmap);
+			token->expmap = NULL;
+		}
+		if (token->rdrcmeta)
+		{
+        	free(token->rdrcmeta);
+			token->rdrcmeta = NULL;
+		}
+		if (token->rdrctarget)
+		{
+        	free(token->rdrctarget);
+			token->rdrctarget = NULL;
+		}
 		free(token);
+		token = NULL;
 	}
 }
 

@@ -502,7 +502,6 @@ void	update_tok_type_next(t_list *current, enum e_toktype token);
 void	free_token_resources(t_token *newtok);
 t_token	*create_token(char *str, char *expmap);
 void	print_toktype(enum e_toktype token);
-void	put_token_details(t_token *token);
 
 // tokens4.c
 void	put_token(void	*content);
