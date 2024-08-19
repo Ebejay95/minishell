@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
+/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:01:33 by jeberle           #+#    #+#             */
-/*   Updated: 2024/08/19 09:19:43 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/19 10:09:04 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,11 +30,10 @@ static void	interactive_mode(t_minishell *minishell)
 	close(tty_fd);
 	if (minishell->modus == 1)
 		minishell->prompt = readline("🍕🚀🌈🦄🍺 ");
-	if (!minishell->prompt && g_global == 0)
+	if (!minishell->prompt)
 	{
 		exit(0);
 	}
-	g_global = 0;
 }
 
 static void	non_interactive_mode(t_minishell *minishell)
@@ -93,13 +92,10 @@ static int	handle_input(t_minishell *minishell)
 	return (0);
 }
 
-int	g_global = 0;
-
 int	main(int argc, char **argv, char **envp)
 {
 	t_minishell	minishell;
 
-	g_global = 0;
 	minishell.env_list = NULL;
 	init_env_list(envp, &minishell);
 	setup_signals(&minishell);
@@ -117,6 +113,6 @@ int	main(int argc, char **argv, char **envp)
 		if (handle_input(&minishell))
 			break ;
 	rl_clear_history();
-	cleanup_minishell(&minishell);
+	cleanup_minishell(&minishell, 0);
 	return (minishell.exitcode);
 }

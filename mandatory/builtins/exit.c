@@ -6,7 +6,7 @@
 /*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/12 15:12:06 by chorst            #+#    #+#             */
-/*   Updated: 2024/08/19 09:14:17 by chorst           ###   ########.fr       */
+/*   Updated: 2024/08/19 10:09:14 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,6 @@ void	ft_exit(char **argv, t_minishell *m)
 		}
 		exit(ft_atoi(argv[1]));
 	}
-	cleanup_minishell(m);
+	cleanup_minishell(m, 0);
 	exit(m->exitcode);
 }

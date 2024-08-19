@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executer_signals.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
+/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/14 14:01:58 by chorst            #+#    #+#             */
-/*   Updated: 2024/08/19 09:31:56 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/19 10:09:19 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ void	run_child_process(t_minishell *m, t_pipe_info *pi)
 		close(pi->pipe_fd[1]);
 	}
 	run_seg(m, pi->i, STDIN_FILENO, STDOUT_FILENO);
-	cleanup_minishell(m);
+	cleanup_minishell(m, 1);
 	exit(0);
 }
 

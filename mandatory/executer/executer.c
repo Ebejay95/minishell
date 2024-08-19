@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executer.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeberle <jeberle@student.42heilbronn.de    +#+  +:+       +#+        */
+/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/31 17:01:26 by jeberle           #+#    #+#             */
-/*   Updated: 2024/08/19 07:46:59 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/19 10:09:23 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,13 +67,12 @@ void	execute(t_minishell *m)
 		split_pipes(m);
 		execute_with_pipes(m);
 		reset_minishell_args(m);
-		cleanup_minishell(m);
+		cleanup_minishell(m, 1);
 	}
 	else
 	{
 		prexecute(m, 0);
-		if (g_global == 0)
-			run_seg(m, 0, STDIN_FILENO, STDOUT_FILENO);
+		run_seg(m, 0, STDIN_FILENO, STDOUT_FILENO);
 		reset_minishell_args(m);
 		cleanup_lists(m);
 	}

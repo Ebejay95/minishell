@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer_helper.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jonathaneberle <jonathaneberle@student.    +#+  +:+       +#+        */
+/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 09:54:56 by chorst            #+#    #+#             */
-/*   Updated: 2024/08/19 07:27:55 by jonathanebe      ###   ########.fr       */
+/*   Updated: 2024/08/19 10:14:04 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@ void	add_new_abtoken(t_list **current, char *word, char *expmap)
 	t_token	*new_token;
 	t_list	*new_node;
 
-	ft_printf("add_new_abtoken\n");
 	new_token = create_token(word, expmap);
 	update_tok_type(new_token, WORD);
 	new_node = ft_lstnew(new_token);

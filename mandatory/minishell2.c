@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell2.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
+/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/23 13:04:21 by chorst            #+#    #+#             */
-/*   Updated: 2024/08/19 09:19:57 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/19 10:18:22 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,12 +63,13 @@ void	clear_exec_seqs(t_minishell *minishell)
 	}
 }
 
-void	cleanup_minishell(t_minishell *minishell)
+void	cleanup_minishell(t_minishell *minishell, int i)
 {
 	reset_minishell_args(minishell);
 	mlstclear(minishell->exec_lst);
 	mlstclear(minishell->tok_lst);
-	ft_envlstclear(minishell);
+	if (i == 0)
+		ft_envlstclear(minishell);
 	if (minishell->pids)
 		free(minishell->pids);
 	clear_cmd_seqs(minishell);

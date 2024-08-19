@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
+/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:18:56 by jeberle           #+#    #+#             */
-/*   Updated: 2024/08/19 09:55:40 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/19 10:08:39 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,12 +83,6 @@
 # define DEBUG 0
 # define DEBUG_LOG "/tmp/minishell_debug.log"
 # define MAXPIPS 1024
-
-// #############################################################################
-// #                        the one and only g_global                          #
-// #############################################################################
-
-extern int	g_global;
 
 // #############################################################################
 // #                                 Enums                                     #
@@ -553,7 +547,7 @@ void	expand_toklst(t_minishell *m, t_list **tok_lst);
 void	lex_prompt(t_minishell *m);
 
 // minishell_helper.c
-void	cleanup_minishell(t_minishell *minishell);
+void	cleanup_minishell(t_minishell *minishell, int i);
 void	initialize_minishell(t_minishell *minishell, char **envp);
 
 // minishell.c

@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+         #
+#    By: chorst <chorst@student.42.fr>              +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/05/25 22:43:08 by jonathanebe       #+#    #+#              #
-#    Updated: 2024/08/19 09:26:39 by jeberle          ###   ########.fr        #
+#    Updated: 2024/08/19 09:56:54 by chorst           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -47,7 +47,7 @@ NAME_BONUS=minishell_bonus
 
 CC=cc
 CFLAGS=-Wall -Wextra -Werror -I/usr/local/opt/readline/include
-LDFLAGS=-L/usr/local/opt/readline/lib -lreadline
+LDFLAGS=
 
 ifeq ($(DEBUG), 1)
 	CFLAGS += -fsanitize=address -g

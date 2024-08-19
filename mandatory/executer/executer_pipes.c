@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executer_pipes.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
+/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/14 14:00:34 by chorst            #+#    #+#             */
-/*   Updated: 2024/08/19 09:27:49 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/19 10:01:33 by chorst           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,17 +31,14 @@ static void	setup_pipes(t_pipe_info *pi)
 static int	process_pipecommand(t_minishell *m, t_pipe_info *pi)
 {
 	prexecute(m, pi->i);
-	if (g_global == 0)
+	setup_pipes(pi);
+	signal(SIGINT, SIG_IGN);
+	signal(SIGQUIT, SIG_IGN);
+	if (!fork_and_execute(m, pi))
 	{
-		setup_pipes(pi);
-		signal(SIGINT, SIG_IGN);
-		signal(SIGQUIT, SIG_IGN);
-		if (!fork_and_execute(m, pi))
-		{
-			return (0);
-		}
-		handle_parent_process(pi);
+		return (0);
 	}
+	handle_parent_process(pi);
 	return (1);
 }
 
