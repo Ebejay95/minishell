@@ -6,7 +6,7 @@
 /*   By: jonathaneberle <jonathaneberle@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/31 17:01:26 by jeberle           #+#    #+#             */
-/*   Updated: 2024/08/19 01:04:58 by jonathanebe      ###   ########.fr       */
+/*   Updated: 2024/08/19 07:17:05 by jonathanebe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,52 +39,53 @@ int	fork_and_execute(t_minishell *m, t_pipe_info *pi)
 	}
 	return (1);
 }
-// Neue Hilfsfunktion
-int has_pipes(t_list *tok_lst)
+
+int	has_pipes(t_list *tok_lst)
 {
-    t_list *current = tok_lst;
-    while (current)
-    {
-        t_token *token = (t_token *)current->content;
-        if (token->token == PIPE)
-            return 1;
-        current = current->next;
-    }
-    return 0;
+	t_list	*current;
+	t_token	*token;
+
+	current = tok_lst;
+	while (current)
+	{
+		token = (t_token *)current->content;
+		if (token->token == PIPE)
+			return (1);
+		current = current->next;
+	}
+	return (0);
 }
 
-
-void execute(t_minishell *m)
+void	execute(t_minishell *m)
 {
-	int i;
-	
+	int	i;
+
 	i = 0;
-	while(i < MAXPIPS)
+	while (i < MAXPIPS)
 	{
 		m->cmd_seqs[i] = NULL;
 		i++;
 	}
 	i = 0;
-	while(i < MAXPIPS)
+	while (i < MAXPIPS)
 	{
 		m->exec_seqs[i] = NULL;
 		i++;
 	}
 	i = 0;
-	while(i < MAXPIPS)
+	while (i < MAXPIPS)
 	{
 		m->args[i] = NULL;
 		i++;
 	}
 	m->last_exitcode = m->exitcode;
 	m->exitcode = 0;
-	
 	m->pipes = 0;
 	if (has_pipes(m->tok_lst))
 	{
 		split_pipes(m);
-	    execute_with_pipes(m);
-	    reset_minishell_args(m);
+		execute_with_pipes(m);
+		reset_minishell_args(m);
 		cleanup_minishell(m);
 	}
 	else

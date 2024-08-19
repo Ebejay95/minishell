@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handle_heredoc.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jonathaneberle <jonathaneberle@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/12 16:43:15 by chorst            #+#    #+#             */
-/*   Updated: 2024/08/15 21:00:15 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/19 07:25:18 by jonathanebe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 char	*read_heredoc_line(void)
 {
 	char	*line;
-	// checke ob pipes da sind mach if else ande esignal function
+
 	signal(SIGINT, handle_heredoc_signal);
 	line = readline("📄 ");
 	signal(SIGINT, handle_main_process);
@@ -97,5 +97,10 @@ void	handle_heredoc(t_minishell *m, t_list *current)
 		return ;
 	if (next_content && !next_content->had_quote)
 		heredoc_content = expand_heredoc_content(m, heredoc_content);
+	if (token->rdrcmeta)
+	{
+		free(token->rdrcmeta);
+		token->rdrcmeta = NULL;
+	}
 	token->rdrcmeta = heredoc_content;
 }

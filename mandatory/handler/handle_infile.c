@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handle_infile.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jonathaneberle <jonathaneberle@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/12 16:46:11 by chorst            #+#    #+#             */
-/*   Updated: 2024/08/14 11:58:29 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/19 07:24:57 by jonathanebe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ void	handle_infile(t_list *current)
 		ft_fprintf(2, "Error: Cannot access file '%s'\n", filename);
 		return ;
 	}
-	if(token->rdrcmeta)
+	if (token->rdrcmeta)
 	{
 		free(token->rdrcmeta);
 		token->rdrcmeta = NULL;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer_helper.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jeberle <jeberle@student.42.fr>            +#+  +:+       +#+        */
+/*   By: jonathaneberle <jonathaneberle@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 09:54:56 by chorst            #+#    #+#             */
-/*   Updated: 2024/08/16 01:25:28 by jeberle          ###   ########.fr       */
+/*   Updated: 2024/08/19 07:27:55 by jonathanebe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,25 +36,22 @@ void	process_abtoken(t_list **current, t_token *cur)
 
 	next_node = (*current)->next;
 	work = whitespace_handler(cur->str);
+	if (!work)
+		return ;
 	wordcount = ft_count_words(work, ' ');
 	words = ft_split(work, ' ');
-
-	// Freigeben des ursprünglichen `cur->str` Speicherbereichs
+	free(work);
 	free(cur->str);
-
-	// Setze `cur->str` auf das erste Wort in `words`
 	cur->str = words[0];
-
 	i = 1;
 	while (i < wordcount)
 	{
-		add_new_abtoken(current, words[i], cur->expmap);  // Füge jedes weitere Wort als neues Token hinzu
-		free(words[i]);  // Freigeben der nicht mehr benötigten Strings
+		add_new_abtoken(current, words[i], cur->expmap);
+		free(words[i]);
 		i++;
 	}
-
-	free(words);  // Freigeben des Arrays `words` selbst
-	*current = next_node;  // Setze den aktuellen Zeiger auf den nächsten Knoten
+	free(words);
+	*current = next_node;
 }
 
 int	should_process_token(t_token *t)

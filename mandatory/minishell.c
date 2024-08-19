@@ -6,7 +6,7 @@
 /*   By: jonathaneberle <jonathaneberle@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/10 18:01:33 by jeberle           #+#    #+#             */
-/*   Updated: 2024/08/17 11:32:53 by jonathanebe      ###   ########.fr       */
+/*   Updated: 2024/08/19 07:45:15 by jonathanebe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,69 +14,63 @@
 
 void reset_minishell_args(t_minishell *m)
 {
-    int i;
+	int i;
 
-    i = 0;
-    while (i < MAXPIPS)
-    {
-        if (m->args[i] != NULL)
-        {
-            free(m->args[i]);  // Free the string if it's not NULL
-            m->args[i] = NULL;
-        }
-        i++;
-    }
-    m->argc = 0;
+	i = 0;
+	while (i < MAXPIPS)
+	{
+		if (m->args[i] != NULL)
+		{
+			free(m->args[i]);
+			m->args[i] = NULL;
+		}
+		i++;
+	}
+	m->argc = 0;
 }
-void mlstclear(t_list *list)
+void	mlstclear(t_list *list)
 {
-    t_list *current;
-    t_list *next;
-    t_token *token;
-	ft_printf("start mlstclear\n");
-    current = list;
-    while (current != NULL)
-    {
-        next = current->next;
-        token = (t_token *)current->content;
-        if (token != NULL)
-        {
-	ft_printf("free token\n");
+	t_list	*current;
+	t_list	*next;
+	t_token	*token;
+
+	current = list;
+	while (current != NULL)
+	{
+		next = current->next;
+		token = (t_token *)current->content;
+		if (token != NULL)
+		{
 			if (token->str)
 			{
-	ft_printf("free token str\n");
-            	free(token->str);
+				free(token->str);
 				token->str = NULL;
 			}
 			if (token->expmap)
 			{
-	ft_printf("free token expmap\n");
-            	free(token->expmap);
+				free(token->expmap);
 				token->expmap = NULL;
 			}
 			if (token->rdrcmeta)
 			{
-	ft_printf("free token rdrcmeta\n");
-            	free(token->rdrcmeta);
+				free(token->rdrcmeta);
 				token->rdrcmeta = NULL;
 			}
 			if (token->rdrctarget)
 			{
-	ft_printf("free token rdrctarget\n");
-            	free(token->rdrctarget);
+				free(token->rdrctarget);
 				token->rdrctarget = NULL;
 			}
-            free(token);
+			free(token);
 			token = NULL;
-        }
+		}
 		if (current != NULL)
 		{
-        	free(current);
+			free(current);
 			current = NULL;
 		}
-        current = next;
-    }
-	ft_printf("end mlstclear\n");
+		current = next;
+	}
 }
 
 // Function that defines the interactive mode

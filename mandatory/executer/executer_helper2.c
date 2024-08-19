@@ -6,7 +6,7 @@
 /*   By: jonathaneberle <jonathaneberle@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/13 09:16:46 by chorst            #+#    #+#             */
-/*   Updated: 2024/08/19 00:26:20 by jonathanebe      ###   ########.fr       */
+/*   Updated: 2024/08/19 07:14:32 by jonathanebe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,22 +42,22 @@ void	newfree_token(t_token *token)
 	{
 		if (token->str)
 		{
-        	free(token->str);
+			free(token->str);
 			token->str = NULL;
 		}
 		if (token->expmap)
 		{
-        	free(token->expmap);
+			free(token->expmap);
 			token->expmap = NULL;
 		}
 		if (token->rdrcmeta)
 		{
-        	free(token->rdrcmeta);
+			free(token->rdrcmeta);
 			token->rdrcmeta = NULL;
 		}
 		if (token->rdrctarget)
 		{
-        	free(token->rdrctarget);
+			free(token->rdrctarget);
 			token->rdrctarget = NULL;
 		}
 		free(token);

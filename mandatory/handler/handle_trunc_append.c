@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   handle_trunc_append.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: chorst <chorst@student.42.fr>              +#+  +:+       +#+        */
+/*   By: jonathaneberle <jonathaneberle@student.    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/12 16:47:13 by chorst            #+#    #+#             */
-/*   Updated: 2024/08/14 15:52:38 by chorst           ###   ########.fr       */
+/*   Updated: 2024/08/19 07:25:28 by jonathanebe      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,7 @@ void	handle_trunc_append(t_list *current)
 		filecontent = create_new_file(filename);
 	if (!filecontent)
 		return ;
-	if(token->rdrcmeta)
+	if (token->rdrcmeta)
 	{
 		free(token->rdrcmeta);
 		token->rdrcmeta = NULL;
