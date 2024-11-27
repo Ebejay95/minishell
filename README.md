@@ -1,55 +1,157 @@
-# minishell
+# Minishell
 
-A simple shell implementation in C, built to emulate basic shell behavior and provide command-line interface functionality.
+**As beautiful as a shell**
 
-This project replicates the functionality of a Unix shell, handling commands, arguments, environment variables, and essential shell operations. It showcases command parsing, process management, and file descriptor manipulation.
+---
 
-## Structure
+## Summary
 
-### src/
+**Minishell** is a simple shell implementation written in C, designed to emulate basic Unix shell behavior. This project focuses on handling user commands, parsing arguments, managing processes, and working with file descriptors. It also provides essential built-in commands for interactive command-line functionality.
 
-The `src` directory contains the core source code for the shell's implementation:
-
-- minishell.c: The main file that initializes the shell, reads user input, and executes commands.
-- parser.c: Handles command parsing, tokenizing input to interpret commands and arguments.
-- builtins.c: Implements built-in shell commands like `cd`, `echo`, `exit`, and `env`, providing basic shell functionality.
-- executor.c: Manages command execution, including handling pipes and file redirections.
-- utils.c: Contains utility functions to handle memory allocation, error messages, and other supportive tasks.
-
-### include/
-
-The `include` directory holds the header files for the project:
-
-- minishell.h: Declares essential structures, global variables, and function prototypes for shell components.
-
-### Makefile
-
-The Makefile automates the build process, compiling all source files and creating the executable for *minishell*.
+---
 
 ## Features
 
-- **Command Parsing**: Supports basic command parsing with arguments and environment variable handling.
-- **Built-in Commands**: Implements shell built-ins, including `cd`, `echo`, `exit`, and `env`.
-- **Process Management**: Executes commands as new processes, with support for piping and redirection.
-- **Error Handling**: Displays informative error messages and handles invalid input gracefully.
+### Core Functionality
+
+- **Command Execution**:
+  - Executes binaries from the `$PATH` or via relative/absolute paths.
+
+- **Built-in Commands**:
+  - `echo` (with `-n` option).
+  - `cd` (with relative/absolute paths).
+  - `pwd`.
+  - `export` (for environment variable management).
+  - `unset`.
+  - `env`.
+  - `exit`.
+
+- **Command Parsing**:
+  - Supports single and double quotes for grouping arguments.
+  - Expands environment variables prefixed with `$`.
+
+- **Redirection**:
+  - Input redirection (`<`).
+  - Output redirection (`>`).
+  - Append mode (`>>`).
+  - Heredoc (`<<`).
+
+- **Pipelines**:
+  - Implements pipes (`|`) to connect commands.
+
+- **Environment Variables**:
+  - Expands `$?` to the exit status of the last command.
+
+- **Signal Handling**:
+  - `ctrl-C`: Displays a new prompt.
+  - `ctrl-D`: Exits the shell.
+  - `ctrl-\`: Does nothing.
+
+---
+
+## Structure
+
+### Directories and Files
+
+#### `src/`
+
+- **`minishell.c`**:
+  Main entry point, initializes the shell and manages the REPL loop.
+
+- **`parser.c`**:
+  Parses user input into commands and arguments.
+
+- **`builtins.c`**:
+  Implements built-in shell commands (`cd`, `echo`, etc.).
+
+- **`executor.c`**:
+  Executes parsed commands, handles redirections, and manages pipes.
+
+- **`utils.c`**:
+  Helper functions for string manipulation, memory management, and error handling.
+
+#### `include/`
+
+- **`minishell.h`**:
+  Declares global structures, function prototypes, and constants.
+
+### Key Files
+
+- **Makefile**:
+  Automates compilation with the following targets:
+  - `all`, `clean`, `fclean`, `re`.
+
+---
 
 ## Usage
 
-To compile the project, run:
+### Compilation
 
-    make
+To compile the shell, run:
+```bash
+make
+```
 
-Launch the shell with:
-
-    ./minishell
-
-Once launched, you can enter commands like in a regular shell environment. Use built-in commands or external binaries available in your PATH.
+### Launching the Shell
+Start the shell with:
+```
+./minishell
+```
 
 ### Example Commands
+Basic Commands:
+```
+echo "Hello, World!"
+cd ..
+pwd
+```
+### Environment Variables:
+```
+export MY_VAR="Hello"
+echo $MY_VAR
+```
 
-    echo "Hello, World"
-    cd ..
-    ls | grep minishell
+### Redirections:
+```
+ls > output.txt
+cat < input.txt
+echo "Append this" >> output.txt
+```
 
-These commands demonstrate output redirection, navigation, and text filtering using pipes.
+### Pipelines:
+```
+ls | grep minishell
+```
 
+### Heredoc:
+```
+cat << EOF
+This is a heredoc example.
+EOF
+```
+
+## Project Requirements
+
+### Allowed Functions:
+readline, malloc, free, fork, execve, pipe, dup, dup2, and more.
+
+### Memory Management:
+Ensure no memory leaks (except those caused by readline).
+
+### Norm Compliance:
+All code must adhere to the 42 Norm.
+Learning Outcomes
+
+### Process Management:
+Learn to manage child processes using fork and execve.
+
+### File Descriptor Manipulation:
+Handle redirections and pipelines with dup and dup2.
+
+### Interactive Input:
+Use readline for dynamic command-line interaction.
+
+### Shell Basics:
+Understand the core principles of Unix shells.
+
+Minishell – A glimpse into the world of command-line interfaces! 🐚
